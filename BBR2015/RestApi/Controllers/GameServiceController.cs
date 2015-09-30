@@ -1,35 +1,45 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Web.Http;
+using System.Web.Http.Cors;
+using System.Web.Http.Description;
+using System.Web.Http.Results;
+using Modell;
+using Repository;
 
 namespace RestApi.Controllers
 {
-    public class GameServiceController : ApiController
+    [EnableCors("*", "*", "*")]
+    [RequireApiKey]
+    public class GameServiceController : BaseController
     {
-        // GET: api/GameService
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET: api/GameService/5
-        public string Get(int id)
-        {
-            return "value";
-        }
-
         // POST: api/GameService
-        public void Post([FromBody]string value)
+        [HttpPost]
+        [ResponseType(typeof(OkResult))]
+        public IHttpActionResult Post([FromBody] RegistrerNyPost registrerNyPost)
         {
-        }
+            try
+            {
+                if (registrerNyPost == null)
+                {
+                    return BadRequest("RegistrerNyPost cannot be null");
+                }
 
-        // PUT: api/GameService/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
 
-        // DELETE: api/GameService/5
-        public void Delete(int id)
-        {
-        }
+                var postRegistrering = GameServiceRepository.RegistrerNyPost(DeltakerId, LagId, registrerNyPost);
+                if (postRegistrering == null)
+                {
+                    return Conflict();
+                }
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }      
     }
 }

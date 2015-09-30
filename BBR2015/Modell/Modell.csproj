@@ -40,6 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Post.cs" />
+    <Compile Include="PostRegistrering.cs" />
+    <Compile Include="RegistrerNyPost.cs" />
     <Compile Include="Melding.cs" />
     <Compile Include="Deltaker.cs" />
     <Compile Include="DeltakerPosisjon.cs" />
