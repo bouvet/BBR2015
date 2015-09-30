@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Http;
 using Modell;
 using Repository;
@@ -25,12 +26,22 @@ namespace RestApi.Controllers
     {
 
         // GET: api/Meldinger
-        [ResponseType(typeof (IEnumerable<Melding>))]
+        [ResponseType(typeof (IEnumerable<Object>))]
         public IHttpActionResult Get(long sekvensIfra = 0)
         {
             try
             {
-                return Ok(MeldingRepository.HentMeldinger(LagId, sekvensIfra));
+                var rawData = MeldingRepository.HentMeldinger(LagId, sekvensIfra).ToList();
+                var meldinger = rawData.Select(m => new
+                {
+                    Sekvens = m.SekvensId,
+                    TidspunktUtc = m.TidspunktUtc,
+                    Deltaker = m.Deltaker.Navn,
+                    Melding = m.Meldingtekst
+                }).OrderByDescending(m=>m.Sekvens);
+
+                var response = new {LagId = LagId, Meldinger = meldinger};
+                return Ok(response);
             }
             catch (Exception ex)
             {
