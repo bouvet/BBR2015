@@ -18,7 +18,7 @@ namespace RestApi.Controllers
              * Sum poeng
              * Våpenbeholdning
              */
-            return new { Lag = LagId };
+            return new { Lag = LagId , Status = "Not done with this response yet!"};
         }
     }
 }

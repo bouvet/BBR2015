@@ -49,10 +49,6 @@ namespace RestApi.Controllers
                 {
                     return BadRequest("Melding cannot be null");
                 }
-                if (!string.IsNullOrEmpty(nyMelding.Tekst))
-                {
-                    return BadRequest("Melding cannot be null");
-                }
 
                 if (!ModelState.IsValid)
                 {
