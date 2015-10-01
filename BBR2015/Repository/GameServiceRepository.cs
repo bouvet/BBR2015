@@ -11,17 +11,9 @@ namespace Repository
         public static PostRegistrering RegistrerNyPost(string deltakerId, string lagId, RegistrerNyPost registrerNyPost)
         {
             var lag = AdminRepository.FinnLag(lagId);
-            if (lag == null)
-            {
-                throw new ArgumentException("Ugyldig lagId:" + lagId);
-            }
             var deltaker = lag.HentDeltaker(deltakerId);
-            if (deltaker == null)
-            {
-                throw new ArgumentException("Ugyldig deltakerId:" + deltakerId);
-            }
 
-            //TODO: call some GameLogic here?
+            //TODO: call some GameLogic here + CACHE?
             var post = new Post(registrerNyPost.PostKode,new Koordinat(0,0),null);
             int poeng = 100;
 

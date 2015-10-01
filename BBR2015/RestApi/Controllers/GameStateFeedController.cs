@@ -5,6 +5,13 @@ using Modell;
 
 namespace RestApi.Controllers
 {
+
+    public class Ranking
+    {
+        public int Rank { get; set; }
+        public int PoengTilNesteNivå { get; set; }
+        public int PoengTilForrigeNivå { get; set; }
+    }
     public class GameStateFeedController : BaseController
     {
         // GET: api/GameStateFeed
@@ -27,17 +34,18 @@ namespace RestApi.Controllers
 
             var posterForLag = new List<Object>
             {
-                new {Post = new Koordinat(59.676035, 10.604844), Poengverdi = 100, Fullført = false},
-                new {Post = new Koordinat(59.676135, 10.604744), Poengverdi = 150, Fullført = false},
-                new {Post = new Koordinat(59.676235, 10.604644), Poengverdi = 100, Fullført = true}
+                new {Latitude = 59.676035, Longitude = 10.604844, Poengverdi = 100, Fullført = false},
+                new {Latitude = 59.676135, Longitude = 10.604744, Poengverdi = 150, Fullført = false},
+                new {Latitude = 59.676235, Longitude = 10.604644, Poengverdi = 100, Fullført = true}
             };
 
             return new
             {
                 Lag = LagId , 
-                Status = "Not done with this response yet!",
                 Poster = posterForLag,
-                TilgjengeligeVåpen = tilgjengeligeVåpen
+                TilgjengeligeVåpen = tilgjengeligeVåpen,
+                Score = 1234,
+                Ranking = new Ranking()
             };
         }
     }

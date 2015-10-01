@@ -36,9 +36,12 @@ namespace Repository
             return melding;
         }
 
-        public static IEnumerable<Melding> HentMeldinger(string lagId, long sekvensIfra)
+        public static IEnumerable<Melding> HentMeldinger(string lagId, long sekvensIfra, int maksAntall=Int32.MaxValue)
         {
-            return Meldinger.Where(m => m.Lag.LagId.Equals(lagId) && m.SekvensId >= sekvensIfra);
+            return Meldinger
+                .Where(m => m.Lag.LagId.Equals(lagId) && m.SekvensId >= sekvensIfra)
+                .OrderByDescending(m=>m.SekvensId)
+                .Take(maksAntall);
         }
     }
 }

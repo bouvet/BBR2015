@@ -22,10 +22,10 @@ namespace Repository
             bbr2.LeggTilDeltaker(new Deltaker("BBR2-C", "BBR2-C"));
             Lagene.Add(bbr2);
 
-            var bbr3 = new Lag("BBR1", "BBR #1", "00FFFF", "abc1.gif");
-            bbr1.LeggTilDeltaker(new Deltaker("BBR1-A", "BBR1-A"));
-            bbr1.LeggTilDeltaker(new Deltaker("BBR1-B", "BBR1-B"));
-            bbr1.LeggTilDeltaker(new Deltaker("BBR1-C", "BBR1-C"));
+            var bbr3 = new Lag("BBR3", "BBR #3", "00FFFF", "abc1.gif");
+            bbr1.LeggTilDeltaker(new Deltaker("BBR3-A", "BBR3-A"));
+            bbr1.LeggTilDeltaker(new Deltaker("BBR3-B", "BBR3-B"));
+            bbr1.LeggTilDeltaker(new Deltaker("BBR3-C", "BBR3-C"));
             Lagene.Add(bbr3);
         }
 

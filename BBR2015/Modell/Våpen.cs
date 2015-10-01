@@ -2,12 +2,12 @@ namespace Modell
 {
     public class Våpen
     {
-        public string Navn { get; set; }
+        public string Id { get; set; }
         public string Beskrivelse { get; set; }
 
-        public Våpen(string navn, string beskrivelse)
+        public Våpen(string id, string beskrivelse)
         {
-            Navn = navn;
+            Id = id;
             Beskrivelse = beskrivelse;
         }
     }
