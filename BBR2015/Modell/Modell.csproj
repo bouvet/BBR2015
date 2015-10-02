@@ -40,18 +40,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Post.cs" />
-    <Compile Include="PostRegistrering.cs" />
     <Compile Include="RegistrerNyPost.cs" />
-    <Compile Include="Melding.cs" />
-    <Compile Include="Deltaker.cs" />
-    <Compile Include="DeltakerPosisjon.cs" />
-    <Compile Include="Event.cs" />
     <Compile Include="Koordinat.cs" />
-    <Compile Include="Lag.cs" />
-    <Compile Include="Posisjon.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Våpen.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Database\Database.csproj">
+      <Project>{25354916-3f7a-4903-a70f-dfffdd71f4c0}</Project>
+      <Name>Database</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

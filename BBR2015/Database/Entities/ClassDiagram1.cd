@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Database.Entities.Deltaker">
+    <Position X="1.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAACAAAAAEAAAAAgAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Deltaker.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Lag" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Database.Entities.DeltakerPosisjon" Collapsed="true">
+    <Position X="10.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAEAAAAAAAAAIAAAAAAAAAQgAAAAAAAEAAAA=</HashCode>
+      <FileName>Entities\DeltakerPosisjon.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Database.Entities.Lag">
+    <Position X="4.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAQgAAAAAgAAABgACAAAEEAgA=</HashCode>
+      <FileName>Entities\Lag.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Deltakere" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Database.Entities.LagIMatch">
+    <Position X="4.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEACAgAAACAAQAAAAAAAAAAAAAAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>Entities\LagIMatch.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Lag" />
+      <Property Name="Match" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="PostRegistreringer" />
+      <Property Name="VåpenBeholdning" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Database.Entities.Match">
+    <Position X="7.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAQAAAAAAAAAAAAAAAEAAAAgAAAAAAEAA=</HashCode>
+      <FileName>Entities\Match.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="DeltakendeLag" />
+      <Property Name="Poster" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Database.Entities.Melding" Collapsed="true">
+    <Position X="10.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAIAAAAAAAAQAAQgAAAAAAAEAAAA=</HashCode>
+      <FileName>Entities\Melding.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Database.Entities.Post">
+    <Position X="10.25" Y="4.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>CAAAABAAAkAAAAEAAAAIAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Post.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Database.Entities.PostIMatch">
+    <Position X="7.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAgAAAAQAAAAACAAAAAAACACAACAAAAEABAAABAA=</HashCode>
+      <FileName>Entities\PostIMatch.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Post" />
+      <Property Name="Match" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Database.Entities.PostRegistrering">
+    <Position X="0.75" Y="3.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACCAAAAAAAAAAAAEAAAAAAAAAQAAAAUAAAAAAAAAE=</HashCode>
+      <FileName>Entities\PostRegistrering.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="RegistrertAvDeltaker" />
+      <Property Name="RegistertPost" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Database.Entities.Vaapen">
+    <Position X="4.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Vaapen.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

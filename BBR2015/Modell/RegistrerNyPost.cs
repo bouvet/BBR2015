@@ -1,11 +1,13 @@
-﻿namespace Modell
+﻿using Database.Entities;
+
+namespace Modell
 {
     public class RegistrerNyPost
     {
         public string PostKode { get; set; }
-        public Våpen BruktVåpen { get; set; }
+        public string BruktVåpen { get; set; }
 
-        public RegistrerNyPost(string postKode, Våpen bruktVåpen)
+        public RegistrerNyPost(string postKode, string bruktVåpen)
         {
             PostKode = postKode;
             BruktVåpen = bruktVåpen;

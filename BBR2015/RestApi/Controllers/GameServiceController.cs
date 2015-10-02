@@ -12,6 +12,12 @@ namespace RestApi.Controllers
     [RequireApiKey]
     public class GameServiceController : BaseController
     {
+        private GameServiceRepository _gameServiceRepository;
+
+        public GameServiceController(GameServiceRepository gameServiceRepository)
+        {
+            _gameServiceRepository = gameServiceRepository;
+        }
         // POST: api/GameService
         [HttpPost]
         [ResponseType(typeof(OkResult))]
@@ -29,11 +35,8 @@ namespace RestApi.Controllers
                     return BadRequest(ModelState);
                 }
 
-                var postRegistrering = GameServiceRepository.RegistrerNyPost(DeltakerId, LagId, registrerNyPost);
-                if (postRegistrering == null)
-                {
-                    return Conflict();
-                }
+                _gameServiceRepository.RegistrerNyPost(DeltakerId, LagId, registrerNyPost);
+                
                 return Ok();
             }
             catch (Exception ex)

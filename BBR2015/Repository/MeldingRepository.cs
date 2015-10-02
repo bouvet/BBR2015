@@ -1,17 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Modell;
+
+using Database.Entities;
+using Database;
 
 namespace Repository
 {
-    public static class MeldingRepository
+    public class MeldingRepository
     {
-        private static readonly List<Melding> Meldinger = new List<Melding>();
+        private AdminRepository _adminRepository;
+        private DataContextFactory _dataContextFactory;
 
-        public static  Melding PostMelding(string deltakerId, string lagId, string meldingstekst)
+        public MeldingRepository(AdminRepository adminRepository, DataContextFactory dataContextFactory)
         {
-            var lag = AdminRepository.FinnLag(lagId);
+            _adminRepository = adminRepository;
+            _dataContextFactory = dataContextFactory;
+        }
+
+        public void PostMelding(string deltakerId, string lagId, string meldingstekst)
+        {
+            var lag = _adminRepository.FinnLag(lagId);
             if (lag == null)
             {
                 throw new ArgumentException("Ugyldig lagId:" + lagId);
@@ -21,27 +30,33 @@ namespace Repository
             {
                 throw new ArgumentException("Ugyldig deltakerId:" + deltakerId);
             }
-            return PostMelding(deltaker, lag, meldingstekst);
+
+            using (var context = _dataContextFactory.Create())
+            {
+                var melding = new Melding(deltaker.DeltakerId, lag.LagId, meldingstekst)
+                {
+                    SekvensId = DateTime.UtcNow.Ticks,
+                    TidspunktUTC = DateTime.UtcNow
+                };
+                context.Meldinger.Add(melding);
+
+                context.SaveChanges();
+            }
+
         }
 
-        public static Melding PostMelding(Deltaker deltaker, Lag lag, string meldingstekst)
+        public IEnumerable<Melding> HentMeldinger(string lagId, long sekvensIfra = 0, int maksAntall = 10)
         {
-            var melding = new Melding(deltaker, lag, meldingstekst);
-            return PostMelding(melding);
-        }
+            using (var context = _dataContextFactory.Create())
+            {
+                var resultat = (from m in context.Meldinger
+                                where m.LagId == lagId && m.SekvensId > sekvensIfra
+                                orderby m.SekvensId
+                                select m).Take(maksAntall).ToList();
 
-        public static Melding PostMelding(Melding melding)
-        {
-            Meldinger.Add(melding);
-            return melding;
-        }
+                return resultat;
 
-        public static IEnumerable<Melding> HentMeldinger(string lagId, long sekvensIfra, int maksAntall=Int32.MaxValue)
-        {
-            return Meldinger
-                .Where(m => m.Lag.LagId.Equals(lagId) && m.SekvensId >= sekvensIfra)
-                .OrderByDescending(m=>m.SekvensId)
-                .Take(maksAntall);
+            }
         }
     }
 }

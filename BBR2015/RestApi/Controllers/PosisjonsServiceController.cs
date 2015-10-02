@@ -5,6 +5,7 @@ using System.Web.Http.Description;
 using System.Web.Http.Results;
 using Modell;
 using Repository;
+using Database.Entities;
 
 namespace RestApi.Controllers
 {
@@ -13,6 +14,12 @@ namespace RestApi.Controllers
     [RequireApiKey]
     public class PosisjonsServiceController : BaseController
     {
+        private PosisjonsRepository _posisjonsRepository;
+
+        public PosisjonsServiceController(PosisjonsRepository posisjonsRepository)
+        {
+            _posisjonsRepository = posisjonsRepository;
+        }
 
         // GET: api/PosisjonsService
         [ResponseType(typeof (DeltakerPosisjon))]
@@ -20,7 +27,7 @@ namespace RestApi.Controllers
         {
             try
             {
-                return Ok(PosisjonsRepository.HentforLag(LagId));
+                return Ok(_posisjonsRepository.HentforLag(LagId));
             }
             catch (Exception ex)
             {
@@ -44,7 +51,7 @@ namespace RestApi.Controllers
                     return BadRequest(ModelState);
                 }
 
-                DeltakerPosisjon deltakerPosisjon = PosisjonsRepository.RegistrerPosisjon(LagId,DeltakerId,koordinat);
+                DeltakerPosisjon deltakerPosisjon = _posisjonsRepository.RegistrerPosisjon(LagId,DeltakerId,koordinat);
                 if (deltakerPosisjon == null)
                 {
                     return Conflict();

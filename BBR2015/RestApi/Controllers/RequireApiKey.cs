@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using Repository;
+using RestApi.Infrastructure;
 
 namespace RestApi.Controllers
 {
@@ -11,9 +12,8 @@ namespace RestApi.Controllers
     {
         public override void OnActionExecuting(HttpActionContext context)
         {
-            var validLagId = EnsureApiKey(context, "LagId");
-            if (!validLagId) return;
-            EnsureApiKey(context, "DeltakerId");
+            if (EnsureApiKey(context, "LagId"))
+                EnsureApiKey(context, "DeltakerId");
         }
 
         private static bool EnsureApiKey(HttpActionContext context, string key)
@@ -24,14 +24,17 @@ namespace RestApi.Controllers
             var valid = header.Value != null;
             if (valid)
             {
+                var adminRepository = ServiceLocator.Current.Resolve<AdminRepository>();
+
                 keyId = header.Value.FirstOrDefault();
                 switch (key)
-                { case "LagId" :
-                        valid = AdminRepository.GyldigLag(keyId);
+                {
+                    case "LagId":
+                        valid = adminRepository.GyldigLag(keyId);
                         break;
                     case "DeltakerId":
                         var lagId = context.Request.Properties["LagId"].ToString();
-                        var lag = AdminRepository.FinnLag(lagId);
+                        var lag = adminRepository.FinnLag(lagId);
                         valid = lag != null && lag.GyldigDeltaker(keyId);
                         break;
                 }

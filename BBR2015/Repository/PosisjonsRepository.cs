@@ -2,32 +2,52 @@
 using System.Collections.Generic;
 using System.Linq;
 using Modell;
+using Database.Entities;
+using Database;
 
 namespace Repository
 {
-    public static class PosisjonsRepository
+    public class PosisjonsRepository
     {
+        private static readonly Dictionary<string, DeltakerPosisjon> GjeldendePosisjon = new Dictionary<string, DeltakerPosisjon>();
+        private AdminRepository _adminRepository;
+        private DataContextFactory _dataContextFactory;
 
-        private static readonly List<DeltakerPosisjon> Posisjoner = new List<DeltakerPosisjon>();
-        private static readonly Dictionary<Deltaker,DeltakerPosisjon> GjeldendePosisjon = new Dictionary<Deltaker, DeltakerPosisjon>();
-
-        public static DeltakerPosisjon RegistrerPosisjon(string lagId, string deltakerId, Koordinat koordinat)
+        public PosisjonsRepository(AdminRepository adminRepository, DataContextFactory dataContextFactory)
         {
-            var lag = AdminRepository.FinnLag(lagId);
-            var deltaker = lag.HentDeltaker(deltakerId);
-            var deltakerPosisjon = new DeltakerPosisjon(deltaker, koordinat, DateTime.UtcNow);
-            Posisjoner.Add(deltakerPosisjon);
-            GjeldendePosisjon[deltaker] = deltakerPosisjon;
+            _adminRepository = adminRepository;
+            _dataContextFactory = dataContextFactory;
+        }
+
+        public DeltakerPosisjon RegistrerPosisjon(string lagId, string deltakerId, Koordinat koordinat)
+        {           
+            var deltakerPosisjon = new DeltakerPosisjon
+            {
+                DeltakerId = deltakerId,
+                LagId = lagId,
+                Latitude = koordinat.Latitude,
+                Longitude = koordinat.Longitude,
+                TidspunktUTC = DateTime.UtcNow
+            };
+
+            LagrePosisjonTilDatabasen(deltakerPosisjon);
+
+            GjeldendePosisjon[deltakerId] = deltakerPosisjon;
             return deltakerPosisjon;
         }
 
-        public static List<DeltakerPosisjon> HentforLag(string lagId)
+        private void LagrePosisjonTilDatabasen(DeltakerPosisjon deltakerPosisjon)
         {
-            var lag = AdminRepository.FinnLag(lagId);
-            return (from deltaker in lag.Deltakere
-                where GjeldendePosisjon.ContainsKey(deltaker)
-                select GjeldendePosisjon[deltaker])
-                .ToList();
+            using (var context = _dataContextFactory.Create())
+            {
+                context.DeltakerPosisjoner.Add(deltakerPosisjon);
+                context.SaveChanges();
+            }
+        }
+
+        public List<DeltakerPosisjon> HentforLag(string lagId)
+        {
+            return GjeldendePosisjon.Values.Where(x => x.LagId == lagId).ToList();            
         }
     }
 }

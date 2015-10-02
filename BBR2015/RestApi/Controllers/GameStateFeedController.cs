@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Web.Http.Cors;
 using Modell;
+using Database.Entities;
 
 namespace RestApi.Controllers
 {
@@ -28,9 +29,9 @@ namespace RestApi.Controllers
              * Sum poeng
              * Våpenbeholdning
              */
-            var tilgjengeligeVåpen = new List<Våpen>();
-            tilgjengeligeVåpen.Add(new Våpen("Bombe", "kanskje den ødelegger noe?"));
-            tilgjengeligeVåpen.Add(new Våpen("ebmoB", "Bombe - stavet baklengs?"));
+            var tilgjengeligeVåpen = new List<Vaapen>();
+            tilgjengeligeVåpen.Add(new Vaapen { VaapenId = "Bombe", Beskrivelse = "kanskje den ødelegger noe?" });
+            tilgjengeligeVåpen.Add(new Vaapen { VaapenId = "ebmoB", Beskrivelse = "Bombe - stavet baklengs?" });
 
             var posterForLag = new List<Object>
             {

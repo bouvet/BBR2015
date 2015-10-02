@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Http;
-using Modell;
 using Repository;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
@@ -28,7 +27,12 @@ namespace RestApi.Controllers
     [RequireApiKey]
     public class MeldingerController : BaseController
     {
+        private MeldingRepository _meldingRepository;
 
+        public MeldingerController(MeldingRepository meldingRepository)
+        {
+            _meldingRepository = meldingRepository;
+        }
                 // GET: api/Meldinger
         [ResponseType(typeof (IEnumerable<Object>))]
         public IHttpActionResult Get()
@@ -50,13 +54,13 @@ namespace RestApi.Controllers
             try
             {
                 //TODO: Allow message from Admin to all teams!
-                var rawData = MeldingRepository.HentMeldinger(LagId, sekvensIfra, maksAntall).ToList();
+                var rawData = _meldingRepository.HentMeldinger(LagId, sekvensIfra, maksAntall).ToList();
                 var meldinger = rawData.Select(m => new
                 {
                     Sekvens = m.SekvensId,
-                    TidspunktUtc = m.TidspunktUtc,
-                    Deltaker = m.Deltaker.Navn,
-                    Melding = m.Meldingtekst
+                    TidspunktUtc = m.TidspunktUTC,
+                    Deltaker = m.DeltakerId,
+                    Melding = m.Tekst
                 }).OrderByDescending(m => m.Sekvens);
 
                 var response = new {LagId = LagId, Meldinger = meldinger};
@@ -85,11 +89,8 @@ namespace RestApi.Controllers
                     return BadRequest(ModelState);
                 }
 
-                Melding melding = MeldingRepository.PostMelding(DeltakerId, LagId, nyMelding.Tekst);
-                if (melding == null)
-                {
-                    return Conflict();
-                }
+                _meldingRepository.PostMelding(DeltakerId, LagId, nyMelding.Tekst);
+               
                 return Ok();
             }
             catch (Exception ex)

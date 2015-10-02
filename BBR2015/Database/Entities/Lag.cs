@@ -1,15 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Modell
+namespace Database.Entities
 {
     public class Lag
     {
         public string LagId { get; set; }
+
         public string Navn { get; set; }
+
         public string Farge { get; set; }
+
         public string Ikon { get; set; }
-        public List<Deltaker> Deltakere { get; private set; }
+
+        public virtual List<Deltaker> Deltakere { get; set; }
+
+        public Lag()
+        {
+
+        }
 
         public Lag(string lagId, string navn, string farge, string ikon)
         {
@@ -22,7 +34,7 @@ namespace Modell
 
         public void LeggTilDeltaker(Deltaker deltaker)
         {
-            if(Deltakere.All(d => d.DeltakerId != deltaker.DeltakerId))
+            if (Deltakere.All(d => d.DeltakerId != deltaker.DeltakerId))
             {
                 Deltakere.Add(deltaker);
             }

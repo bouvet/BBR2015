@@ -1,16 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5E451FAB-9360-4AA2-B1E2-35952A27E6CE}</ProjectGuid>
+    <ProjectGuid>{25354916-3F7A-4903-A70F-DFFFDD71F4C0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Repository</RootNamespace>
-    <AssemblyName>Repository</AssemblyName>
+    <RootNamespace>Database</RootNamespace>
+    <AssemblyName>Database</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -42,32 +43,46 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdminRepository.cs" />
-    <Compile Include="GameServiceRepository.cs" />
-    <Compile Include="MeldingRepository.cs" />
-    <Compile Include="PosisjonsRepository.cs" />
+    <Compile Include="CascadingAppSettings.cs" />
+    <Compile Include="DataContext.cs" />
+    <Compile Include="DataContextFactory.cs" />
+    <Compile Include="Entities\Deltaker.cs" />
+    <Compile Include="Entities\DeltakerPosisjon.cs" />
+    <Compile Include="Entities\Lag.cs" />
+    <Compile Include="Entities\LagIMatch.cs" />
+    <Compile Include="Entities\Match.cs" />
+    <Compile Include="Entities\Melding.cs" />
+    <Compile Include="Entities\Post.cs" />
+    <Compile Include="Entities\PostIMatch.cs" />
+    <Compile Include="Entities\PostRegistrering.cs" />
+    <Compile Include="Entities\Vaapen.cs" />
+    <Compile Include="InitialDataCreator.cs" />
+    <Compile Include="Initializer.cs" />
+    <Compile Include="Migrations\201510021058343_Create_Database.cs" />
+    <Compile Include="Migrations\201510021058343_Create_Database.Designer.cs">
+      <DependentUpon>201510021058343_Create_Database.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="DbQueryExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Database\Database.csproj">
-      <Project>{25354916-3f7a-4903-a70f-dfffdd71f4c0}</Project>
-      <Name>Database</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Modell\Modell.csproj">
-      <Project>{5fde27c1-12e6-48f1-9c76-a77fc9f857f8}</Project>
-      <Name>Modell</Name>
-    </ProjectReference>
+    <None Include="App.config" />
+    <None Include="Entities\ClassDiagram1.cd" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <EmbeddedResource Include="Migrations\201510021058343_Create_Database.resx">
+      <DependentUpon>201510021058343_Create_Database.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
