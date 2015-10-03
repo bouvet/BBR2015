@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Modell;
 using Database.Entities;
 using Database;
 using System.Linq;
@@ -19,7 +18,7 @@ namespace Repository
             _dataContextFactory = dataContextFactory;
         }
 
-        public void RegistrerNyPost(string deltakerId, string lagId, RegistrerNyPost registrerNyPost)
+        public void RegistrerNyPost(string deltakerId, string lagId, string postkode, string bruktVåpen)
         {
             var lag = _adminRepository.FinnLag(lagId);
             var deltaker = lag.HentDeltaker(deltakerId);
@@ -35,7 +34,7 @@ namespace Repository
                                          select lm).SingleOrDefault();
 
                         var post = (from pim in context.PosterIMatch.Include(x => x.Post).Include(x => x.Match)
-                                    where pim.Post.HemmeligKode == registrerNyPost.PostKode && pim.Match.MatchId == lagIMatch.Match.MatchId
+                                    where pim.Post.HemmeligKode == postkode && pim.Match.MatchId == lagIMatch.Match.MatchId
                                     select pim).SingleOrDefault();
 
                         if (post.ErSynlig)
@@ -49,7 +48,7 @@ namespace Repository
                                 RegistertForLag = lagIMatch.Lag,
                                 RegistrertAvDeltaker = deltaker,
                                 RegistertPost = post,
-                                BruktVaapenId = registrerNyPost.BruktVåpen
+                                BruktVaapenId = bruktVåpen
                             };
 
                             context.PostRegisteringer.Add(registrering);

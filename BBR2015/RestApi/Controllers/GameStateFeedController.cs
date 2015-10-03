@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Http.Cors;
-using Modell;
 using Database.Entities;
 
 namespace RestApi.Controllers

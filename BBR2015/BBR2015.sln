@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestApi", "RestApi\RestApi.csproj", "{07E7C0B9-D40A-4F2F-A09A-9FE08387F9EC}"
 EndProject
@@ -15,8 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configurations", "Configura
 	ProjectSection(SolutionItems) = preProject
 		PublishScripts\Configurations\RestApi-WAWS-dev.json = PublishScripts\Configurations\RestApi-WAWS-dev.json
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modell", "Modell\Modell.csproj", "{5FDE27C1-12E6-48F1-9C76-A77FC9F857F8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{5E451FAB-9360-4AA2-B1E2-35952A27E6CE}"
 EndProject
@@ -34,10 +32,6 @@ Global
 		{07E7C0B9-D40A-4F2F-A09A-9FE08387F9EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07E7C0B9-D40A-4F2F-A09A-9FE08387F9EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07E7C0B9-D40A-4F2F-A09A-9FE08387F9EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5FDE27C1-12E6-48F1-9C76-A77FC9F857F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5FDE27C1-12E6-48F1-9C76-A77FC9F857F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5FDE27C1-12E6-48F1-9C76-A77FC9F857F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5FDE27C1-12E6-48F1-9C76-A77FC9F857F8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5E451FAB-9360-4AA2-B1E2-35952A27E6CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5E451FAB-9360-4AA2-B1E2-35952A27E6CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E451FAB-9360-4AA2-B1E2-35952A27E6CE}.Release|Any CPU.ActiveCfg = Release|Any CPU

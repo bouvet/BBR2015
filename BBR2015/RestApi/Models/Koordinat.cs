@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Modell
+namespace RestApi.Models
 {
     public class Koordinat
     {

@@ -19,14 +19,14 @@ namespace Repository
             _dataContextFactory = dataContextFactory;
         }
 
-        public DeltakerPosisjon RegistrerPosisjon(string lagId, string deltakerId, Koordinat koordinat)
+        public DeltakerPosisjon RegistrerPosisjon(string lagId, string deltakerId, double latitude, double longitude)
         {           
             var deltakerPosisjon = new DeltakerPosisjon
             {
                 DeltakerId = deltakerId,
                 LagId = lagId,
-                Latitude = koordinat.Latitude,
-                Longitude = koordinat.Longitude,
+                Latitude = latitude,
+                Longitude = longitude,
                 TidspunktUTC = DateTime.UtcNow
             };
 

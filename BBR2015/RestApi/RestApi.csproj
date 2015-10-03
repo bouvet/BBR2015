@@ -135,7 +135,8 @@
     <Compile Include="Infrastructure\ServiceLocator.cs" />
     <Compile Include="Infrastructure\WindsorControllerActivator.cs" />
     <Compile Include="Infrastructure\DepencencyConventions.cs" />
-    <Compile Include="Models\Class1.cs" />
+    <Compile Include="Models\Koordinat.cs" />
+    <Compile Include="Models\RegistrerNyPost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -155,10 +156,6 @@
     <ProjectReference Include="..\Database\Database.csproj">
       <Project>{25354916-3f7a-4903-a70f-dfffdd71f4c0}</Project>
       <Name>Database</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Modell\Modell.csproj">
-      <Project>{5fde27c1-12e6-48f1-9c76-a77fc9f857f8}</Project>
-      <Name>Modell</Name>
     </ProjectReference>
     <ProjectReference Include="..\Repository\Repository.csproj">
       <Project>{5e451fab-9360-4aa2-b1e2-35952a27e6ce}</Project>

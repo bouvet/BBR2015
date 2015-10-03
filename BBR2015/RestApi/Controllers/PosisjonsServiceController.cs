@@ -3,9 +3,9 @@ using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
 using System.Web.Http.Results;
-using Modell;
 using Repository;
 using Database.Entities;
+using RestApi.Models;
 
 namespace RestApi.Controllers
 {
@@ -51,7 +51,7 @@ namespace RestApi.Controllers
                     return BadRequest(ModelState);
                 }
 
-                DeltakerPosisjon deltakerPosisjon = _posisjonsRepository.RegistrerPosisjon(LagId,DeltakerId,koordinat);
+                DeltakerPosisjon deltakerPosisjon = _posisjonsRepository.RegistrerPosisjon(LagId,DeltakerId,koordinat.Latitude, koordinat.Longitude);
                 if (deltakerPosisjon == null)
                 {
                     return Conflict();

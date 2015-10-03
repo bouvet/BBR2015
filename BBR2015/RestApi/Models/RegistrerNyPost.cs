@@ -1,6 +1,4 @@
-﻿using Database.Entities;
-
-namespace Modell
+﻿namespace RestApi.Models
 {
     public class RegistrerNyPost
     {
