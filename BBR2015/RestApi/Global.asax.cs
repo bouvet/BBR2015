@@ -6,15 +6,19 @@ using System.Web.Http.Dispatcher;
 
 namespace RestApi
 {
-    public class WebApiApplication : System.Web.HttpApplication
+    public class RestApiApplication : System.Web.HttpApplication
     {
         private readonly IWindsorContainer _container;
 
-        public WebApiApplication()
+        public RestApiApplication()
         {
-            _container = new WindsorContainer().Install(new DependencyConventions());
+            _container = CreateContainer();
         }
 
+        public static IWindsorContainer CreateContainer()
+        {
+            return new WindsorContainer().Install(new DependencyConventions());
+        }
         protected void Application_Start()
         {
             GlobalConfiguration.Configuration.Services.Replace(typeof(IHttpControllerActivator), new WindsorControllerActivator(_container));

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Web.Http.Cors;
 using Database.Entities;
+using Repository;
 
 namespace RestApi.Controllers
 {
@@ -14,11 +15,19 @@ namespace RestApi.Controllers
     }
     public class GameStateFeedController : BaseController
     {
+        private readonly GameStateService _gameStateService;
+
+        public GameStateFeedController(GameStateService gameStateService)
+        {
+            _gameStateService = gameStateService;
+        }
+
         // GET: api/GameStateFeed
         [EnableCors("*", "*", "*")]
         [RequireApiKey]
         public object Get()
         {
+            var gameState = _gameStateService.Get(LagId);
             /* FOR ETT LAG
              *Poster
              *m koorinat

@@ -47,6 +47,7 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -55,7 +56,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminRepository.cs" />
+    <Compile Include="CurrentMatchProvider.cs" />
     <Compile Include="GameServiceRepository.cs" />
+    <Compile Include="GameStateService.cs" />
     <Compile Include="MeldingRepository.cs" />
     <Compile Include="PosisjonsRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

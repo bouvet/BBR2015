@@ -13,7 +13,7 @@ namespace RestApi.Controllers
         public override void OnActionExecuting(HttpActionContext context)
         {
             if (EnsureApiKey(context, "LagId"))
-                EnsureApiKey(context, "DeltakerId");
+                EnsureApiKey(context, "Deltaker1");
         }
 
         private static bool EnsureApiKey(HttpActionContext context, string key)
@@ -32,7 +32,7 @@ namespace RestApi.Controllers
                     case "LagId":
                         valid = adminRepository.GyldigLag(keyId);
                         break;
-                    case "DeltakerId":
+                    case "Deltaker1":
                         var lagId = context.Request.Properties["LagId"].ToString();
                         var lag = adminRepository.FinnLag(lagId);
                         valid = lag != null && lag.GyldigDeltaker(keyId);

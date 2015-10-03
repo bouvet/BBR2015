@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,9 +17,14 @@ namespace Database.Entities
 
         public double Longitude { get; set; }
 
+        public double Altitude { get; set; }
+
         public string DefaultPoengArray { get; set; }
 
-
         public string Beskrivelse { get; set; }
+
+        public string Image { get; set; }
+
+        public string Omraade { get; set; }
     }
 }

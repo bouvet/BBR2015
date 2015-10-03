@@ -95,8 +95,11 @@ namespace Database.Migrations
                         HemmeligKode = c.String(),
                         Latitude = c.Double(nullable: false),
                         Longitude = c.Double(nullable: false),
+                        Altitude = c.Double(nullable: false),
                         DefaultPoengArray = c.String(),
                         Beskrivelse = c.String(),
+                        Image = c.String(),
+                        Omraade = c.String(),
                     })
                 .PrimaryKey(t => t.PostId);
             

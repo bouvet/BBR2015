@@ -8,25 +8,27 @@ namespace Database
 {
     public class CascadingAppSettings
     {
-        public string GetConnectionString()
+        public string DatabaseConnectionString
         {
-            return Get("BBR2015_ConnectionString");
+            get { return Get("BBR_DatabaseConnectionString"); }
         }
 
         public string Get(string settingsKey)
         {
-            var connectionString = System.Configuration.ConfigurationManager.AppSettings[settingsKey];
-
-            if (string.IsNullOrEmpty(connectionString))
-                connectionString = Environment.GetEnvironmentVariable(settingsKey, EnvironmentVariableTarget.User);
+            var connectionString = Environment.GetEnvironmentVariable(settingsKey, EnvironmentVariableTarget.Machine);
 
             if (string.IsNullOrEmpty(connectionString))
                 connectionString = Environment.GetEnvironmentVariable(settingsKey, EnvironmentVariableTarget.Process);
 
             if (string.IsNullOrEmpty(connectionString))
-                connectionString = Environment.GetEnvironmentVariable(settingsKey, EnvironmentVariableTarget.Machine);
-            
+                connectionString = Environment.GetEnvironmentVariable(settingsKey, EnvironmentVariableTarget.User);
+
+            if (string.IsNullOrEmpty(connectionString))
+                connectionString = System.Configuration.ConfigurationManager.AppSettings[settingsKey];
+          
             return connectionString;
         }
+
+        public string BaseAddress { get { return Get("BBR_WebApiBaseAddress"); }}
     }
 }

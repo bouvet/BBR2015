@@ -15,10 +15,11 @@ namespace RestApi.Infrastructure
     {
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
-            container.Register(Types.FromAssemblyContaining<AdminRepository>().Pick().WithServiceSelf().LifestyleSingleton());
+            container.Register(Component.For<CurrentMatchProvider>().LifestyleSingleton());
+            container.Register(Component.For<GameStateService>().LifestyleSingleton());
+
+            container.Register(Types.FromAssemblyContaining<AdminRepository>().Pick().WithServiceSelf().LifestyleTransient());
             container.Register(Types.FromAssemblyContaining<BaseController>().BasedOn<BaseController>().WithServiceSelf().LifestylePerWebRequest());
-
-
             container.Register(Types.FromAssemblyContaining<DataContextFactory>().Pick().WithServiceSelf().LifestyleTransient());
 
         }

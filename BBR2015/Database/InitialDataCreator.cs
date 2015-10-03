@@ -1,21 +1,31 @@
 ﻿using Database.Entities;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Database
 {
+    public class Konstanter
+    {
+        public class Lag1
+        {
+            public const string Id = "BBR1";
+            public const string Deltaker1Id = "BBR1-A";
+        }
+    }
+
     public class InitialDataCreator
     {
+
         private DataContextFactory _dataContextFactory;
 
         public InitialDataCreator(DataContextFactory dataContextFactory)
         {
             _dataContextFactory = dataContextFactory;
         }
-    
+
         public void FyllDatabasen()
         {
             using (var context = _dataContextFactory.Create())
@@ -25,8 +35,8 @@ namespace Database
                 if (alleLag.Count > 0)
                     return;
 
-                var bbr1 = new Lag("BBR1", "BBR #1", "00FF00", "abc1.gif");
-                bbr1.LeggTilDeltaker(new Deltaker("BBR1-A", "BBR1-A"));
+                var bbr1 = new Lag(Konstanter.Lag1.Id, "BBR #1", "00FF00", "abc1.gif");
+                bbr1.LeggTilDeltaker(new Deltaker(Konstanter.Lag1.Deltaker1Id, "BBR1-A"));
                 bbr1.LeggTilDeltaker(new Deltaker("BBR1-B", "BBR1-B"));
                 bbr1.LeggTilDeltaker(new Deltaker("BBR1-C", "BBR1-C"));
                 context.Lag.Add(bbr1);
@@ -51,8 +61,92 @@ namespace Database
                     SluttUTC = new DateTime(2015, 11, 01)
                 };
 
+                match.DeltakendeLag = new List<LagIMatch>();
+                match.Poster = new List<PostIMatch>();
+
+                foreach (var lag in new []{bbr1, bbr2, bbr3})
+                {
+                    var lagIMatch = new LagIMatch
+                    {
+                        Lag = lag,
+                        Match = match                        
+                    };
+
+                    match.DeltakendeLag.Add(lagIMatch);
+                }
+
+
+                context.Matcher.Add(match);
+                
+
+                var postfil = AppDomain.CurrentDomain.BaseDirectory + @"..\Database\ImportData\Oscarsborg\poster.json";
+                var postString = File.ReadAllText(postfil);
+                var deserialized = JsonConvert.DeserializeObject<List<ImportPost>>(postString);
+
+                var defaultPoeng = "100,80,70,60,50";
+                var område = "Oscarsborg";
+
+                foreach (var import in deserialized)
+                {
+                    var post = new Post
+                    {
+                        PostId = Guid.NewGuid(),
+                        Beskrivelse = import.Description,
+                        Latitude = import.Position.Single().Latitude,
+                        Longitude = import.Position.Single().Longitude,
+                        Altitude = import.Position.Single().Altitude,
+                        Image = import.Image.Single(),
+                        DefaultPoengArray = defaultPoeng,
+                        HemmeligKode = Guid.NewGuid().ToString(), // TODO: Bytt ut med noe mer inntastbart...
+                        Omraade = område
+                    };
+
+                    context.Poster.Add(post);
+              
+                    var postIMatch = new PostIMatch
+                    {
+                        Match = match,
+                        Post = post,
+                        PoengArray = post.DefaultPoengArray,
+                        SynligFraUTC = match.StartUTC,
+                        SynligTilUTC = match.SluttUTC
+                    };
+
+                    match.Poster.Add(postIMatch);
+                }
+
                 context.SaveChanges();
             }
+
         }
+
+        
     }
+}
+
+
+
+public class ImportPost
+{
+    [JsonProperty("description")]
+    public string Description { get; set; }
+
+    [JsonProperty("position")]
+    public ImportPosition[] Position { get; set; }
+
+    [JsonProperty("image")]
+    public string[] Image { get; set; }
+}
+
+public class ImportPosition
+{
+    [JsonProperty("source")]
+    public string Source { get; set; }
+    [JsonProperty("latitude")]
+    public double Latitude { get; set; }
+    [JsonProperty("longitude")]
+    public double Longitude { get; set; }
+    [JsonProperty("altitude")]
+    public double Altitude { get; set; }
+
 }

@@ -17,7 +17,7 @@ namespace Database
 
         public DataContext Create()
         {            
-            return new DataContext(_appSettings.GetConnectionString());
+            return new DataContext(_appSettings.DatabaseConnectionString);
             
         }
     }
