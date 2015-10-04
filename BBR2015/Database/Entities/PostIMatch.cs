@@ -30,7 +30,12 @@ namespace Database.Entities
 
         public int[] GetPoengArray()
         {
-            return PoengArray.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+            return SplitOgParse(PoengArray);
+        }
+
+        public static int[] SplitOgParse(string poengArray)
+        {
+            return poengArray.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                              .Select(x => Convert.ToInt32(x))
                              .ToArray();
         }

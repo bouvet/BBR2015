@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Database
 {
-    public class Initializer : System.Data.Entity.CreateDatabaseIfNotExists<DataContext>
+    public class Initializer : System.Data.Entity.DropCreateDatabaseAlways<DataContext>
     {
         public Initializer()
         {

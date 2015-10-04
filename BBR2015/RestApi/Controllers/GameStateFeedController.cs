@@ -25,9 +25,11 @@ namespace RestApi.Controllers
         // GET: api/GameStateFeed
         [EnableCors("*", "*", "*")]
         [RequireApiKey]
-        public object Get()
+        public GameStateForLag Get()
         {
             var gameState = _gameStateService.Get(LagId);
+
+            return gameState;
             /* FOR ETT LAG
              *Poster
              *m koorinat
@@ -37,25 +39,25 @@ namespace RestApi.Controllers
              * Sum poeng
              * Våpenbeholdning
              */
-            var tilgjengeligeVåpen = new List<Vaapen>();
-            tilgjengeligeVåpen.Add(new Vaapen { VaapenId = "Bombe", Beskrivelse = "kanskje den ødelegger noe?" });
-            tilgjengeligeVåpen.Add(new Vaapen { VaapenId = "ebmoB", Beskrivelse = "Bombe - stavet baklengs?" });
+            //var tilgjengeligeVåpen = new List<Vaapen>();
+            //tilgjengeligeVåpen.Add(new Vaapen { VaapenId = "Bombe", Beskrivelse = "kanskje den ødelegger noe?" });
+            //tilgjengeligeVåpen.Add(new Vaapen { VaapenId = "ebmoB", Beskrivelse = "Bombe - stavet baklengs?" });
 
-            var posterForLag = new List<Object>
-            {
-                new {Latitude = 59.676035, Longitude = 10.604844, Poengverdi = 100, Fullført = false},
-                new {Latitude = 59.676135, Longitude = 10.604744, Poengverdi = 150, Fullført = false},
-                new {Latitude = 59.676235, Longitude = 10.604644, Poengverdi = 100, Fullført = true}
-            };
+            //var posterForLag = new List<Object>
+            //{
+            //    new {Latitude = 59.676035, Longitude = 10.604844, Poengverdi = 100, Fullført = false},
+            //    new {Latitude = 59.676135, Longitude = 10.604744, Poengverdi = 150, Fullført = false},
+            //    new {Latitude = 59.676235, Longitude = 10.604644, Poengverdi = 100, Fullført = true}
+            //};
 
-            return new
-            {
-                Lag = LagId , 
-                Poster = posterForLag,
-                TilgjengeligeVåpen = tilgjengeligeVåpen,
-                Score = 1234,
-                Ranking = new Ranking()
-            };
+            //return new
+            //{
+            //    Lag = LagId , 
+            //    Poster = posterForLag,
+            //    TilgjengeligeVåpen = tilgjengeligeVåpen,
+            //    Score = 1234,
+            //    Ranking = new Ranking()
+            //};
         }
     }
 }
