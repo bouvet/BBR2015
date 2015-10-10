@@ -39,9 +39,12 @@ namespace Database
 
         public DbSet<Vaapen> Våpen { get; set; }
 
+        public DbSet<VaapenBeholdning> VåpenBeholdning { get; set; }
+
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();          
         }
     }
 }

@@ -133,10 +133,23 @@ namespace Database.Migrations
                     {
                         VaapenId = c.String(nullable: false, maxLength: 128),
                         Beskrivelse = c.String(),
+                    })
+                .PrimaryKey(t => t.VaapenId);
+            
+            CreateTable(
+                "dbo.VaapenBeholdning",
+                c => new
+                    {
+                        LagId = c.String(nullable: false, maxLength: 128),
+                        VaapenId = c.String(nullable: false, maxLength: 128),
                         LagIMatch_Id = c.Int(),
                     })
-                .PrimaryKey(t => t.VaapenId)
+                .PrimaryKey(t => new { t.LagId, t.VaapenId })
+                .ForeignKey("dbo.Lag", t => t.LagId, cascadeDelete: true)
+                .ForeignKey("dbo.Vaapen", t => t.VaapenId, cascadeDelete: true)
                 .ForeignKey("dbo.LagIMatch", t => t.LagIMatch_Id)
+                .Index(t => t.LagId)
+                .Index(t => t.VaapenId)
                 .Index(t => t.LagIMatch_Id);
             
             CreateTable(
@@ -156,7 +169,9 @@ namespace Database.Migrations
         
         public override void Down()
         {
-            DropForeignKey("dbo.Vaapen", "LagIMatch_Id", "dbo.LagIMatch");
+            DropForeignKey("dbo.VaapenBeholdning", "LagIMatch_Id", "dbo.LagIMatch");
+            DropForeignKey("dbo.VaapenBeholdning", "VaapenId", "dbo.Vaapen");
+            DropForeignKey("dbo.VaapenBeholdning", "LagId", "dbo.Lag");
             DropForeignKey("dbo.PostRegistrering", "LagIMatch_Id", "dbo.LagIMatch");
             DropForeignKey("dbo.PostRegistrering", "RegistrertAvDeltaker_DeltakerId", "dbo.Deltaker");
             DropForeignKey("dbo.PostRegistrering", "RegistertPost_Id", "dbo.PostIMatch");
@@ -167,7 +182,9 @@ namespace Database.Migrations
             DropForeignKey("dbo.LagIMatch", "Match_MatchId", "dbo.Match");
             DropForeignKey("dbo.LagIMatch", "Lag_LagId", "dbo.Lag");
             DropForeignKey("dbo.Deltaker", "Lag_LagId", "dbo.Lag");
-            DropIndex("dbo.Vaapen", new[] { "LagIMatch_Id" });
+            DropIndex("dbo.VaapenBeholdning", new[] { "LagIMatch_Id" });
+            DropIndex("dbo.VaapenBeholdning", new[] { "VaapenId" });
+            DropIndex("dbo.VaapenBeholdning", new[] { "LagId" });
             DropIndex("dbo.PostRegistrering", new[] { "LagIMatch_Id" });
             DropIndex("dbo.PostRegistrering", new[] { "RegistrertAvDeltaker_DeltakerId" });
             DropIndex("dbo.PostRegistrering", new[] { "RegistertPost_Id" });
@@ -179,6 +196,7 @@ namespace Database.Migrations
             DropIndex("dbo.LagIMatch", new[] { "Lag_LagId" });
             DropIndex("dbo.Deltaker", new[] { "Lag_LagId" });
             DropTable("dbo.Melding");
+            DropTable("dbo.VaapenBeholdning");
             DropTable("dbo.Vaapen");
             DropTable("dbo.PostRegistrering");
             DropTable("dbo.Post");

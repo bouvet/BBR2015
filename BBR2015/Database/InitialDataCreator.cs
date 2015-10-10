@@ -30,6 +30,9 @@ namespace Database
         {
             using (var context = _dataContextFactory.Create())
             {
+                context.Våpen.Add(new Vaapen {VaapenId = "BOMBE", Beskrivelse = "Sprenger posten for en tid"});
+                context.Våpen.Add(new Vaapen {VaapenId = "FELLE", Beskrivelse = "Sprenger posten ved neste stempling. Laget som stempler får ikke poeng."});
+
                 var alleLag = context.Lag.Include(x => x.Deltakere).ToList();
 
                 if (alleLag.Count > 0)
@@ -52,6 +55,13 @@ namespace Database
                 bbr1.LeggTilDeltaker(new Deltaker("BBR3-B", "BBR3-B"));
                 bbr1.LeggTilDeltaker(new Deltaker("BBR3-C", "BBR3-C"));
                 context.Lag.Add(bbr3);
+
+                context.VåpenBeholdning.Add(new VaapenBeholdning {Lag = bbr1, VaapenId = "BOMBE"});
+                context.VåpenBeholdning.Add(new VaapenBeholdning {Lag = bbr2, VaapenId = "BOMBE"});
+                context.VåpenBeholdning.Add(new VaapenBeholdning {Lag = bbr3, VaapenId = "BOMBE"});
+                context.VåpenBeholdning.Add(new VaapenBeholdning { Lag = bbr1, VaapenId = "FELLE" });
+                context.VåpenBeholdning.Add(new VaapenBeholdning { Lag = bbr2, VaapenId = "FELLE" });
+                context.VåpenBeholdning.Add(new VaapenBeholdning { Lag = bbr3, VaapenId = "FELLE" });
 
                 var match = new Match()
                 {

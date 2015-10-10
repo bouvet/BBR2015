@@ -20,7 +20,7 @@ namespace Database.Entities
 
         public virtual List<PostRegistrering> PostRegistreringer { get; set; }
 
-        public virtual List<Vaapen> VåpenBeholdning { get; set; }
+        public virtual List<VaapenBeholdning> VåpenBeholdning { get; set; }
 
     }
 }

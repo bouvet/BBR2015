@@ -69,6 +69,7 @@
     <Compile Include="Entities\PostIMatch.cs" />
     <Compile Include="Entities\PostRegistrering.cs" />
     <Compile Include="Entities\Vaapen.cs" />
+    <Compile Include="Entities\VaapenBeholdning.cs" />
     <Compile Include="InitialDataCreator.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="Migrations\201510021058343_Create_Database.cs" />
