@@ -36,14 +36,14 @@ namespace Repository
                 //TODO: Trengs kanskje et slags postnummer for referanse/presentasjon i runden. F.eks. "Post 1"
                 var poster = (from p in context.PosterIMatch
                     where p.Match.MatchId == matchId && p.ErSynlig
-                    select new TempPost { Id = p.Id, Latitude = p.Post.Latitude, Longitude = p.Post.Longitude, CurrentPoengIndex = p.CurrentPoengIndex, PoengArray = p.PoengArray}).ToList();
+                    select new TempPost { PostId = p.PostId, Latitude = p.Post.Latitude, Longitude = p.Post.Longitude, CurrentPoengIndex = p.CurrentPoengIndex, PoengArray = p.PoengArray}).ToList();
 
                 var postRegistreringer = (from l in context.LagIMatch
                                         from p in l.PostRegistreringer
                                         where l.Match.MatchId == matchId
                                         select new
                                         {
-                                            PostId = p.RegistertPost.Id,
+                                            PostId = p.RegistertPost.PostId,
                                             LagId = p.RegistertForLag.LagId,
                                             Poeng = p.PoengForRegistrering
                                         }).ToList();
@@ -72,7 +72,7 @@ namespace Repository
                             PoengForanLagetBak = (plassenBak ?? lag).PoengSum - lag.PoengSum,
                         },
                         Poster = (from p in poster
-                                 join r in postRegistreringer on p.Id equals r.PostId into j
+                                 join r in postRegistreringer on p.PostId equals r.PostId into j
                                  from reg in j.DefaultIfEmpty()
                                  select new GameStatePost
                                  {
@@ -101,7 +101,7 @@ namespace Repository
 
     public class TempPost
     {
-        public int Id { get; set; }
+        public Guid PostId { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public int CurrentPoengIndex { get; set; }

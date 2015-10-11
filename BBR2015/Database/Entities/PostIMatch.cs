@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -9,8 +10,11 @@ namespace Database.Entities
 {
     public class PostIMatch
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        [Column(Order = 0), Key, ForeignKey("Post")]
+        public Guid PostId { get; set; }
+
+        [Column(Order = 1), Key, ForeignKey("Match")]
+        public Guid MatchId { get; set; }
 
         public virtual Post Post { get; set; }
 
@@ -22,6 +26,7 @@ namespace Database.Entities
 
         public DateTime SynligFraUTC { get; set; }
         public DateTime SynligTilUTC { get; set; }
+
         public bool ErSynlig { get
             {
                 return SynligFraUTC < DateTime.UtcNow && DateTime.UtcNow < SynligTilUTC;

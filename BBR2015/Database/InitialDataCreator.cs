@@ -56,13 +56,7 @@ namespace Database
                 bbr1.LeggTilDeltaker(new Deltaker("BBR3-C", "BBR3-C"));
                 context.Lag.Add(bbr3);
 
-                context.VåpenBeholdning.Add(new VaapenBeholdning {Lag = bbr1, VaapenId = "BOMBE"});
-                context.VåpenBeholdning.Add(new VaapenBeholdning {Lag = bbr2, VaapenId = "BOMBE"});
-                context.VåpenBeholdning.Add(new VaapenBeholdning {Lag = bbr3, VaapenId = "BOMBE"});
-                context.VåpenBeholdning.Add(new VaapenBeholdning { Lag = bbr1, VaapenId = "FELLE" });
-                context.VåpenBeholdning.Add(new VaapenBeholdning { Lag = bbr2, VaapenId = "FELLE" });
-                context.VåpenBeholdning.Add(new VaapenBeholdning { Lag = bbr3, VaapenId = "FELLE" });
-
+               
                 var match = new Match()
                 {
                     MatchId = Guid.NewGuid(),
@@ -83,6 +77,10 @@ namespace Database
                     };
 
                     match.DeltakendeLag.Add(lagIMatch);
+
+                    context.VåpenBeholdning.Add(new VaapenBeholdning { LagIMatch = lagIMatch, VaapenId = "BOMBE" });
+                    context.VåpenBeholdning.Add(new VaapenBeholdning { LagIMatch = lagIMatch, VaapenId = "FELLE" });
+
                 }
 
 

@@ -19,7 +19,13 @@ namespace Database.Entities
         public virtual Deltaker RegistrertAvDeltaker { get; set; }
 
         [Required]
-        public virtual Lag RegistertForLag { get; set; }
+        public virtual LagIMatch RegistertForLag { get; set; }
+
+        [Column(Order = 0), Key, ForeignKey("RegistertPost")]
+        public Guid PostId { get; set; }
+
+        [Column(Order = 1), Key, ForeignKey("RegistertPost")]
+        public Guid MatchId { get; set; }
 
         [Required]
         public virtual PostIMatch RegistertPost { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -9,8 +10,11 @@ namespace Database.Entities
 {
     public class LagIMatch
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        [Column(Order = 0), Key, ForeignKey("Lag")]
+        public string LagId { get; set; }
+
+        [Column(Order = 1), Key, ForeignKey("Match")]
+        public Guid MatchId { get; set; }
 
         public virtual Lag Lag { get; set; }
 

@@ -54,7 +54,7 @@ namespace Repository
                             var registrering = new PostRegistrering
                             {
                                 PoengForRegistrering = poeng,
-                                RegistertForLag = lagIMatch.Lag,
+                                RegistertForLag = lagIMatch,
                                 RegistrertAvDeltaker = deltaker,
                                 RegistertPost = post,
                                 BruktVaapenId = bruktVåpen
