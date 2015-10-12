@@ -15,7 +15,7 @@ namespace RestApi.Controllers
         {
             get
             {
-                return Request.Properties["Deltaker1"].ToString();
+                return Request.Properties["DeltakerId"].ToString();
             }
         }
     }
