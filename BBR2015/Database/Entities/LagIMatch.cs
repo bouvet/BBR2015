@@ -10,16 +10,15 @@ namespace Database.Entities
 {
     public class LagIMatch
     {
-        [Column(Order = 0), Key, ForeignKey("Lag")]
-        public string LagId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
-        [Column(Order = 1), Key, ForeignKey("Match")]
-        public Guid MatchId { get; set; }
-
+        [Required]
         public virtual Lag Lag { get; set; }
 
         public int PoengSum { get; set; }
 
+        [Required]
         public virtual Match Match { get; set; }
 
         public virtual List<PostRegistrering> PostRegistreringer { get; set; }

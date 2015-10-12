@@ -10,14 +10,13 @@ namespace Database.Entities
 {
     public class PostIMatch
     {
-        [Column(Order = 0), Key, ForeignKey("Post")]
-        public Guid PostId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
-        [Column(Order = 1), Key, ForeignKey("Match")]
-        public Guid MatchId { get; set; }
-
+        [Required]
         public virtual Post Post { get; set; }
 
+        [Required]
         public virtual Match Match { get; set; }
 
         public int CurrentPoengIndex { get; set; }
@@ -27,7 +26,8 @@ namespace Database.Entities
         public DateTime SynligFraUTC { get; set; }
         public DateTime SynligTilUTC { get; set; }
 
-        public bool ErSynlig { get
+        public bool ErSynlig 
+        { get
             {
                 return SynligFraUTC < DateTime.UtcNow && DateTime.UtcNow < SynligTilUTC;
             }

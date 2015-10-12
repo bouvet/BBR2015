@@ -30,8 +30,10 @@ namespace Database
         {
             using (var context = _dataContextFactory.Create())
             {
-                context.Våpen.Add(new Vaapen {VaapenId = "BOMBE", Beskrivelse = "Sprenger posten for en tid"});
-                context.Våpen.Add(new Vaapen {VaapenId = "FELLE", Beskrivelse = "Sprenger posten ved neste stempling. Laget som stempler får ikke poeng."});
+                var bombe = new Vaapen {VaapenId = "BOMBE", Beskrivelse = "Sprenger posten for en tid"};
+                context.Våpen.Add(bombe);
+                var felle = new Vaapen {VaapenId = "FELLE", Beskrivelse = "Sprenger posten ved neste stempling. Laget som stempler får ikke poeng."};
+                context.Våpen.Add(felle);
 
                 var alleLag = context.Lag.Include(x => x.Deltakere).ToList();
 
@@ -78,8 +80,12 @@ namespace Database
 
                     match.DeltakendeLag.Add(lagIMatch);
 
-                    context.VåpenBeholdning.Add(new VaapenBeholdning { LagIMatch = lagIMatch, VaapenId = "BOMBE" });
-                    context.VåpenBeholdning.Add(new VaapenBeholdning { LagIMatch = lagIMatch, VaapenId = "FELLE" });
+                    lagIMatch.VåpenBeholdning = new List<VaapenBeholdning>();
+                    lagIMatch.VåpenBeholdning.Add(new VaapenBeholdning { LagIMatch = lagIMatch, Våpen = felle });
+                    lagIMatch.VåpenBeholdning.Add(new VaapenBeholdning { LagIMatch = lagIMatch, Våpen = bombe });
+                    lagIMatch.VåpenBeholdning.Add(new VaapenBeholdning { LagIMatch = lagIMatch, Våpen = bombe });
+
+
 
                 }
 

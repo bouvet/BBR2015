@@ -35,16 +35,16 @@ namespace Repository
 
                 //TODO: Trengs kanskje et slags postnummer for referanse/presentasjon i runden. F.eks. "Post 1"
                 var poster = (from p in context.PosterIMatch
-                    where p.Match.MatchId == matchId && p.ErSynlig
-                    select new TempPost { PostId = p.PostId, Latitude = p.Post.Latitude, Longitude = p.Post.Longitude, CurrentPoengIndex = p.CurrentPoengIndex, PoengArray = p.PoengArray}).ToList();
+                              where p.Match.MatchId == matchId && p.SynligFraUTC < DateTime.UtcNow && DateTime.UtcNow < p.SynligTilUTC
+                    select new TempPost { PostId = p.Post.PostId, Latitude = p.Post.Latitude, Longitude = p.Post.Longitude, CurrentPoengIndex = p.CurrentPoengIndex, PoengArray = p.PoengArray}).ToList();
 
                 var postRegistreringer = (from l in context.LagIMatch
                                         from p in l.PostRegistreringer
                                         where l.Match.MatchId == matchId
                                         select new
                                         {
-                                            PostId = p.RegistertPost.PostId,
-                                            LagId = p.RegistertForLag.LagId,
+                                            PostId = p.RegistertPost.Post.PostId,
+                                            LagId = p.RegistertForLag.Lag.LagId,
                                             Poeng = p.PoengForRegistrering
                                         }).ToList();
  

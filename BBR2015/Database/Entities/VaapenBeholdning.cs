@@ -6,16 +6,19 @@ namespace Database.Entities
 {
     public class VaapenBeholdning
     {
-        [Column(Order = 0), Key, ForeignKey("LagIMatch")]
-        public string LagId { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
-        [Column(Order = 1), Key, ForeignKey("LagIMatch")]
-        public Guid MatchId { get; set; }
+        [ForeignKey("LagIMatch")]
+        public int LagIMatchId { get; set; }
 
-        [Column(Order = 2), Key, ForeignKey("Våpen")]
+        [ForeignKey("Våpen")]
         public string VaapenId { get; set; }
-        
+
+        [Required]
         public virtual LagIMatch LagIMatch { get; set; }
+
+        [Required]
         public virtual Vaapen Våpen { get; set; }
     }
 }

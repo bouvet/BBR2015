@@ -15,19 +15,10 @@ namespace Database.Entities
 
         public int PoengForRegistrering { get; set; }
 
-        [Required]
         public virtual Deltaker RegistrertAvDeltaker { get; set; }
 
-        [Required]
         public virtual LagIMatch RegistertForLag { get; set; }
-
-        [Column(Order = 0), Key, ForeignKey("RegistertPost")]
-        public Guid PostId { get; set; }
-
-        [Column(Order = 1), Key, ForeignKey("RegistertPost")]
-        public Guid MatchId { get; set; }
-
-        [Required]
+       
         public virtual PostIMatch RegistertPost { get; set; }
 
         [ForeignKey("BruktVaapen")]
