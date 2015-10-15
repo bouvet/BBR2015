@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>BBR Klient</title>
+    <link rel="stylesheet" type="text/css" href="css/css.css">
+  </head>
+  <style type="text/css">
+  html, body { height: 100%; margin: 0; padding: 0; }
+  #map-canvas { height: 100%; }
+</style>
+  <body>
+  <div id="left">
+    <button id="hentGameState">Hent gamestate</button>
+    <div id="infoboks">
+      <label for="lagId">LagId:</label>
+      <input id="lagId" value="BBR1"/><br />
+      <label for="deltakerId">DeltakerId:</label>
+      <input id="deltakerId" value="BBR1-A"/>
+      <br />
+      <br />
+      <label for="postId">Postkode:</label>
+      <input id="postId" />
+      <select id="vaapen">
+        <option value="">Ingen våpen</option>
+        <option value="Bombe">Bombe</option>
+        <option value="EMP">EMP</option>
+      </select>
+      <button id="sendPostkode">Send</button>
+    </div>
+    <div id="meldingsboks">
+      <input id="melding" />
+      <button id="sendMelding">Send melding</button>
+      <button id="hentMeldinger">Hent meldinger</button>
+      <ul id="messages">
+        
+      </ul>
+    </div>
+  </div>
+  
+  <div id="mapWrapper">
+    <button id="sendPosisjon" onclick="sendPosisjon">Send posisjon</button>
+    <button id="hentPosisjoner" onclick="hentLagposisjoner">Hent posisjoner</button>
+    <div id="map-canvas"></div>
+  </div>
+
+  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script>
+
+  $("#sendPosisjon").click(function() {
+    sendPosisjon();
+  });
+  $("#hentPosisjoner").click(function() {
+    hentLagposisjoner();
+  });
+  $("#hentGameState").click(function() {
+    hentGameState();
+  });
+  var map;
+  var spillerMarkers = new Map();
+  var poster = [];
+
+  var baseUrl = "https://bbr2015test.azurewebsites.net/api/"
+
+
+
+  var initMap = function() {
+    var mapOptions = {
+    zoom: 16
+    };
+    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+    // Try HTML5 geolocation
+    if(navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+      var pos = new google.maps.LatLng(position.coords.latitude,
+                                       position.coords.longitude);
+      var infowindow = new google.maps.InfoWindow({
+        map: map,
+        position: pos,
+      });
+      map.setCenter(pos);
+      }, function() {
+      handleNoGeolocation(true);
+      });
+    } else {
+      // Browser doesn't support Geolocation
+      handleNoGeolocation(false);
+    }
+  };
+
+  var handleNoGeolocation = function(errorFlag) {
+    var content;
+    if (errorFlag) {
+      content = 'Error: The Geolocation service failed.';
+    } else {
+      content = 'Error: Your browser doesn\'t support geolocation.';
+    }
+    var options = {
+      map: map,
+      position: new google.maps.LatLng(60, 105),
+      content: content
+    };
+    var infowindow = new google.maps.InfoWindow(options);
+    map.setCenter(options.position);
+  };
+
+
+  $("#sendMelding").click(function() {
+    var text = $("#melding").val();
+    console.log(text);
+    sendMelding(text);
+  });
+
+  $("#hentMeldinger").click(function() {
+    hentMeldinger();
+  });
+
+
+  var createHeader = function () {
+    var lagId = $('#lagId').value();
+    var deltakerId = $('#deltakerId').value();
+    headers = {
+        'LagId': lagId,
+        'DeltakerId': deltakerId
+      };
+
+    return headers;
+  };
+
+  var sendMelding = function (melding) {
+    $.ajax({
+      type: "POST",
+      url: baseUrl + 'Meldinger', 
+      headers:     
+      {
+        "LagId": "BBR1",
+        "DeltakerId": "BBR1-A"
+      },
+      data: {
+        "tekst": melding
+      }
+    });
+  };
+
+  var hentMeldinger = function () {
+    $.ajax({
+      type: "GET",
+      url: baseUrl + 'Meldinger', 
+      headers:     
+      {
+        "LagId": "BBR1",
+        "DeltakerId": "BBR1-A"
+      }
+    }).done(visMeldinger);
+  };
+
+  var visMeldinger = function(data) {
+    data.meldinger.forEach(function(melding) {
+      console.log("legger til melding");
+      console.log(melding);
+      $("#messages").append(
+        "<li class='melding'>" +
+        "<div class='sender'>" + melding.deltaker + "</div>" +
+        "<div class='beskjed'>" + melding.melding + "</div>" +
+        "</li>"
+        );
+    });
+  };
+
+  var createMapMarkerFromPlayer = function(player) {
+    var myLatlng = new google.maps.LatLng(player.koordinat.latitude, player.koordinat.longitude);
+    // To add the marker to the map, use the 'map' property
+    var marker = new google.maps.Marker({
+        position: myLatlng,
+        map: map,
+        title: "Test"
+    });
+    marker.setMap(map);
+    return marker;
+  };
+
+  var hentLagposisjoner = function() {
+    console.log("Henter posisjoner");
+    $.ajax({
+      type: 'GET',
+      url: baseUrl + 'PosisjonsService',
+      headers: createHeader()
+    }).done(tegnLagposisjoner);
+  };
+
+  var tegnLagposisjoner = function(data) {
+    console.log("Tegner posjisjoner");
+        data.forEach(function(player) {
+        console.log(player);
+        var spillerMaker;
+        if (spillerMarkers.get(player.deltaker.deltakerId) === undefined) {
+          console.log("Tegner ny spiller på kartet");
+          spillerMarker = spillerMarkers.get(player.deltaker.deltakerId);
+          var marker = createMapMarkerFromPlayer(player);
+          spillerMarkers.set(player.deltaker.deltakerId, marker);
+        } else {
+          console.log("Oppdaterer posisjon på spiller");
+          spillerMarker = spillerMarkers.get(player.deltaker.deltakerId);
+          console.log(spillerMaker);
+          spillerMarker.setPosition(new google.maps.LatLng(player.koordinat.latitude, player.koordinat.longitude));
+        }
+      });
+    };
+
+    var sendPosisjon = function() {
+      console.log("Sender posisjone");
+      navigator.geolocation.getCurrentPosition(success);
+      function success(position) {
+         var lat = position.coords.latitude;
+         var lon = position.coords.longitude;
+       
+        $.ajax({
+          type: "POST",
+          url: baseUrl + 'PosisjonsService',
+          headers: createHeader(),
+          data: JSON.stringify({
+            "latitude": lat, 
+            "longitude": lon
+          })
+        }).success(console.log("Posisjon sendt"));
+      }
+    };
+
+
+  var hentGameState = function() {
+    console.log("Henter gamestate");
+    $.ajax({
+      type: 'GET',
+      url:  baseUrl + 'GameStateFeed',
+      headers: createHeader()
+    }).success(prosesserGameState);
+  };
+
+
+  var prosesserGameState = function(gameState) {
+    tegnPunkter(gameState.poster);
+    visVaapen(gameState.tilgjengeligeVåpen);
+    /*
+    Do something with score
+     */
+
+  };
+
+  var createMapMarkerFromPunkt = function(punkt) {
+      var myLatlng = new google.maps.LatLng(punkt.latitude, punkt.longitude);
+    // To add the marker to the map, use the 'map' property
+    var marker = new google.maps.Marker({
+        position: myLatlng,
+        map: map,
+        title: "Fullført: " + punkt.fullført
+    });
+    marker.setMap(map);
+    return marker;
+  }; 
+
+  var tegnPunkter = function(punkter) {
+    punkter.forEach(function(punkt) {
+      console.log("Tegner nytt punkt");
+      punkter.push(createMapMarkerFromPunkt(punkt));
+    });
+
+  };
+
+  var visVaapen = function(vaapen) {
+    console.log("Viser tilgjengelige våpen");
+    // Vis dropdown med tilgjengelige våpen
+  };
+
+  
+  google.maps.event.addDomListener(window, 'load', initMap);
+  </script>
+
+  </body>
+</html>

@@ -1,0 +1,20 @@
+body {
+
+}
+
+#left {
+  height: 100%;
+  width: 20%;
+  float: left;
+  background-color: whitesmoke;
+}
+
+#meldingsboks {
+  margin-top: 50px;
+}
+
+#mapWrapper {
+  width: 80%;
+  height: 100%;
+  float: right;
+}
