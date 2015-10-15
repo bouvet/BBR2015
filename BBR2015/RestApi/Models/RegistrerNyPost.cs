@@ -5,10 +5,10 @@
         public string PostKode { get; set; }
         public string BruktVåpen { get; set; }
 
-        public RegistrerNyPost(string postKode, string bruktVåpen)
+        public RegistrerNyPost(string postKode, string våpen)
         {
             PostKode = postKode;
-            BruktVåpen = bruktVåpen;
+            BruktVåpen = våpen;
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Database.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [ForeignKey("LagIMatch")]
+        [ForeignKey("LagIMatch")]        
         public int LagIMatchId { get; set; }
 
         [ForeignKey("Våpen")]

@@ -2,19 +2,18 @@
 using Database.Entities;
 using Database;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Repository
 {
     public class GameServiceRepository
     {
-        private readonly AdminRepository _adminRepository;
         private readonly DataContextFactory _dataContextFactory;
         private readonly GameStateService _gameState;
         private readonly CurrentMatchProvider _currentMatchProvider;
 
-        public GameServiceRepository(AdminRepository adminRepository, DataContextFactory dataContextFactory, GameStateService gameState, CurrentMatchProvider currentMatchProvider)
+        public GameServiceRepository(DataContextFactory dataContextFactory, GameStateService gameState, CurrentMatchProvider currentMatchProvider)
         {
-            _adminRepository = adminRepository;
             _dataContextFactory = dataContextFactory;
             _gameState = gameState;
             _currentMatchProvider = currentMatchProvider;
@@ -22,8 +21,6 @@ namespace Repository
 
         public void RegistrerNyPost(string deltakerId, string lagId, string postkode, string bruktVåpen)
         {
-            var lag = _adminRepository.FinnLag(lagId);
-            var deltaker = lag.HentDeltaker(deltakerId);
             var matchId = _currentMatchProvider.GetMatchId();
 
             using (var context = _dataContextFactory.Create())
@@ -32,12 +29,25 @@ namespace Repository
                 {
                     try
                     {
-                        var lagIMatch = (from lm in context.LagIMatch.Include(x => x.Lag).Include(x => x.Match)
+                        var lagIMatch = (from lm in context.LagIMatch.Include(x => x.VåpenBeholdning).Include(x => x.Lag)
                                          where lm.Lag.LagId == lagId && lm.Match.MatchId == matchId
                                          select lm).SingleOrDefault();
-                        
+
                         if (lagIMatch == null)
                             return;
+
+
+                        if (!string.IsNullOrEmpty(bruktVåpen))
+                        {
+                            var brukt = (from v in context.VåpenBeholdning
+                                        where v.VaapenId == bruktVåpen
+                                              && v.LagIMatchId == lagIMatch.Id
+                                        select v).FirstOrDefault();
+
+                            // Har prøvd å bruke noe laget ikke har
+                            if(brukt != null)
+                                context.VåpenBeholdning.Remove(brukt);
+                        }
 
                         var post = (from pim in context.PosterIMatch.Include(x => x.Post).Include(x => x.Match)
                                     where pim.Post.HemmeligKode == postkode && pim.Match.MatchId == lagIMatch.Match.MatchId
@@ -48,6 +58,8 @@ namespace Repository
 
                         if (post.ErSynlig)
                         {
+                            var deltaker = context.Deltakere.Single(x => x.DeltakerId == deltakerId);
+
                             var poeng = post.HentPoengOgInkrementerIndex();
                             lagIMatch.PoengSum += poeng;
 
@@ -60,14 +72,14 @@ namespace Repository
                                 BruktVaapenId = bruktVåpen
                             };
 
-                            context.PostRegisteringer.Add(registrering);
+                            lagIMatch.PostRegistreringer.Add(registrering);
                         }
 
                         context.SaveChanges();
                         transaction.Commit();
                     }
-                    catch (Exception)
-                    {                        
+                    catch (Exception ex)
+                    {
                         transaction.Rollback();
                         throw;
                     }

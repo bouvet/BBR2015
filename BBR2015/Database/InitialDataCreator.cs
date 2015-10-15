@@ -30,15 +30,17 @@ namespace Database
         {
             using (var context = _dataContextFactory.Create())
             {
-                var bombe = new Vaapen {VaapenId = "BOMBE", Beskrivelse = "Sprenger posten for en tid"};
-                context.Våpen.Add(bombe);
-                var felle = new Vaapen {VaapenId = "FELLE", Beskrivelse = "Sprenger posten ved neste stempling. Laget som stempler får ikke poeng."};
-                context.Våpen.Add(felle);
+                
 
                 var alleLag = context.Lag.Include(x => x.Deltakere).ToList();
 
                 if (alleLag.Count > 0)
                     return;
+
+                var bombe = new Vaapen { VaapenId = "BOMBE", Beskrivelse = "Sprenger posten for en tid" };
+                context.Våpen.Add(bombe);
+                var felle = new Vaapen { VaapenId = "FELLE", Beskrivelse = "Sprenger posten ved neste stempling. Laget som stempler får ikke poeng." };
+                context.Våpen.Add(felle);
 
                 var bbr1 = new Lag(Konstanter.Lag1.Id, "BBR #1", "00FF00", "abc1.gif");
                 bbr1.LeggTilDeltaker(new Deltaker(Konstanter.Lag1.Deltaker1Id, "BBR1-A"));

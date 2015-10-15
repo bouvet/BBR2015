@@ -81,7 +81,11 @@ namespace Repository
                                      PoengVerdi = reg != null ? reg.Poeng : PostIMatch.SplitOgParse(p.PoengArray)[p.CurrentPoengIndex] ,
                                      HarRegistert = reg != null
                                      
-                                 }).ToList()
+                                 }).ToList(),
+                        Vaapen = lag.VåpenBeholdning.Select(x => new GameStateVaapen
+                        {
+                            VaapenId = x.VaapenId
+                        }).ToList()
                     };
 
                     nyGameState.Add(state.LagId, state);
