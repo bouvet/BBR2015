@@ -44,7 +44,7 @@ namespace Repository
                                         select new
                                         {
                                             PostId = p.RegistertPost.Post.PostId,
-                                            LagId = p.RegistertForLag.Lag.LagId,
+                                            LagIMatchId = p.RegistertForLag.Id,
                                             Poeng = p.PoengForRegistrering
                                         }).ToList();
  
@@ -69,10 +69,10 @@ namespace Repository
                         {
                             Rank = i + 1,
                             PoengBakLagetForan = (plassenForan ?? lag).PoengSum - lag.PoengSum,
-                            PoengForanLagetBak = (plassenBak ?? lag).PoengSum - lag.PoengSum,
+                            PoengForanLagetBak = lag.PoengSum - (plassenBak ?? lag).PoengSum,
                         },
                         Poster = (from p in poster
-                                 join r in postRegistreringer on p.PostId equals r.PostId into j
+                                 join r in postRegistreringer.Where(x => x.LagIMatchId == lag.Id) on p.PostId equals r.PostId into j
                                  from reg in j.DefaultIfEmpty()
                                  select new GameStatePost
                                  {

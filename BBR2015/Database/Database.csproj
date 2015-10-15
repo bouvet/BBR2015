@@ -72,9 +72,9 @@
     <Compile Include="Entities\VaapenBeholdning.cs" />
     <Compile Include="InitialDataCreator.cs" />
     <Compile Include="Initializer.cs" />
-    <Compile Include="Migrations\201510111754499_Create_Database.cs" />
-    <Compile Include="Migrations\201510111754499_Create_Database.Designer.cs">
-      <DependentUpon>201510111754499_Create_Database.cs</DependentUpon>
+    <Compile Include="Migrations\201510151330200_Create_Database.cs" />
+    <Compile Include="Migrations\201510151330200_Create_Database.Designer.cs">
+      <DependentUpon>201510151330200_Create_Database.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="DbQueryExtensions.cs" />
@@ -95,8 +95,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201510111754499_Create_Database.resx">
-      <DependentUpon>201510111754499_Create_Database.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201510151330200_Create_Database.resx">
+      <DependentUpon>201510151330200_Create_Database.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

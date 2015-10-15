@@ -51,7 +51,7 @@ namespace Repository
             {
                 var resultat = (from m in context.Meldinger
                                 where m.LagId == lagId && m.SekvensId > sekvensIfra
-                                orderby m.SekvensId
+                                orderby m.SekvensId descending
                                 select m).Take(maksAntall).ToList();
 
                 return resultat;

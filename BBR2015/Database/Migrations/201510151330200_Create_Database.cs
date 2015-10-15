@@ -110,6 +110,7 @@ namespace Database.Migrations
                         Id = c.Int(nullable: false, identity: true),
                         PoengForRegistrering = c.Int(nullable: false),
                         BruktVaapenId = c.String(maxLength: 128),
+                        RegistertTidspunkt = c.DateTime(nullable: false),
                         RegistertForLag_Id = c.Int(),
                         RegistertPost_Id = c.Int(),
                         RegistrertAvDeltaker_DeltakerId = c.String(maxLength: 128),
@@ -140,12 +141,15 @@ namespace Database.Migrations
                         Id = c.Int(nullable: false, identity: true),
                         LagIMatchId = c.Int(nullable: false),
                         VaapenId = c.String(nullable: false, maxLength: 128),
+                        BruktIPostRegistrering_Id = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.PostRegistrering", t => t.BruktIPostRegistrering_Id)
                 .ForeignKey("dbo.LagIMatch", t => t.LagIMatchId, cascadeDelete: true)
                 .ForeignKey("dbo.Vaapen", t => t.VaapenId, cascadeDelete: true)
                 .Index(t => t.LagIMatchId)
-                .Index(t => t.VaapenId);
+                .Index(t => t.VaapenId)
+                .Index(t => t.BruktIPostRegistrering_Id);
             
             CreateTable(
                 "dbo.Melding",
@@ -166,6 +170,7 @@ namespace Database.Migrations
         {
             DropForeignKey("dbo.VaapenBeholdning", "VaapenId", "dbo.Vaapen");
             DropForeignKey("dbo.VaapenBeholdning", "LagIMatchId", "dbo.LagIMatch");
+            DropForeignKey("dbo.VaapenBeholdning", "BruktIPostRegistrering_Id", "dbo.PostRegistrering");
             DropForeignKey("dbo.PostRegistrering", "RegistrertAvDeltaker_DeltakerId", "dbo.Deltaker");
             DropForeignKey("dbo.PostRegistrering", "RegistertPost_Id", "dbo.PostIMatch");
             DropForeignKey("dbo.PostRegistrering", "RegistertForLag_Id", "dbo.LagIMatch");
@@ -175,6 +180,7 @@ namespace Database.Migrations
             DropForeignKey("dbo.PostIMatch", "Match_MatchId", "dbo.Match");
             DropForeignKey("dbo.LagIMatch", "Lag_LagId", "dbo.Lag");
             DropForeignKey("dbo.Deltaker", "Lag_LagId", "dbo.Lag");
+            DropIndex("dbo.VaapenBeholdning", new[] { "BruktIPostRegistrering_Id" });
             DropIndex("dbo.VaapenBeholdning", new[] { "VaapenId" });
             DropIndex("dbo.VaapenBeholdning", new[] { "LagIMatchId" });
             DropIndex("dbo.PostRegistrering", new[] { "RegistrertAvDeltaker_DeltakerId" });

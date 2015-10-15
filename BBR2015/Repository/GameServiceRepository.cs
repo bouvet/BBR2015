@@ -34,20 +34,7 @@ namespace Repository
                                          select lm).SingleOrDefault();
 
                         if (lagIMatch == null)
-                            return;
-
-
-                        if (!string.IsNullOrEmpty(bruktVåpen))
-                        {
-                            var brukt = (from v in context.VåpenBeholdning
-                                        where v.VaapenId == bruktVåpen
-                                              && v.LagIMatchId == lagIMatch.Id
-                                        select v).FirstOrDefault();
-
-                            // Har prøvd å bruke noe laget ikke har
-                            if(brukt != null)
-                                context.VåpenBeholdning.Remove(brukt);
-                        }
+                            return;                        
 
                         var post = (from pim in context.PosterIMatch.Include(x => x.Post).Include(x => x.Match)
                                     where pim.Post.HemmeligKode == postkode && pim.Match.MatchId == lagIMatch.Match.MatchId
@@ -58,6 +45,9 @@ namespace Repository
 
                         if (post.ErSynlig)
                         {
+                            if(context.PostRegisteringer.Any(x => x.RegistertForLag.Id == lagIMatch.Id && x.RegistertPost.Id == post.Id))
+                                return; // Allerede registrert post denne matchen
+
                             var deltaker = context.Deltakere.Single(x => x.DeltakerId == deltakerId);
 
                             var poeng = post.HentPoengOgInkrementerIndex();
@@ -69,10 +59,25 @@ namespace Repository
                                 RegistertForLag = lagIMatch,
                                 RegistrertAvDeltaker = deltaker,
                                 RegistertPost = post,
-                                BruktVaapenId = bruktVåpen
+                                BruktVaapenId = bruktVåpen,
+                                RegistertTidspunkt = DateTime.UtcNow
                             };
 
                             lagIMatch.PostRegistreringer.Add(registrering);
+
+                            if (!string.IsNullOrEmpty(bruktVåpen))
+                            {
+                                var brukt = (from v in context.VåpenBeholdning
+                                             where v.VaapenId == bruktVåpen
+                                                   && v.LagIMatchId == lagIMatch.Id
+                                             select v).FirstOrDefault();
+
+                                // Har prøvd å bruke noe laget ikke har
+                                if (brukt != null)
+                                {
+                                    brukt.BruktIPostRegistrering = registrering;
+                                }
+                            }
                         }
 
                         context.SaveChanges();

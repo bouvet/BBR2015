@@ -10,6 +10,7 @@ namespace Database.Entities
 {
     public class PostRegistrering
     {
+        // Surrogatnøkkel for å kunne tillate at et lag stempler flere ganger på samme post i samme match
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
@@ -25,5 +26,8 @@ namespace Database.Entities
         public virtual string BruktVaapenId { get; set; }
 
         public virtual Vaapen BruktVaapen { get; set; }
+
+        [Required]
+        public DateTime RegistertTidspunkt { get; set; }
     }
 }

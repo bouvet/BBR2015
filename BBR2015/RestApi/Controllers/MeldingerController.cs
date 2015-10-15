@@ -34,23 +34,27 @@ namespace RestApi.Controllers
             _meldingRepository = meldingRepository;
         }
                 // GET: api/Meldinger
-        [ResponseType(typeof (IEnumerable<Object>))]
-        public IHttpActionResult Get()
-        {
-            long sekvensIfra = 0;
-            int maksAntall = 10;
-            return HttpActionResult(sekvensIfra, maksAntall);
-        }
+        //[ResponseType(typeof (IEnumerable<Object>))]
+        //public IHttpActionResult Get()
+        //{
+        //    long sekvensIfra = 0;
+        //    int maksAntall = 10;
+        //    return HttpActionResult(sekvensIfra, maksAntall);
+        //}
 
         // GET: api/Meldinger
         [ResponseType(typeof (IEnumerable<Object>))]
-        public IHttpActionResult Get(long sekvensIfra)
+        [HttpGet]
+        public IHttpActionResult Get(long id)
         {
-            return HttpActionResult(sekvensIfra);
+            return HttpActionResult(id);
         }
 
-        private IHttpActionResult HttpActionResult(long sekvensIfra = 0, int maksAntall = Int32.MaxValue)
+        private IHttpActionResult HttpActionResult(long sekvensIfra = 0, int maksAntall = int.MaxValue)
         {
+            if (sekvensIfra == 0)
+                maksAntall = 10;
+
             try
             {
                 //TODO: Allow message from Admin to all teams!

@@ -17,13 +17,13 @@ namespace Database
         {
             var connectionString = Environment.GetEnvironmentVariable(settingsKey, EnvironmentVariableTarget.Machine);
 
-            if (string.IsNullOrEmpty(connectionString))
+            if (string.IsNullOrWhiteSpace(connectionString))
                 connectionString = Environment.GetEnvironmentVariable(settingsKey, EnvironmentVariableTarget.Process);
 
-            if (string.IsNullOrEmpty(connectionString))
+            if (string.IsNullOrWhiteSpace(connectionString))
                 connectionString = Environment.GetEnvironmentVariable(settingsKey, EnvironmentVariableTarget.User);
 
-            if (string.IsNullOrEmpty(connectionString))
+            if (string.IsNullOrWhiteSpace(connectionString))
                 connectionString = System.Configuration.ConfigurationManager.AppSettings[settingsKey];
           
             return connectionString;
