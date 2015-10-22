@@ -86,12 +86,12 @@
     <None Include="ImportData\Myrens\koder.json" />
     <None Include="ImportData\Myrens\lagPoster.json" />
     <None Include="ImportData\Myrens\poster.json" />
-    <None Include="ImportData\OscarsborgFredag\koder.json" />
+    <EmbeddedResource Include="ImportData\OscarsborgFredag\koder.json" />
     <None Include="ImportData\OscarsborgFredag\lagPoster.json" />
-    <None Include="ImportData\OscarsborgFredag\poster.json" />
-    <None Include="ImportData\Oscarsborg\koder.json" />
-    <None Include="ImportData\Oscarsborg\lagPoster.json" />
-    <None Include="ImportData\Oscarsborg\poster.json" />
+    <EmbeddedResource Include="ImportData\OscarsborgFredag\poster.json" />
+    <EmbeddedResource Include="ImportData\Oscarsborg\koder.json" />
+    <EmbeddedResource Include="ImportData\Oscarsborg\lagPoster.json" />
+    <EmbeddedResource Include="ImportData\Oscarsborg\poster.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

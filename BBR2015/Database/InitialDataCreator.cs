@@ -93,20 +93,30 @@ namespace Database
 
 
                 context.Matcher.Add(match);
-                
 
-                var postfil = AppDomain.CurrentDomain.BaseDirectory + @"..\Database\ImportData\Oscarsborg\poster.json";
-                var postString = File.ReadAllText(postfil);
+                var assembly = typeof (DataContext).Assembly;
+                var names = assembly.GetManifestResourceNames();
+                var resourceName = @"Database.ImportData.Oscarsborg.poster.json";
+                string postString;
+                using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    postString = reader.ReadToEnd();
+                }
+                //var postfil = AppDomain.CurrentDomain.BaseDirectory + @"..\Database\ImportData\Oscarsborg\poster.json";
+                //var postString = File.ReadAllText(postfil);
                 var deserialized = JsonConvert.DeserializeObject<List<ImportPost>>(postString);
 
                 var defaultPoeng = "100,80,70,60,50";
                 var område = "Oscarsborg";
 
+                int i = 1;
                 foreach (var import in deserialized)
                 {
                     var post = new Post
                     {
                         PostId = Guid.NewGuid(),
+                        Navn = string.Format("Post {0}", i++),
                         Beskrivelse = import.Description,
                         Latitude = import.Position.Single().Latitude,
                         Longitude = import.Position.Single().Longitude,

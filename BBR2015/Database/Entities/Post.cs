@@ -11,6 +11,8 @@ namespace Database.Entities
     {
         public Guid PostId { get; set; }
 
+        public string Navn { get; set; }
+
         public string HemmeligKode { get; set; }
 
         public double Latitude { get; set; }

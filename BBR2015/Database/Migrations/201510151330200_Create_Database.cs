@@ -92,6 +92,7 @@ namespace Database.Migrations
                 c => new
                     {
                         PostId = c.Guid(nullable: false),
+                        Navn = c.String(),
                         HemmeligKode = c.String(),
                         Latitude = c.Double(nullable: false),
                         Longitude = c.Double(nullable: false),
