@@ -60,7 +60,7 @@ namespace Repository
                                 RegistrertAvDeltaker = deltaker,
                                 RegistertPost = post,
                                 BruktVaapenId = bruktVåpen,
-                                RegistertTidspunkt = DateTime.UtcNow
+                                RegistertTidspunkt = TimeService.UtcNow
                             };
 
                             lagIMatch.PostRegistreringer.Add(registrering);

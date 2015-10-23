@@ -29,7 +29,7 @@ namespace Database.Entities
         public bool ErSynlig 
         { get
             {
-                return SynligFraUTC < DateTime.UtcNow && DateTime.UtcNow < SynligTilUTC;
+                return SynligFraUTC < TimeService.UtcNow && TimeService.UtcNow < SynligTilUTC;
             }
         }
 

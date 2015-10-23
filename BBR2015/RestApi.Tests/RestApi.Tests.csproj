@@ -39,6 +39,10 @@
       <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Owin, Version=2.0.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.2.0.2\lib\net45\Microsoft.Owin.dll</HintPath>
       <Private>True</Private>
@@ -70,6 +74,7 @@
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -87,6 +92,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameServiceTests.cs" />
+    <Compile Include="Given.cs" />
+    <Compile Include="Infrastructure\BBR2015DatabaseTests.cs" />
+    <Compile Include="Infrastructure\TestsInTransactionScope.cs" />
+    <Compile Include="MeldingRepositoryTests.cs" />
     <Compile Include="PosisjonsServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -98,6 +108,10 @@
     <ProjectReference Include="..\Database\Database.csproj">
       <Project>{25354916-3f7a-4903-a70f-dfffdd71f4c0}</Project>
       <Name>Database</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Repository\Repository.csproj">
+      <Project>{5E451FAB-9360-4AA2-B1E2-35952A27E6CE}</Project>
+      <Name>Repository</Name>
     </ProjectReference>
     <ProjectReference Include="..\RestApi\RestApi.csproj">
       <Project>{07E7C0B9-D40A-4F2F-A09A-9FE08387F9EC}</Project>

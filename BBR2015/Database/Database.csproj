@@ -79,6 +79,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="DbQueryExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TimeService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

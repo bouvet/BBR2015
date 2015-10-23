@@ -6,9 +6,13 @@ using Database;
 
 namespace Repository
 {
+    
+
     public class PosisjonsRepository
     {
-        private static readonly Dictionary<string, DeltakerPosisjon> GjeldendePosisjon = new Dictionary<string, DeltakerPosisjon>();
+        // Registreres som singleton, så dictionary trenger ikke være static (sjekk ut threadsafety, dog)
+        private readonly Dictionary<string, DeltakerPosisjon> GjeldendePosisjon = new Dictionary<string, DeltakerPosisjon>();
+
         private AdminRepository _adminRepository;
         private DataContextFactory _dataContextFactory;
 
@@ -26,8 +30,8 @@ namespace Repository
                 LagId = lagId,
                 Latitude = latitude,
                 Longitude = longitude,
-                TidspunktUTC = DateTime.UtcNow
-            };
+                TidspunktUTC = TimeService.UtcNow
+            };         
 
             LagrePosisjonTilDatabasen(deltakerPosisjon);
 
@@ -35,13 +39,26 @@ namespace Repository
             return deltakerPosisjon;
         }
 
-        private void LagrePosisjonTilDatabasen(DeltakerPosisjon deltakerPosisjon)
+        private void LagrePosisjonTilDatabasen(DeltakerPosisjon posisjon)
         {
+            if (GjeldendePosisjon.ContainsKey(posisjon.DeltakerId) &&
+                ErForKortEllerHyppig(GjeldendePosisjon[posisjon.DeltakerId], posisjon))
+                return;
+
             using (var context = _dataContextFactory.Create())
             {
-                context.DeltakerPosisjoner.Add(deltakerPosisjon);
+                context.DeltakerPosisjoner.Add(posisjon);
                 context.SaveChanges();
             }
+        }
+
+        private bool ErForKortEllerHyppig(DeltakerPosisjon forrige, DeltakerPosisjon posisjon)
+        {
+            var avstandIMeter = DistanseKalkulator.MeterMellom(forrige.Latitude, forrige.Longitude, posisjon.Latitude, posisjon.Longitude);
+            var avstandISekunder = posisjon.TidspunktUTC.Subtract(forrige.TidspunktUTC).TotalSeconds;
+
+            // Forkast for små forflytninger eller for tette rapporteringer
+            return avstandIMeter < 5 || avstandISekunder < 10;
         }
 
         public List<DeltakerPosisjon> HentforLag(string lagId)

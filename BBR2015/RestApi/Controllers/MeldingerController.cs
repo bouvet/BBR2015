@@ -53,7 +53,7 @@ namespace RestApi.Controllers
         private IHttpActionResult HttpActionResult(long sekvensIfra = 0, int maksAntall = int.MaxValue)
         {
             if (sekvensIfra == 0)
-                maksAntall = 10;
+                maksAntall = 10;            
 
             try
             {

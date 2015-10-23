@@ -29,10 +29,10 @@ namespace Repository
                     return new Guid(matchIdHeader);
             }
 
-            if (_lastWriteTime.AddSeconds(CacheSeconds) < DateTime.UtcNow)
+            if (_lastWriteTime.AddSeconds(CacheSeconds) < TimeService.UtcNow)
             {
                 _cachedMatchId = ReadFromDatabase();
-                _lastWriteTime = DateTime.UtcNow;
+                _lastWriteTime = TimeService.UtcNow;
             }
 
             return _cachedMatchId;
@@ -43,7 +43,7 @@ namespace Repository
             using (var context = _dataContextFactory.Create())
             {
                 return (from m in context.Matcher
-                    where m.StartUTC < DateTime.UtcNow && DateTime.UtcNow < m.SluttUTC
+                    where m.StartUTC < TimeService.UtcNow && TimeService.UtcNow < m.SluttUTC
                     select m.MatchId).Single();
             }
         }

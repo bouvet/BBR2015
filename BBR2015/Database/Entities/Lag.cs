@@ -20,7 +20,7 @@ namespace Database.Entities
 
         public Lag()
         {
-
+            Deltakere = new List<Deltaker>();
         }
 
         public Lag(string lagId, string navn, string farge, string ikon)

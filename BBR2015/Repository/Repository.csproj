@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="AdminRepository.cs" />
     <Compile Include="CurrentMatchProvider.cs" />
+    <Compile Include="DistanseKalkulator.cs" />
     <Compile Include="GameServiceRepository.cs" />
     <Compile Include="GameStateService.cs" />
     <Compile Include="MeldingRepository.cs" />

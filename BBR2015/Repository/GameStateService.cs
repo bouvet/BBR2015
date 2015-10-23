@@ -24,7 +24,7 @@ namespace Repository
         public void Calculate()
         {
             var matchId = _currentMatchProvider.GetMatchId();
-
+            
             using (var context = _dataContextFactory.Create())
             {
                 var sorterteLag =
@@ -35,7 +35,7 @@ namespace Repository
 
                 //TODO: Trengs kanskje et slags postnummer for referanse/presentasjon i runden. F.eks. "Post 1"
                 var poster = (from p in context.PosterIMatch
-                              where p.Match.MatchId == matchId && p.SynligFraUTC < DateTime.UtcNow && DateTime.UtcNow < p.SynligTilUTC
+                              where p.Match.MatchId == matchId && p.SynligFraUTC < TimeService.UtcNow && TimeService.UtcNow < p.SynligTilUTC
                     select new TempPost { PostId = p.Post.PostId, Latitude = p.Post.Latitude, Longitude = p.Post.Longitude, CurrentPoengIndex = p.CurrentPoengIndex, PoengArray = p.PoengArray}).ToList();
 
                 var postRegistreringer = (from l in context.LagIMatch
