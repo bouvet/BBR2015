@@ -42,13 +42,13 @@ namespace RestApi.Tests
         {
             var lag = new Lag
             {
-                LagId = $"Lag{lagIndex}",
-                Navn = $"LagNavn{lagIndex}"
+                LagId = string.Format("Lag{0}", lagIndex),
+                Navn = string.Format("LagNavn{0}", lagIndex)
             };
 
             for (int i = 1; i <= antallDeltakere; i++)
             {
-                lag.LeggTilDeltaker(new Deltaker($"Deltaker{lagIndex}-{i}", $"DeltakerNavn{lagIndex}-{i}"));
+                lag.LeggTilDeltaker(new Deltaker(string.Format("Deltaker{0}-{1}", lagIndex, i), string.Format("DeltakerNavn{0}-{1}", lagIndex, i)));
             }
 
             return lag;
