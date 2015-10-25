@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
@@ -27,7 +29,25 @@ namespace RestApi.Controllers
         {
             try
             {
-                return Ok(_posisjonsRepository.HentforLag(LagId));
+                return Ok(_posisjonsRepository.HentforLag(LagId).Posisjoner);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [Route("api/PosisjonsService/Alle")]
+        [ResponseType(typeof(List<LagPosisjoner>))]
+        public IHttpActionResult GetAlle()
+        {
+            try
+            {
+                var header = Request.Headers.SingleOrDefault(x => x.Key == "ScoreboardSecret");
+                if (header.Value == null)
+                    return NotFound();
+
+                return Ok(_posisjonsRepository.HentforAlleLag(header.Value.FirstOrDefault()));
             }
             catch (Exception ex)
             {

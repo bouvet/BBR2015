@@ -6,7 +6,7 @@ using Database;
 
 namespace Repository
 {
-    
+
 
     public class PosisjonsRepository
     {
@@ -15,15 +15,17 @@ namespace Repository
 
         private AdminRepository _adminRepository;
         private DataContextFactory _dataContextFactory;
+        private readonly CascadingAppSettings _appSettings;
 
-        public PosisjonsRepository(AdminRepository adminRepository, DataContextFactory dataContextFactory)
+        public PosisjonsRepository(AdminRepository adminRepository, DataContextFactory dataContextFactory, CascadingAppSettings appSettings)
         {
             _adminRepository = adminRepository;
             _dataContextFactory = dataContextFactory;
+            _appSettings = appSettings;
         }
 
         public DeltakerPosisjon RegistrerPosisjon(string lagId, string deltakerId, double latitude, double longitude)
-        {           
+        {
             var deltakerPosisjon = new DeltakerPosisjon
             {
                 DeltakerId = deltakerId,
@@ -31,7 +33,7 @@ namespace Repository
                 Latitude = latitude,
                 Longitude = longitude,
                 TidspunktUTC = TimeService.UtcNow
-            };         
+            };
 
             LagrePosisjonTilDatabasen(deltakerPosisjon);
 
@@ -61,9 +63,37 @@ namespace Repository
             return avstandIMeter < 5 || avstandISekunder < 10;
         }
 
-        public List<DeltakerPosisjon> HentforLag(string lagId)
+        public LagPosisjoner HentforLag(string lagId)
         {
-            return GjeldendePosisjon.Values.Where(x => x.LagId == lagId).ToList();            
+
+            return new LagPosisjoner
+            {
+                LagId = lagId,
+                Posisjoner = GjeldendePosisjon.Values.Where(x => x.LagId == lagId).ToList()
+            };
         }
+
+        public List<LagPosisjoner> HentforAlleLag(string scoreboardSecret)
+        {
+            if (scoreboardSecret != _appSettings.ScoreboardSecret)
+                throw new InvalidOperationException("Denne operasjonen har ekstra sikkerhet. Feil kode.");
+
+            var perLag = from p in GjeldendePosisjon.Values
+                         group p by p.LagId
+                             into g
+                             select new LagPosisjoner
+                             {
+                                 LagId = g.Key,
+                                 Posisjoner = g.ToList()
+                             };
+
+            return perLag.ToList();
+        }
+    }
+
+    public class LagPosisjoner
+    {
+        public string LagId { get; set; }
+        public List<DeltakerPosisjon> Posisjoner { get; set; }
     }
 }

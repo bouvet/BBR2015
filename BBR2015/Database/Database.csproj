@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CascadingAppSettings.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="DataContext.cs" />
     <Compile Include="DataContextFactory.cs" />
     <Compile Include="Entities\Deltaker.cs" />
@@ -78,6 +79,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="DbQueryExtensions.cs" />
+    <Compile Include="PostFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TimeService.cs" />
   </ItemGroup>

@@ -103,6 +103,7 @@
     <Compile Include="Infrastructure\TestsInTransactionScope.cs" />
     <Compile Include="MeldingRepositoryTests.cs" />
     <Compile Include="PosisjonsServiceTests.cs" />
+    <Compile Include="PostFactoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
