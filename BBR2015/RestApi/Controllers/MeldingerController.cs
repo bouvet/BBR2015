@@ -24,7 +24,7 @@ namespace RestApi.Controllers
     }
 
     [EnableCorsAttribute("*", "*", "*")]
-    [RequireApiKey]
+   
     public class MeldingerController : BaseController
     {
         private MeldingRepository _meldingRepository;
@@ -33,7 +33,7 @@ namespace RestApi.Controllers
         {
             _meldingRepository = meldingRepository;
         }
-                // GET: api/Meldinger
+        // GET: api/Meldinger
         //[ResponseType(typeof (IEnumerable<Object>))]
         //public IHttpActionResult Get()
         //{
@@ -43,8 +43,9 @@ namespace RestApi.Controllers
         //}
 
         // GET: api/Meldinger
-        [ResponseType(typeof (IEnumerable<Object>))]
         [HttpGet]
+        [ResponseType(typeof (IEnumerable<Object>))]
+        [RequireApiKey]
         public IHttpActionResult Get(long id)
         {
             return HttpActionResult(id);
@@ -79,6 +80,7 @@ namespace RestApi.Controllers
         // POST: api/Meldinger
         [HttpPost]
         [ResponseType(typeof(OkResult))]
+        [RequireApiKey]
         public IHttpActionResult Post([FromBody] NyMelding nyMelding)
         {
             try

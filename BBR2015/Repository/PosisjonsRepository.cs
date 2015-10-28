@@ -12,15 +12,13 @@ namespace Repository
         // Registreres som singleton, så dictionary trenger ikke være static (sjekk ut threadsafety, dog)
         private ConcurrentDictionary<string, DeltakerPosisjon> _gjeldendePosisjon;
 
-        private AdminRepository _adminRepository;
         private DataContextFactory _dataContextFactory;
         private readonly CascadingAppSettings _appSettings;
 
         private object _lock = new object();
 
-        public PosisjonsRepository(AdminRepository adminRepository, DataContextFactory dataContextFactory, CascadingAppSettings appSettings)
+        public PosisjonsRepository(DataContextFactory dataContextFactory, CascadingAppSettings appSettings)
         {
-            _adminRepository = adminRepository;
             _dataContextFactory = dataContextFactory;
             _appSettings = appSettings;
         }
