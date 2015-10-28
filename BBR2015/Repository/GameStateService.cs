@@ -4,15 +4,18 @@ using System.Linq;
 using System.Web.Script.Serialization;
 using Database;
 using Database.Entities;
+using Newtonsoft.Json;
 
 namespace Repository
 {
+    // Registrert som Singleton
     public class GameStateService
     {
         private readonly DataContextFactory _dataContextFactory;
         private readonly CurrentMatchProvider _currentMatchProvider;
 
         private Dictionary<string, GameStateForLag> _gamestates = new Dictionary<string, GameStateForLag>();
+        private ScoreboardState _scoreboard = new ScoreboardState();
 
         public GameStateService(DataContextFactory dataContextFactory, CurrentMatchProvider currentMatchProvider)
         {
@@ -24,8 +27,6 @@ namespace Repository
 
         public void Calculate()
         {
-            var random = new Random();
-
             var matchId = _currentMatchProvider.GetMatchId();
 
             using (var context = _dataContextFactory.Create())
@@ -36,9 +37,18 @@ namespace Repository
                            .OrderByDescending(x => x.PoengSum)
                            .ToArray();
 
-                var poster = (from p in context.PosterIMatch
-                              where p.Match.MatchId == matchId && p.SynligFraUTC < TimeService.Now && TimeService.Now < p.SynligTilUTC
-                              select new TempPost { PostId = p.Post.PostId, Latitude = p.Post.Latitude, Longitude = p.Post.Longitude, CurrentPoengIndex = p.CurrentPoengIndex, PoengArray = p.PoengArray }).ToList();
+                var poster = (from p in context.PosterIMatch.Include(x => x.Post)
+                              where p.Match.MatchId == matchId
+                              select new TempPost
+                              {
+                                  PostId = p.Post.PostId,
+                                  Latitude = p.Post.Latitude,
+                                  Longitude = p.Post.Longitude,
+                                  CurrentPoengIndex = p.CurrentPoengIndex,
+                                  PoengArray = p.PoengArray,
+                                  Navn = p.Post.Navn,
+                                  ErSynlig = p.SynligFraUTC < TimeService.Now && TimeService.Now < p.SynligTilUTC
+                              }).ToList();
 
                 var postRegistreringer = (from l in context.LagIMatch
                                           from p in l.PostRegistreringer
@@ -47,11 +57,13 @@ namespace Repository
                                           {
                                               PostId = p.RegistertPost.Post.PostId,
                                               LagIMatchId = p.RegistertForLag.Id,
-                                              Poeng = p.PoengForRegistrering
+                                              Poeng = p.PoengForRegistrering,
+                                              Deltaker = p.RegistrertAvDeltaker
                                           }).ToList();
 
 
                 var nyGameState = new Dictionary<string, GameStateForLag>();
+                var random = new Random();
 
                 for (int i = 0; i < sorterteLag.Length; i++)
                 {
@@ -73,7 +85,7 @@ namespace Repository
                             PoengBakLagetForan = (plassenForan ?? lag).PoengSum - lag.PoengSum,
                             PoengForanLagetBak = lag.PoengSum - (plassenBak ?? lag).PoengSum,
                         },
-                        Poster = (from p in poster
+                        Poster = (from p in poster.Where(x => x.ErSynlig)
                                   join r in postRegistreringer.Where(x => x.LagIMatchId == lag.Id) on p.PostId equals r.PostId into j
                                   from reg in j.DefaultIfEmpty()
                                   select new GameStatePost
@@ -82,7 +94,7 @@ namespace Repository
                                       Longitude = p.Longitude,
                                       PoengVerdi = reg != null ? reg.Poeng : PostIMatch.BeregnPoengForNesteRegistrering(p.PoengArray, p.CurrentPoengIndex),
                                       HarRegistert = reg != null,
-                                      Rekkefølge = random.Next(0, short.MaxValue)    // order by random                                 
+                                      Rekkefølge = random.Next(0, short.MaxValue) // order by random                                 
                                   }).OrderBy(x => x.Rekkefølge).ToList(),
                         Vaapen = lag.VåpenBeholdning.Select(x => new GameStateVaapen
                         {
@@ -93,18 +105,120 @@ namespace Repository
                     nyGameState.Add(state.LagId, state);
                 }
 
+                var scoreboard = new ScoreboardState();
+                scoreboard.Poster = (from p in poster
+                                     select new ScoreboardPost
+                                     {
+                                         Latitude = p.Latitude,
+                                         Longitude = p.Longitude,
+                                         ErSynlig = p.ErSynlig,
+                                         Navn = p.Navn,
+                                         Verdi = PostIMatch.BeregnPoengForNesteRegistrering(p.PoengArray, p.CurrentPoengIndex),
+                                         AntallRegistreringer = postRegistreringer.Count(x => x.PostId == p.PostId)
+                                     }).OrderBy(x => x.Navn).ToList();
+
+                scoreboard.Lag = sorterteLag.Select(l => new ScoreboardLag
+                {
+                    LagNavn = l.Lag.Navn,
+                    LagFarge = l.Lag.Farge,
+                    LagIkon = l.Lag.Ikon,
+                    Score = l.PoengSum,
+                    Ranking = sorterteLag.Count(x => x.PoengSum > l.PoengSum) + 1,
+                    AntallRegistreringer = postRegistreringer.Count(x => x.LagIMatchId == l.Id)
+                }).ToList();
+
+                var deltakerPoeng = postRegistreringer
+                                        .GroupBy(p => p.Deltaker.DeltakerId)
+                                        .Select(g => new
+                                        {
+                                            DeltakerId = g.Key,
+                                            Navn = g.First().Deltaker.Navn,
+                                            LagIMatchId = g.First().LagIMatchId,
+                                            AntallRegistreringer = g.Count(),
+                                            Poengsum = g.Sum(x => x.Poeng)                                            
+                                        }).ToList();
+
+                scoreboard.Deltakere = (from p in deltakerPoeng
+                                        join l in sorterteLag on p.LagIMatchId equals l.Id
+                                        select new ScoreboardDeltaker
+                                        {
+                                            DeltakerId = p.DeltakerId,
+                                            Navn = p.Navn,
+                                            AntallRegistreringer = p.AntallRegistreringer,
+                                            Score = p.Poengsum,
+                                            LagId = l.Lag.LagId,
+                                            LagFarge = l.Lag.Farge,
+                                            LagIkon = l.Lag.Ikon,
+                                            LagNavn = l.Lag.Navn,
+                                            MostValueablePlayerRanking = deltakerPoeng.Count(x => x.Poengsum > p.Poengsum) + 1
+                                        }).ToList();
+
+
                 // swap current state
                 _gamestates = nyGameState;
+                _scoreboard = scoreboard;
             }
-
         }
 
         public GameStateForLag Get(string lagId)
         {
             return _gamestates[lagId];
         }
+
+        public ScoreboardState GetScoreboard()
+        {
+            return _scoreboard;
+        }
     }
 
+    public class ScoreboardState
+    {
+        public ScoreboardState()
+        {
+            Poster = new List<ScoreboardPost>();
+            Deltakere = new List<ScoreboardDeltaker>();
+            Lag = new List<ScoreboardLag>();
+        }
+        public List<ScoreboardPost> Poster { get; set; }
+        public List<ScoreboardDeltaker> Deltakere { get; set; }
+        public List<ScoreboardLag> Lag { get; set; }
+    }
+
+    public class ScoreboardPost
+    {
+        public string Navn { get; set; }
+        public double Latitude { get; set; }
+
+        public double Longitude { get; set; }
+
+        public int AntallRegistreringer { get; set; }
+
+        public int Verdi { get; set; }
+        public bool ErSynlig { get; set; }
+    }
+
+    public class ScoreboardDeltaker
+    {
+        public string Navn { get; set; }
+        public string DeltakerId { get; set; }
+        public string LagId { get; set; }
+        public string LagNavn { get; set; }
+        public string LagFarge { get; set; }
+        public string LagIkon { get; set; }
+        public int AntallRegistreringer { get; set; }
+        public int Score { get; set; }
+        public int MostValueablePlayerRanking { get; set; }
+    }
+
+    public class ScoreboardLag
+    {
+        public string LagNavn { get; set; }
+        public string LagFarge { get; set; }
+        public string LagIkon { get; set; }
+        public int AntallRegistreringer { get; set; }
+        public int Score { get; set; }
+        public int Ranking { get; set; }
+    }
     public class TempPost
     {
         public Guid PostId { get; set; }
@@ -112,6 +226,11 @@ namespace Repository
         public double Longitude { get; set; }
         public int CurrentPoengIndex { get; set; }
         public string PoengArray { get; set; }
+
+        [ScriptIgnore]
+        public bool ErSynlig { get; set; }
+
+        public string Navn { get; set; }
     }
 
     public class GameStateForLag
@@ -151,7 +270,7 @@ namespace Repository
         public bool HarRegistert { get; set; }
         public int PoengVerdi { get; set; }
 
-        [ScriptIgnore]        
+        [JsonIgnore]
         public int Rekkefølge { get; set; }
     }
 }

@@ -28,7 +28,7 @@ namespace Repository
                 {
                     try
                     {
-                        var lagIMatch = (from lm in context.LagIMatch.Include(x => x.VåpenBeholdning).Include(x => x.Lag)
+                        var lagIMatch = (from lm in context.LagIMatch.Include(x => x.Lag)//.Include(x => x.VåpenBeholdning).Include(x => x.PostRegistreringer)
                                          where lm.Lag.LagId == lagId && lm.Match.MatchId == matchId
                                          select lm).SingleOrDefault();
 
@@ -36,7 +36,7 @@ namespace Repository
                             return;                        
 
                         var post = (from pim in context.PosterIMatch.Include(x => x.Post).Include(x => x.Match)
-                                    where pim.Post.HemmeligKode == postkode && pim.Match.MatchId == lagIMatch.Match.MatchId
+                                    where pim.Post.HemmeligKode == postkode && pim.Match.MatchId == matchId
                                     select pim).SingleOrDefault();
 
                         if (post == null)
@@ -62,7 +62,7 @@ namespace Repository
                                 RegistertTidspunkt = TimeService.Now
                             };
 
-                            lagIMatch.PostRegistreringer.Add(registrering);
+                            context.PostRegisteringer.Add(registrering);
 
                             if (!string.IsNullOrEmpty(bruktVåpen))
                             {

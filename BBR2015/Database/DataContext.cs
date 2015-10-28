@@ -13,10 +13,12 @@ namespace Database
     {
         public DataContext(string connectionString) : base(connectionString)
         {
+            this.Configuration.LazyLoadingEnabled = false;
         }
 
         public DataContext() 
         {
+            this.Configuration.LazyLoadingEnabled = false;
         }
 
         public DbSet<Deltaker> Deltakere { get;set; }

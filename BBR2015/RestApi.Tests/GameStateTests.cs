@@ -9,7 +9,7 @@ using RestApi.Tests.Infrastructure;
 
 namespace RestApi.Tests
 {
-    public class GameServiceTests : BBR2015DatabaseTests
+    public class GameStateTests : BBR2015DatabaseTests
     {
         private IWindsorContainer _container;
         private Gitt _gitt;
@@ -27,7 +27,7 @@ namespace RestApi.Tests
         [Test]
         public void GittMatch_NårEtLagIkkeHarRegistrertNoenPoster_SkalDeIkkeHaNoenPoeng()
         {
-            var match = _gitt.EnMatchMedTreLagOgToPoster();
+            var match = _gitt.EnMatchMedTreLagOgTrePoster();
 
             var lag1 = match.DeltakendeLag.First();
             var gamestateservice = _container.Resolve<GameStateService>();
@@ -41,7 +41,7 @@ namespace RestApi.Tests
         [Test]
         public void GittMatch_NårEttLagStemplerPåEnPost_SkalDeFåPoengIFeed()
         {
-            var match = _gitt.EnMatchMedTreLagOgToPoster();
+            var match = _gitt.EnMatchMedTreLagOgTrePoster();
 
             var lag1 = match.DeltakendeLag.First();
             var deltaker11 = lag1.Lag.Deltakere.First();
@@ -50,7 +50,7 @@ namespace RestApi.Tests
             var gamestateservice = _container.Resolve<GameStateService>();
 
             gameservice.RegistrerNyPost(deltaker11.DeltakerId, lag1.Lag.LagId, "HemmeligKode1", null);
-            
+
             var lag1State = gamestateservice.Get(lag1.Lag.LagId);
 
             Assert.AreEqual(100, lag1State.Score, "Skal ha poeng for 1 stempling");
@@ -60,7 +60,7 @@ namespace RestApi.Tests
         [Test]
         public void GittMatch_NårEttLagStemplerPåEnPostSomIkkeErAktiv_SkalDeIkkeFåPoengIFeed()
         {
-            var match = _gitt.EnMatchMedTreLagOgToPoster();
+            var match = _gitt.EnMatchMedTreLagOgTrePoster();
 
             var lag1 = match.DeltakendeLag.First();
             var deltaker11 = lag1.Lag.Deltakere.First();
@@ -70,14 +70,7 @@ namespace RestApi.Tests
 
             var førstePost = match.Poster.First();
 
-            using (var context = _dataContextFactory.Create())
-            {
-                var postIMatch = context.PosterIMatch.Single(x => x.Id == førstePost.Id);
-
-                postIMatch.SynligFraUTC = new DateTime(2001, 01, 01);
-                postIMatch.SynligTilUTC = new DateTime(2001, 01, 02);
-                context.SaveChanges();
-            }
+            DisablePostIMatch(førstePost);          
 
             gameservice.RegistrerNyPost(deltaker11.DeltakerId, lag1.Lag.LagId, førstePost.Post.HemmeligKode, null);
 
@@ -87,10 +80,43 @@ namespace RestApi.Tests
             Assert.AreEqual(0, lag1State.Poster.Count(x => x.HarRegistert), "Skal ha 1 registrering");
         }
 
+        private void DisablePostIMatch(PostIMatch førstePost)
+        {
+            using (var context = _dataContextFactory.Create())
+            {
+                var postIMatch = context.PosterIMatch
+                                        .Include(x => x.Post)
+                                        .Include(x => x.Match)
+                                        .Single(x => x.Id == førstePost.Id);
+
+                postIMatch.SynligFraUTC = new DateTime(2001, 01, 01);
+                postIMatch.SynligTilUTC = new DateTime(2001, 01, 02);
+                context.SaveChanges();
+            }
+        }
+
+        [Test]
+        public void GittMatch_EnPostSomIkkeErAktiv_SkalIkkeVisesIFeed()
+        {
+            var match = _gitt.EnMatchMedTreLagOgTrePoster();
+            var lag1 = match.DeltakendeLag.First();
+            var gamestateservice = _container.Resolve<GameStateService>();
+
+            var førstePost = match.Poster.First();
+
+            DisablePostIMatch(førstePost);
+
+            gamestateservice.Calculate();
+
+            var lag1State = gamestateservice.Get(lag1.Lag.LagId);
+
+            Assert.AreEqual(2, lag1State.Poster.Count, "Skal bare se to poster (aktive)");
+        }
+
         [Test]
         public void GittMatch_NårEttLagStemplerToGangerPåSammePost_SkalDeBareFåPoengForFørsteStempling()
         {
-            var match = _gitt.EnMatchMedTreLagOgToPoster();
+            var match = _gitt.EnMatchMedTreLagOgTrePoster();
 
             var lag1 = match.DeltakendeLag.First();
             var deltaker11 = lag1.Lag.Deltakere.First();
@@ -110,7 +136,7 @@ namespace RestApi.Tests
         [Test]
         public void GittMatch_NårEttLagStemplerSomAndreLagPåEnPost_SkalDeFåPoengBeregnetForStempling2()
         {
-            var match = _gitt.EnMatchMedTreLagOgToPoster();
+            var match = _gitt.EnMatchMedTreLagOgTrePoster();
 
             var lag1 = match.DeltakendeLag.First();
             var deltaker11 = lag1.Lag.Deltakere.First();
@@ -129,5 +155,7 @@ namespace RestApi.Tests
             Assert.AreEqual(80, lag2State.Score, "Skal ha poeng for 2. stempling");
             Assert.AreEqual(1, lag2State.Poster.Count(x => x.HarRegistert), "Skal ha 1 registrering");
         }
+
+       
     }
 }

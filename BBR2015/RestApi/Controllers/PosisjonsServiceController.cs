@@ -13,7 +13,7 @@ namespace RestApi.Controllers
 {
 
     [EnableCors("*", "*", "*")]
-    [RequireApiKey]
+   
     public class PosisjonsServiceController : BaseController
     {
         private PosisjonsRepository _posisjonsRepository;
@@ -24,6 +24,7 @@ namespace RestApi.Controllers
         }
 
         // GET: api/PosisjonsService
+        [RequireApiKey]
         [ResponseType(typeof (DeltakerPosisjon))]
         public IHttpActionResult Get()
         {
@@ -37,6 +38,7 @@ namespace RestApi.Controllers
             }
         }
 
+        [RequireScoreboardSecret]
         [Route("api/PosisjonsService/Alle")]
         [ResponseType(typeof(List<LagPosisjoner>))]
         public IHttpActionResult GetAlle()
@@ -57,6 +59,7 @@ namespace RestApi.Controllers
 
         // POST: api/PosisjonsService
         [ResponseType(typeof(OkResult))]
+        [RequireApiKey]
         public IHttpActionResult Post([FromBody] Koordinat koordinat)
         {
             try

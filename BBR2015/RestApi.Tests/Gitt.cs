@@ -40,7 +40,7 @@ namespace RestApi.Tests
             }
         }
 
-        public Match EnMatchMedTreLagOgToPoster()
+        public Match EnMatchMedTreLagOgTrePoster()
         {
             using (var context = _dataContextFactory.Create())
             {
@@ -159,7 +159,9 @@ namespace RestApi.Tests
             var lag = new Lag
             {
                 LagId = string.Format("Lag{0}", lagIndex),
-                Navn = string.Format("LagNavn{0}", lagIndex)
+                Navn = string.Format("LagNavn{0}", lagIndex),
+                Farge = string.Format("LagFarge{0}", lagIndex),
+                Ikon = string.Format("LagIkon{0}.gif", lagIndex),
             };
 
             for (int i = 1; i <= antallDeltakere; i++)

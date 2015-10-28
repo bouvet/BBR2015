@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Database.Entities;
@@ -6,22 +7,62 @@ using Database;
 
 namespace Repository
 {
-
-
     public class PosisjonsRepository
     {
         // Registreres som singleton, så dictionary trenger ikke være static (sjekk ut threadsafety, dog)
-        private readonly Dictionary<string, DeltakerPosisjon> GjeldendePosisjon = new Dictionary<string, DeltakerPosisjon>();
+        private ConcurrentDictionary<string, DeltakerPosisjon> _gjeldendePosisjon;
 
         private AdminRepository _adminRepository;
         private DataContextFactory _dataContextFactory;
         private readonly CascadingAppSettings _appSettings;
+
+        private object _lock = new object();
 
         public PosisjonsRepository(AdminRepository adminRepository, DataContextFactory dataContextFactory, CascadingAppSettings appSettings)
         {
             _adminRepository = adminRepository;
             _dataContextFactory = dataContextFactory;
             _appSettings = appSettings;
+        }
+
+        private ConcurrentDictionary<string, DeltakerPosisjon> GjeldendePosisjon
+        {
+            get
+            {
+                if (_gjeldendePosisjon == null)
+                {
+                    lock (_lock)
+                    {
+                        if(_gjeldendePosisjon == null)
+                            _gjeldendePosisjon = HentFraDatabasen();
+                    }
+                }
+
+                return _gjeldendePosisjon;
+                
+            }
+        }
+
+        private ConcurrentDictionary<string, DeltakerPosisjon> HentFraDatabasen()
+        {
+            using (var context = _dataContextFactory.Create())
+            {
+                var sistePosisjoner = from p in context.DeltakerPosisjoner
+                    group p by p.DeltakerId
+                    into g
+                    select g.OrderByDescending(x => x.TidspunktUTC).FirstOrDefault();                      
+
+                var dictionary = sistePosisjoner.ToDictionary(x => x.DeltakerId, siste => new DeltakerPosisjon
+                {
+                    DeltakerId = siste.DeltakerId,
+                    LagId = siste.LagId,
+                    Latitude = siste.Latitude,
+                    Longitude = siste.Longitude,
+                    TidspunktUTC = siste.TidspunktUTC
+                });
+
+                return new ConcurrentDictionary<string, DeltakerPosisjon>(dictionary);
+            }
         }
 
         public DeltakerPosisjon RegistrerPosisjon(string lagId, string deltakerId, double latitude, double longitude)

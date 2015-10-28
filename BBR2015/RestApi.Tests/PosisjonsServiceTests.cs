@@ -28,6 +28,13 @@ namespace RestApi.Tests
             _gitt = new Gitt(_container);
             _dataContextFactory = _container.Resolve<DataContextFactory>();
             TimeService.ResetToRealTime();
+
+            // Slett alle posisjoner (blir rullet tilbake i transaksjon uansett)
+            using (var context = _dataContextFactory.Create())
+            {
+                context.DeltakerPosisjoner.RemoveRange(context.DeltakerPosisjoner);
+                context.SaveChanges();
+            }
         }
 
         [Test]
@@ -108,7 +115,7 @@ namespace RestApi.Tests
 
             using (var context = _dataContextFactory.Create())
             {
-                Assert.AreEqual(2, context.DeltakerPosisjoner.Count(), "Skulle vært 1 posisjon");
+                Assert.AreEqual(2, context.DeltakerPosisjoner.Count(), "Feil antall posisjoner");
             }
         }
 
@@ -193,6 +200,46 @@ namespace RestApi.Tests
             Assert.AreEqual(latitude + 5, pos.Latitude, "Feil lat");
             Assert.AreEqual(longitude + 5, pos.Longitude, "Feil lon");
             Assert.AreEqual(deltaker11.DeltakerId, pos.DeltakerId, "feil deltaker");
+        }
+
+
+        [Test]
+        public void NårApplikasjonenRestartes_SkalSistePosisjonerHentesFraDatabasen()
+        {
+            var givenLag = _gitt.ToLagMedToDeltakere();
+
+            var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
+
+            var latitude = 59.6785526164;
+            var longitude = 10.6039274298;
+
+            foreach (var lag in givenLag)
+            {
+                foreach (var deltaker in lag.Deltakere)
+                {
+                    posisjonsSevice.RegistrerPosisjon(deltaker.Lag.LagId, deltaker.DeltakerId, latitude, longitude);
+                    TimeService.AddSeconds(200);
+                    posisjonsSevice.RegistrerPosisjon(deltaker.Lag.LagId, deltaker.DeltakerId, latitude + 5, longitude + 5);
+                }
+            }
+
+           
+            // Lag ny container for å simulere restart
+            _container = RestApiApplication.CreateContainer();
+
+            var posisjonService = _container.Resolve<PosisjonsRepository>();
+
+            var posisjonForLag1 = posisjonService.HentforLag(givenLag[0].LagId);
+            Assert.AreEqual(2, posisjonForLag1.Posisjoner.Count, "Feil antall posisjoner etter restart - lag1");
+
+            var posisjonForLag2 = posisjonService.HentforLag(givenLag[1].LagId);
+            Assert.AreEqual(2, posisjonForLag2.Posisjoner.Count, "Feil antall posisjoner etter restart - lag2");
+
+            var posisjon = posisjonForLag1.Posisjoner[0];
+
+            Assert.AreEqual(latitude + 5, posisjon.Latitude, "Latitude");
+            Assert.AreEqual(longitude + 5, posisjon.Longitude, "Longitude");
+
         }
     }
 }
