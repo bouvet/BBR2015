@@ -37,9 +37,9 @@ namespace Database
                 if (alleLag.Count > 0)
                     return;
 
-                var bombe = new Vaapen { VaapenId = "BOMBE", Beskrivelse = "Sprenger posten for en tid" };
+                var bombe = new Vaapen { VaapenId = Constants.Våpen.Bombe, Beskrivelse = "Sprenger posten for en tid" };
                 context.Våpen.Add(bombe);
-                var felle = new Vaapen { VaapenId = "FELLE", Beskrivelse = "Sprenger posten ved neste stempling. Laget som stempler får ikke poeng." };
+                var felle = new Vaapen { VaapenId = Constants.Våpen.Felle, Beskrivelse = "Sprenger posten ved neste stempling. Laget som stempler får ikke poeng." };
                 context.Våpen.Add(felle);
 
                 var bbr1 = new Lag(Konstanter.Lag1.Id, "BBR #1", "00FF00", "abc1.gif");
@@ -69,9 +69,6 @@ namespace Database
                     SluttUTC = new DateTime(2015, 11, 01)
                 };
 
-                match.DeltakendeLag = new List<LagIMatch>();
-                match.Poster = new List<PostIMatch>();
-
                 foreach (var lag in new []{bbr1, bbr2, bbr3})
                 {
                     var lagIMatch = new LagIMatch
@@ -85,12 +82,8 @@ namespace Database
                     lagIMatch.VåpenBeholdning = new List<VaapenBeholdning>();
                     lagIMatch.VåpenBeholdning.Add(new VaapenBeholdning { LagIMatch = lagIMatch, Våpen = felle });
                     lagIMatch.VåpenBeholdning.Add(new VaapenBeholdning { LagIMatch = lagIMatch, Våpen = bombe });
-                    lagIMatch.VåpenBeholdning.Add(new VaapenBeholdning { LagIMatch = lagIMatch, Våpen = bombe });
-
-
-
+                    lagIMatch.VåpenBeholdning.Add(new VaapenBeholdning { LagIMatch = lagIMatch, Våpen = bombe });                    
                 }
-
 
                 context.Matcher.Add(match);
 

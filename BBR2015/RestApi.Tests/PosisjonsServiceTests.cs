@@ -13,7 +13,7 @@ namespace RestApi.Tests
     public class PosisjonsServiceTests : BBR2015DatabaseTests
     {
         private IWindsorContainer _container;
-        private Given _given;
+        private Gitt _gitt;
         private DataContextFactory _dataContextFactory;
         private CascadingAppSettings _appSettings;
        
@@ -25,7 +25,7 @@ namespace RestApi.Tests
             _appSettings = new CascadingAppSettings();
             _container.Register(Component.For<CascadingAppSettings>().Instance(_appSettings).IsDefault().Named(Guid.NewGuid().ToString()));
 
-            _given = new Given(_container);
+            _gitt = new Gitt(_container);
             _dataContextFactory = _container.Resolve<DataContextFactory>();
             TimeService.ResetToRealTime();
         }
@@ -33,7 +33,7 @@ namespace RestApi.Tests
         [Test]
         public void NårEnDeltakerPosterEnPosisjon_SkalPosisjonenLagresIDatabasen()
         {
-            var givenLag = _given.ATwoTeamWithTwoPlayers();
+            var givenLag = _gitt.ToLagMedToDeltakere();
 
             var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
 
@@ -52,7 +52,7 @@ namespace RestApi.Tests
         [Test]
         public void NårEnDeltakerPosterSammePosisjonToGanger_SkalPosisjonenLagresIDatabasenBareEnGang()
         {
-            var given = _given.ATwoTeamWithTwoPlayers();
+            var given = _gitt.ToLagMedToDeltakere();
 
             var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
 
@@ -73,7 +73,7 @@ namespace RestApi.Tests
         [Test]
         public void NårEnDeltakerPosterNyPosisjonToGangerMenForTettITid_SkalPosisjonenLagresIDatabasenBareEnGang()
         {
-            var given = _given.ATwoTeamWithTwoPlayers();
+            var given = _gitt.ToLagMedToDeltakere();
 
             var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
 
@@ -94,7 +94,7 @@ namespace RestApi.Tests
         [Test]
         public void NårEnDeltakerPosterNyPosisjonToGangerMedGodTidMellom_SkalPosisjonenLagresIDatabasenToGanger()
         {
-            var given = _given.ATwoTeamWithTwoPlayers();
+            var given = _gitt.ToLagMedToDeltakere();
 
             var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
 
@@ -117,7 +117,7 @@ namespace RestApi.Tests
             GittAtAlleDeltakereHarRegistertPosisjoner_NårEnHenterPosisjonerForLag_SkalBareSistePosisjonerForHvertLagReturneres
             ()
         {
-            var givenLag = _given.ATwoTeamWithTwoPlayers();
+            var givenLag = _gitt.ToLagMedToDeltakere();
 
             var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
 
@@ -146,7 +146,7 @@ namespace RestApi.Tests
             GittAtAlleDeltakereHarRegistertPosisjoner_NårScoreboardHenterPosisjonerForAlleLag_SkalSistePosisjonerForDeltakerePåBeggeLagReturneres
             ()
         {
-            var givenLag = _given.ATwoTeamWithTwoPlayers();
+            var givenLag = _gitt.ToLagMedToDeltakere();
 
             var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
 
@@ -174,7 +174,7 @@ namespace RestApi.Tests
         [Test]
         public void NårEnDeltakerPosterNyPosisjonToGangerMedGodTidMellom_SkalSistePosisjonReturneresViaService()
         {
-            var given = _given.ATwoTeamWithTwoPlayers();
+            var given = _gitt.ToLagMedToDeltakere();
 
             var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
 

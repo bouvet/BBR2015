@@ -5,28 +5,28 @@ namespace Database
 {
     public static class TimeService
     {
-        public static Func<DateTime> GetUtcNow = () => DateTime.UtcNow;
+        public static Func<DateTime> GetNow = () => DateTime.UtcNow;
 
         public static void ResetToRealTime()
         {
-            GetUtcNow = () => DateTime.UtcNow;
+            GetNow = () => DateTime.UtcNow;
         }
 
-        public static DateTime UtcNow
+        public static DateTime Now
         {
             get
             {
-                return GetUtcNow();
+                return GetNow();
             }
             set
             {
-                GetUtcNow = () => value;
+                GetNow = () => value;
             }
         }
 
         public static void AddSeconds(int seconds)
         {
-            UtcNow = UtcNow.AddSeconds(seconds);
+            Now = Now.AddSeconds(seconds);
         }
     }
 }

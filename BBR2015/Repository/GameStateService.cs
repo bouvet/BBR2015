@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Script.Serialization;
 using Database;
 using Database.Entities;
 
@@ -23,8 +24,10 @@ namespace Repository
 
         public void Calculate()
         {
+            var random = new Random();
+
             var matchId = _currentMatchProvider.GetMatchId();
-            
+
             using (var context = _dataContextFactory.Create())
             {
                 var sorterteLag =
@@ -33,21 +36,20 @@ namespace Repository
                            .OrderByDescending(x => x.PoengSum)
                            .ToArray();
 
-                //TODO: Trengs kanskje et slags postnummer for referanse/presentasjon i runden. F.eks. "Post 1"
                 var poster = (from p in context.PosterIMatch
-                              where p.Match.MatchId == matchId && p.SynligFraUTC < TimeService.UtcNow && TimeService.UtcNow < p.SynligTilUTC
-                    select new TempPost { PostId = p.Post.PostId, Latitude = p.Post.Latitude, Longitude = p.Post.Longitude, CurrentPoengIndex = p.CurrentPoengIndex, PoengArray = p.PoengArray}).ToList();
+                              where p.Match.MatchId == matchId && p.SynligFraUTC < TimeService.Now && TimeService.Now < p.SynligTilUTC
+                              select new TempPost { PostId = p.Post.PostId, Latitude = p.Post.Latitude, Longitude = p.Post.Longitude, CurrentPoengIndex = p.CurrentPoengIndex, PoengArray = p.PoengArray }).ToList();
 
                 var postRegistreringer = (from l in context.LagIMatch
-                                        from p in l.PostRegistreringer
-                                        where l.Match.MatchId == matchId
-                                        select new
-                                        {
-                                            PostId = p.RegistertPost.Post.PostId,
-                                            LagIMatchId = p.RegistertForLag.Id,
-                                            Poeng = p.PoengForRegistrering
-                                        }).ToList();
- 
+                                          from p in l.PostRegistreringer
+                                          where l.Match.MatchId == matchId
+                                          select new
+                                          {
+                                              PostId = p.RegistertPost.Post.PostId,
+                                              LagIMatchId = p.RegistertForLag.Id,
+                                              Poeng = p.PoengForRegistrering
+                                          }).ToList();
+
 
                 var nyGameState = new Dictionary<string, GameStateForLag>();
 
@@ -72,16 +74,16 @@ namespace Repository
                             PoengForanLagetBak = lag.PoengSum - (plassenBak ?? lag).PoengSum,
                         },
                         Poster = (from p in poster
-                                 join r in postRegistreringer.Where(x => x.LagIMatchId == lag.Id) on p.PostId equals r.PostId into j
-                                 from reg in j.DefaultIfEmpty()
-                                 select new GameStatePost
-                                 {
-                                     Latitude = p.Latitude,
-                                     Longitude = p.Longitude,
-                                     PoengVerdi = reg != null ? reg.Poeng : PostIMatch.SplitOgParse(p.PoengArray)[p.CurrentPoengIndex] ,
-                                     HarRegistert = reg != null
-                                     
-                                 }).ToList(),
+                                  join r in postRegistreringer.Where(x => x.LagIMatchId == lag.Id) on p.PostId equals r.PostId into j
+                                  from reg in j.DefaultIfEmpty()
+                                  select new GameStatePost
+                                  {
+                                      Latitude = p.Latitude,
+                                      Longitude = p.Longitude,
+                                      PoengVerdi = reg != null ? reg.Poeng : PostIMatch.BeregnPoengForNesteRegistrering(p.PoengArray, p.CurrentPoengIndex),
+                                      HarRegistert = reg != null,
+                                      Rekkefølge = random.Next(0, short.MaxValue)    // order by random                                 
+                                  }).OrderBy(x => x.Rekkefølge).ToList(),
                         Vaapen = lag.VåpenBeholdning.Select(x => new GameStateVaapen
                         {
                             VaapenId = x.VaapenId
@@ -91,7 +93,7 @@ namespace Repository
                     nyGameState.Add(state.LagId, state);
                 }
 
-                // Swap
+                // swap current state
                 _gamestates = nyGameState;
             }
 
@@ -143,9 +145,13 @@ namespace Repository
 
     public class GameStatePost
     {
+        // NB: IKKE gi ut postnr. Lagene må finne en egen måte å referere postene på. Gjerne miks rekkefølgen på dem i retur.
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public bool HarRegistert { get; set; }
         public int PoengVerdi { get; set; }
+
+        [ScriptIgnore]        
+        public int Rekkefølge { get; set; }
     }
 }

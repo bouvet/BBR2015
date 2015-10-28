@@ -35,8 +35,8 @@ namespace Repository
             {
                 var melding = new Melding(deltaker.DeltakerId, lag.LagId, meldingstekst)
                 {
-                    SekvensId = TimeService.UtcNow.Ticks,
-                    TidspunktUTC = TimeService.UtcNow
+                    SekvensId = TimeService.Now.Ticks,
+                    TidspunktUTC = TimeService.Now
                 };
                 context.Meldinger.Add(melding);
 

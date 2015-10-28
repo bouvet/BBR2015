@@ -2,7 +2,6 @@
 using Database.Entities;
 using Database;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Repository
 {
@@ -60,7 +59,7 @@ namespace Repository
                                 RegistrertAvDeltaker = deltaker,
                                 RegistertPost = post,
                                 BruktVaapenId = bruktVåpen,
-                                RegistertTidspunkt = TimeService.UtcNow
+                                RegistertTidspunkt = TimeService.Now
                             };
 
                             lagIMatch.PostRegistreringer.Add(registrering);

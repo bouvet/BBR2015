@@ -29,15 +29,9 @@ namespace Database.Entities
         public bool ErSynlig 
         { get
             {
-                return SynligFraUTC < TimeService.UtcNow && TimeService.UtcNow < SynligTilUTC;
+                return SynligFraUTC < TimeService.Now && TimeService.Now < SynligTilUTC;
             }
         }
-
-        public int[] GetPoengArray()
-        {
-            return SplitOgParse(PoengArray);
-        }
-
         public static int[] SplitOgParse(string poengArray)
         {
             return poengArray.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
@@ -47,10 +41,20 @@ namespace Database.Entities
 
         public int HentPoengOgInkrementerIndex()
         {
-            var poeng = GetPoengArray()[CurrentPoengIndex];
+            var poeng = BeregnPoengForNesteRegistrering(PoengArray, CurrentPoengIndex);
             CurrentPoengIndex++;
 
             return poeng;
+        }
+
+        public static int BeregnPoengForNesteRegistrering(string poengArray, int currentIndex)
+        {
+            var poengListe = SplitOgParse(poengArray);
+            var index = currentIndex;
+            if (currentIndex > poengListe.Length - 1)
+                index = poengListe.Length - 1;
+
+            return poengListe[index];
         }
     }
 }

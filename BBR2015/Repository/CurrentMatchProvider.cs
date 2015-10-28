@@ -18,7 +18,7 @@ namespace Repository
             _dataContextFactory = dataContextFactory;
         }
 
-        public Guid GetMatchId()
+        public virtual Guid GetMatchId()
         {
             if (HttpContext.Current != null)
             {
@@ -29,10 +29,10 @@ namespace Repository
                     return new Guid(matchIdHeader);
             }
 
-            if (_lastWriteTime.AddSeconds(CacheSeconds) < TimeService.UtcNow)
+            if (_lastWriteTime.AddSeconds(CacheSeconds) < TimeService.Now)
             {
                 _cachedMatchId = ReadFromDatabase();
-                _lastWriteTime = TimeService.UtcNow;
+                _lastWriteTime = TimeService.Now;
             }
 
             return _cachedMatchId;
@@ -43,7 +43,7 @@ namespace Repository
             using (var context = _dataContextFactory.Create())
             {
                 return (from m in context.Matcher
-                    where m.StartUTC < TimeService.UtcNow && TimeService.UtcNow < m.SluttUTC
+                    where m.StartUTC < TimeService.Now && TimeService.Now < m.SluttUTC
                     select m.MatchId).Single();
             }
         }

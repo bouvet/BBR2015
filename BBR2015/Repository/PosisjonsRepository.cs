@@ -32,7 +32,7 @@ namespace Repository
                 LagId = lagId,
                 Latitude = latitude,
                 Longitude = longitude,
-                TidspunktUTC = TimeService.UtcNow
+                TidspunktUTC = TimeService.Now
             };
 
             LagrePosisjonTilDatabasen(deltakerPosisjon);

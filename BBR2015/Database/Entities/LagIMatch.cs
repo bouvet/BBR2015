@@ -25,5 +25,10 @@ namespace Database.Entities
 
         public virtual List<VaapenBeholdning> VåpenBeholdning { get; set; }
 
+        public LagIMatch()
+        {
+            VåpenBeholdning = new List<VaapenBeholdning>();
+        }
+
     }
 }

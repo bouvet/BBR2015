@@ -9,6 +9,12 @@ namespace Database
             public const string Oscarsborg = "Oscarsborg";
             public const string OscarsborgFredag= "OscarsborgFredag";
         }
-   }
+
+        public class Våpen
+        {
+            public const string Felle = "FELLE";
+            public const string Bombe = "BOMBE";
+        }
+    }
 
 }

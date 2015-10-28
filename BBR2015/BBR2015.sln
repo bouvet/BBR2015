@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestApi", "RestApi\RestApi.csproj", "{07E7C0B9-D40A-4F2F-A09A-9FE08387F9EC}"
 EndProject
@@ -17,8 +17,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configurations", "Configura
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{5E451FAB-9360-4AA2-B1E2-35952A27E6CE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Verktøy", "Verktøy\Verktøy.csproj", "{3B7BEF46-CA3B-4AF1-9DDA-849422EECAF1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "Database\Database.csproj", "{25354916-3F7A-4903-A70F-DFFFDD71F4C0}"
 EndProject
@@ -40,10 +38,6 @@ Global
 		{5E451FAB-9360-4AA2-B1E2-35952A27E6CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E451FAB-9360-4AA2-B1E2-35952A27E6CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E451FAB-9360-4AA2-B1E2-35952A27E6CE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3B7BEF46-CA3B-4AF1-9DDA-849422EECAF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3B7BEF46-CA3B-4AF1-9DDA-849422EECAF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3B7BEF46-CA3B-4AF1-9DDA-849422EECAF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3B7BEF46-CA3B-4AF1-9DDA-849422EECAF1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{25354916-3F7A-4903-A70F-DFFFDD71F4C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{25354916-3F7A-4903-A70F-DFFFDD71F4C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25354916-3F7A-4903-A70F-DFFFDD71F4C0}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -19,5 +19,16 @@ namespace Database.Entities
         public virtual List<LagIMatch> DeltakendeLag { get; set; }
 
         public virtual List<PostIMatch> Poster { get; set; }
+
+        public Match()
+        {
+            DeltakendeLag = new List<LagIMatch>();
+            Poster = new List<PostIMatch>();
+        }
+
+        public void LeggTil(LagIMatch lag)
+        {
+            DeltakendeLag.Add(lag);
+        }
     }
 }

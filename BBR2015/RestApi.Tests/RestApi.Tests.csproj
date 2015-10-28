@@ -98,10 +98,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameServiceTests.cs" />
-    <Compile Include="Given.cs" />
+    <Compile Include="Gitt.cs" />
     <Compile Include="Infrastructure\BBR2015DatabaseTests.cs" />
     <Compile Include="Infrastructure\TestsInTransactionScope.cs" />
     <Compile Include="MeldingRepositoryTests.cs" />
+    <Compile Include="PoengBeregningTests.cs" />
     <Compile Include="PosisjonsServiceTests.cs" />
     <Compile Include="PostFactoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
