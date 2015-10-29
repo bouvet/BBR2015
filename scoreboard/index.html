@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bouvet Battle Royale Dashboard</title>
+  <meta charset="utf-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
+  <script src="/bower_components/angular/angular.js"></script>
+  <script src="/bower_components/leaflet/dist/leaflet.js"></script>
+  <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
+
+
+
+  <script src="/js/app.js"></script>
+  <link rel="stylesheet" href="css.css" />
+</head>
+<body ng-app="scoreboard">
+  <script src="/bower_components/leaflet/dist/leaflet.css"></script>
+
+  <div class="content" ng-controller="scoreboardController">
+    <div class="left">
+      <div class="mvpliste">
+        <h3>MVP:</h3>
+        <table>
+          <thead>
+            <th>#</th>
+            <th>Poeng</th>
+            <th>Lag</th>
+            <th>Deltaker<th>
+          </thead>
+          <tbody>
+            <tr ng-repeat="deltaker in deltakerliste | orderBy:mostValueablePlayerRanking track by deltaker.deltakerId" 
+              ng-style="{'background-color': '#' + deltaker.lagFarge }">
+              <td>{{ deltaker.mostValueablePlayerRanking }}</td>
+              <td>{{ deltaker.score }}</td>
+              <td>{{ deltaker.lagNavn }}</td>
+              <td>{{ deltaker.navn }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="toppliste">
+        <h3>Resultater:</h3>
+        <table>
+          <thead>
+            <th>#</th>
+            <th>Lag</th>
+            <th>Antall poster</th>
+            <th>Poeng</th>
+          </thead>
+          <tbody>
+            <tr ng-repeat="lag in lagliste | orderBy:ranking track by lag.lagNavn" 
+              ng-style="{'background-color': '#' + lag.lagFarge }">
+              <td>{{ lag.ranking }}</td>
+              <td>{{ lag.lagNavn }}</td>
+              <td>{{ lag.antallRegistreringer }}</td>
+              <td>{{ lag.score }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="right">
+      <div id="map"></div>
+    </div>
+  </div>
+</body>
+</html>

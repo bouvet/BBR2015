@@ -60,8 +60,9 @@
   var map;
   var spillerMarkers = new Map();
   var poster = [];
+  var meldingsSekvens = 0;
 
-  var baseUrl = "https://bbr2015test.azurewebsites.net/api/"
+  var baseUrl = "https://bbr2015test.azurewebsites.net/api/";
 
 
 
@@ -118,13 +119,13 @@
 
 
   var createHeader = function () {
-    var lagId = $('#lagId').value();
-    var deltakerId = $('#deltakerId').value();
+    var lagId = $('#lagId').val();
+    var deltakerId = $('#deltakerId').val();
     headers = {
-        'LagId': lagId,
-        'DeltakerId': deltakerId
-      };
-
+        "LagId": $('#lagId').val(),
+        "DeltakerId": $('#deltakerId').val()
+    };
+    console.log(headers);
     return headers;
   };
 
@@ -133,10 +134,7 @@
       type: "POST",
       url: baseUrl + 'Meldinger', 
       headers:     
-      {
-        "LagId": "BBR1",
-        "DeltakerId": "BBR1-A"
-      },
+      createHeader(),
       data: {
         "tekst": melding
       }
@@ -146,20 +144,18 @@
   var hentMeldinger = function () {
     $.ajax({
       type: "GET",
-      url: baseUrl + 'Meldinger', 
-      headers:     
-      {
-        "LagId": "BBR1",
-        "DeltakerId": "BBR1-A"
-      }
+      url: baseUrl + 'Meldinger/' + meldingsSekvens, 
+      headers: createHeader()
     }).done(visMeldinger);
   };
 
   var visMeldinger = function(data) {
+    data.meldinger.reverse();
     data.meldinger.forEach(function(melding) {
       console.log("legger til melding");
       console.log(melding);
-      $("#messages").append(
+      meldingsSekvens = Math.max(meldingsSekvens, melding.sekvens);
+      $("#messages").prepend(
         "<li class='melding'>" +
         "<div class='sender'>" + melding.deltaker + "</div>" +
         "<div class='beskjed'>" + melding.melding + "</div>" +
@@ -169,7 +165,7 @@
   };
 
   var createMapMarkerFromPlayer = function(player) {
-    var myLatlng = new google.maps.LatLng(player.koordinat.latitude, player.koordinat.longitude);
+    var myLatlng = new google.maps.LatLng(player.latitude, player.longitude);
     // To add the marker to the map, use the 'map' property
     var marker = new google.maps.Marker({
         position: myLatlng,
@@ -194,16 +190,16 @@
         data.forEach(function(player) {
         console.log(player);
         var spillerMaker;
-        if (spillerMarkers.get(player.deltaker.deltakerId) === undefined) {
+        if (spillerMarkers.get(player.deltakerId) === undefined) {
           console.log("Tegner ny spiller på kartet");
-          spillerMarker = spillerMarkers.get(player.deltaker.deltakerId);
+          spillerMarker = spillerMarkers.get(player.deltakerId);
           var marker = createMapMarkerFromPlayer(player);
-          spillerMarkers.set(player.deltaker.deltakerId, marker);
+          spillerMarkers.set(player.deltakerId, marker);
         } else {
           console.log("Oppdaterer posisjon på spiller");
-          spillerMarker = spillerMarkers.get(player.deltaker.deltakerId);
+          spillerMarker = spillerMarkers.get(player.deltakerId);
           console.log(spillerMaker);
-          spillerMarker.setPosition(new google.maps.LatLng(player.koordinat.latitude, player.koordinat.longitude));
+          spillerMarker.setPosition(new google.maps.LatLng(player.latitude, player.longitude));
         }
       });
     };
@@ -214,15 +210,20 @@
       function success(position) {
          var lat = position.coords.latitude;
          var lon = position.coords.longitude;
+         var data = JSON.stringify({
+            "latitude": lat, 
+            "longitude": lon
+          });
        
         $.ajax({
           type: "POST",
           url: baseUrl + 'PosisjonsService',
-          headers: createHeader(),
-          data: JSON.stringify({
-            "latitude": lat, 
-            "longitude": lon
-          })
+          headers: {
+            "LagId": $('#lagId').val(),
+            "DeltakerId": $('#deltakerId').val(),
+            "Content-Type": "application/json"
+          },
+          data: data
         }).success(console.log("Posisjon sendt"));
       }
     };

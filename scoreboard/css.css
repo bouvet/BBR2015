@@ -1,0 +1,56 @@
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  padding: 32px 30px;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.content {
+  height: 100%;
+  width: 100%;
+}
+
+.left {
+  height: 100%;
+  width: 30%;
+  float: left;
+}
+
+.left .mvpliste {
+  height: 50%;
+  width: 100%;
+}
+
+.left .toppliste {
+  height: 100%;
+  width: 100%;
+}
+
+.right {
+  height: 100%;
+  width: 70%;
+  float: left;
+}
+
+.right #map {
+  height: 100%;
+  width: 100%;
+}
+
+h3 {
+  width: 100%;
+  text-align: center;
+}
+
+table {
+  width: 100%;
+}
+
+table td {
+  text-align: center;
+}
