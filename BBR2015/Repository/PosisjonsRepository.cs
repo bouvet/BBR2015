@@ -11,6 +11,7 @@ namespace Repository
     {
         // Registreres som singleton, så dictionary trenger ikke være static (sjekk ut threadsafety, dog)
         private ConcurrentDictionary<string, DeltakerPosisjon> _gjeldendePosisjon;
+        private ConcurrentDictionary<string, DeltakerPosisjon> _lagretPosisjon;
 
         private DataContextFactory _dataContextFactory;
         private readonly CascadingAppSettings _appSettings;
@@ -27,7 +28,7 @@ namespace Repository
         {
             get
             {
-                if (_gjeldendePosisjon == null)
+                if(_gjeldendePosisjon == null)
                 {
                     lock (_lock)
                     {
@@ -37,7 +38,25 @@ namespace Repository
                 }
 
                 return _gjeldendePosisjon;
-                
+
+            }
+        }
+
+        private ConcurrentDictionary<string, DeltakerPosisjon> LagretPosisjon
+        {
+            get
+            {
+                if(_lagretPosisjon == null)
+                {
+                    lock (_lock)
+                    {
+                        if(_lagretPosisjon == null)
+                            _lagretPosisjon = HentFraDatabasen();
+                    }
+                }
+
+                return _lagretPosisjon;
+
             }
         }
 
@@ -82,8 +101,8 @@ namespace Repository
 
         private void LagrePosisjonTilDatabasen(DeltakerPosisjon posisjon)
         {
-            if (GjeldendePosisjon.ContainsKey(posisjon.DeltakerId) &&
-                ErForKortEllerHyppig(GjeldendePosisjon[posisjon.DeltakerId], posisjon))
+            if (LagretPosisjon.ContainsKey(posisjon.DeltakerId) &&
+                ErForKortEllerHyppig(LagretPosisjon[posisjon.DeltakerId], posisjon))
                 return;
 
             using (var context = _dataContextFactory.Create())
