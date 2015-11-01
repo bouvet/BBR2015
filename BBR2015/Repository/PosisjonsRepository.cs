@@ -110,6 +110,7 @@ namespace Repository
                 context.DeltakerPosisjoner.Add(posisjon);
                 context.SaveChanges();
             }
+            LagretPosisjon[posisjon.DeltakerId] = posisjon;
         }
 
         private bool ErForKortEllerHyppig(DeltakerPosisjon forrige, DeltakerPosisjon posisjon)
