@@ -97,6 +97,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Admin\Oppsett.cs" />
     <Compile Include="GameStateTests.cs" />
     <Compile Include="Gitt.cs" />
     <Compile Include="Infrastructure\BBR2015DatabaseTests.cs" />

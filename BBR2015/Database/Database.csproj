@@ -59,6 +59,7 @@
     <Compile Include="CascadingAppSettings.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DataContext.cs" />
+    <Compile Include="DataContextExtensions.cs" />
     <Compile Include="DataContextFactory.cs" />
     <Compile Include="Entities\Deltaker.cs" />
     <Compile Include="Entities\DeltakerPosisjon.cs" />

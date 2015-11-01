@@ -106,12 +106,14 @@ namespace Repository
                 ErForKortEllerHyppig(LagretPosisjon[posisjon.DeltakerId], posisjon))
                 return;
 
+            // Oppdater før skriving til databasen - eventual consistent, men strammer inn mulighenten for å smette forbi under lagring
+            LagretPosisjon[posisjon.DeltakerId] = posisjon;
+
             using (var context = _dataContextFactory.Create())
             {
                 context.DeltakerPosisjoner.Add(posisjon);
                 context.SaveChanges();
-            }
-            LagretPosisjon[posisjon.DeltakerId] = posisjon;
+            }            
         }
 
         private bool ErForKortEllerHyppig(DeltakerPosisjon forrige, DeltakerPosisjon posisjon)
