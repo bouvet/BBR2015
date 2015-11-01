@@ -13,10 +13,11 @@ namespace Repository
         private ConcurrentDictionary<string, DeltakerPosisjon> _gjeldendePosisjon;
         private ConcurrentDictionary<string, DeltakerPosisjon> _lagretPosisjon;
 
-        private DataContextFactory _dataContextFactory;
+        private readonly DataContextFactory _dataContextFactory;
         private readonly CascadingAppSettings _appSettings;
 
-        private object _lock = new object();
+        private readonly object _lockGjeldende = new object();
+        private readonly object _lockLagret = new object();
 
         public PosisjonsRepository(DataContextFactory dataContextFactory, CascadingAppSettings appSettings)
         {
@@ -30,7 +31,7 @@ namespace Repository
             {
                 if(_gjeldendePosisjon == null)
                 {
-                    lock (_lock)
+                    lock (_lockGjeldende)
                     {
                         if(_gjeldendePosisjon == null)
                             _gjeldendePosisjon = HentFraDatabasen();
@@ -48,7 +49,7 @@ namespace Repository
             {
                 if(_lagretPosisjon == null)
                 {
-                    lock (_lock)
+                    lock (_lockLagret)
                     {
                         if(_lagretPosisjon == null)
                             _lagretPosisjon = HentFraDatabasen();
@@ -118,8 +119,10 @@ namespace Repository
             var avstandIMeter = DistanseKalkulator.MeterMellom(forrige.Latitude, forrige.Longitude, posisjon.Latitude, posisjon.Longitude);
             var avstandISekunder = posisjon.TidspunktUTC.Subtract(forrige.TidspunktUTC).TotalSeconds;
 
-            // Forkast for små forflytninger eller for tette rapporteringer
-            return avstandIMeter < 5 || avstandISekunder < 10;
+            if (avstandISekunder < 10)
+                return true;
+            
+            return avstandIMeter < 5;
         }
 
         public LagPosisjoner HentforLag(string lagId)
