@@ -5,11 +5,11 @@ namespace Database
 {
     public static class TimeService
     {
-        public static Func<DateTime> GetNow = () => DateTime.UtcNow;
+        public static Func<DateTime> GetNow = () => DateTime.Now;
 
         public static void ResetToRealTime()
         {
-            GetNow = () => DateTime.UtcNow;
+            GetNow = () => DateTime.Now;
         }
 
         public static DateTime Now

@@ -30,5 +30,12 @@ namespace Database.Entities
             VåpenBeholdning = new List<VaapenBeholdning>();
         }
 
+        public void LeggTilVåpen(Vaapen våpen)
+        {
+            if(VåpenBeholdning == null)
+                VåpenBeholdning = new List<VaapenBeholdning>();
+
+            VåpenBeholdning.Add(new VaapenBeholdning{LagIMatch = this, Våpen = våpen});
+        }
     }
 }

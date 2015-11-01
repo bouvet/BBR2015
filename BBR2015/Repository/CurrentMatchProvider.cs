@@ -43,7 +43,7 @@ namespace Repository
             using (var context = _dataContextFactory.Create())
             {
                 return (from m in context.Matcher
-                    where m.StartUTC < TimeService.Now && TimeService.Now < m.SluttUTC
+                    where m.StartTid < TimeService.Now && TimeService.Now < m.SluttTid
                     select m.MatchId).Single();
             }
         }

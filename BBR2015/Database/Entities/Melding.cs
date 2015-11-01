@@ -31,7 +31,7 @@ namespace Database.Entities
         [Required]
         public long SekvensId { get; set; }
 
-        public DateTime TidspunktUTC { get; set; }
+        public DateTime Tidspunkt { get; set; }
 
         [MaxLength(256)]
         public string Tekst { get; private set; }

@@ -63,7 +63,7 @@ namespace RestApi.Controllers
                 var meldinger = rawData.Select(m => new
                 {
                     Sekvens = m.SekvensId,
-                    TidspunktUtc = m.TidspunktUTC,
+                    TidspunktUtc = m.Tidspunkt,
                     Deltaker = m.DeltakerId,
                     Melding = m.Tekst
                 }).OrderByDescending(m => m.Sekvens);

@@ -56,6 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BBRConnectionFactory.cs" />
     <Compile Include="CascadingAppSettings.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DataContext.cs" />
@@ -78,6 +79,14 @@
     <Compile Include="Migrations\201510151330200_Create_Database.Designer.cs">
       <DependentUpon>201510151330200_Create_Database.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201511011959257_FraUtcTilLokaltid.cs" />
+    <Compile Include="Migrations\201511011959257_FraUtcTilLokaltid.Designer.cs">
+      <DependentUpon>201511011959257_FraUtcTilLokaltid.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511012025127_Lag_HemmeligKode.cs" />
+    <Compile Include="Migrations\201511012025127_Lag_HemmeligKode.Designer.cs">
+      <DependentUpon>201511012025127_Lag_HemmeligKode.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="DbQueryExtensions.cs" />
     <Compile Include="PostFactory.cs" />
@@ -85,6 +94,12 @@
     <Compile Include="TimeService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Migrations\201511011959257_FraUtcTilLokaltid.resx">
+      <DependentUpon>201511011959257_FraUtcTilLokaltid.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511012025127_Lag_HemmeligKode.resx">
+      <DependentUpon>201511012025127_Lag_HemmeligKode.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="App.config" />
     <None Include="Entities\ClassDiagram1.cd" />
     <None Include="ImportData\Myrens\koder.json" />

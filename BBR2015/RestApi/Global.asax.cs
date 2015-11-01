@@ -28,8 +28,8 @@ namespace RestApi
 
             ServiceLocator.Current = _container;
 
-            var initialDataCreator = _container.Resolve<InitialDataCreator>();
-            initialDataCreator.FyllDatabasen();
+            //var initialDataCreator = _container.Resolve<InitialDataCreator>();
+            //initialDataCreator.FyllDatabasen();
         }
 
         public override void Dispose()

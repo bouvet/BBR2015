@@ -89,8 +89,8 @@ namespace RestApi.Tests
                                         .Include(x => x.Match)
                                         .Single(x => x.Id == førstePost.Id);
 
-                postIMatch.SynligFraUTC = new DateTime(2001, 01, 01);
-                postIMatch.SynligTilUTC = new DateTime(2001, 01, 02);
+                postIMatch.SynligFraTid = new DateTime(2001, 01, 01);
+                postIMatch.SynligTilTid = new DateTime(2001, 01, 02);
                 context.SaveChanges();
             }
         }

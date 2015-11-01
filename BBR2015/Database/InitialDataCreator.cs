@@ -37,6 +37,7 @@ namespace Database
                 if (alleLag.Count > 0)
                     return;
 
+
                 var bombe = new Vaapen { VaapenId = Constants.Våpen.Bombe, Beskrivelse = "Sprenger posten for en tid" };
                 context.Våpen.Add(bombe);
                 var felle = new Vaapen { VaapenId = Constants.Våpen.Felle, Beskrivelse = "Sprenger posten ved neste stempling. Laget som stempler får ikke poeng." };
@@ -65,8 +66,8 @@ namespace Database
                 {
                     MatchId = Guid.NewGuid(),
                     Navn = "Treningsrunde",
-                    StartUTC = new DateTime(2015, 10, 01),
-                    SluttUTC = new DateTime(2015, 11, 01)
+                    StartTid = new DateTime(2015, 10, 01),
+                    SluttTid = new DateTime(2015, 11, 01)
                 };
 
                 foreach (var lag in new []{bbr1, bbr2, bbr3})
@@ -97,8 +98,8 @@ namespace Database
                         Match = match,
                         Post = post,
                         PoengArray = post.DefaultPoengArray,
-                        SynligFraUTC = match.StartUTC,
-                        SynligTilUTC = match.SluttUTC
+                        SynligFraTid = match.StartTid,
+                        SynligTilTid = match.SluttTid
                     };
 
                     match.Poster.Add(postIMatch);

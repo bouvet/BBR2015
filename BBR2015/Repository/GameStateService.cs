@@ -47,7 +47,7 @@ namespace Repository
                                   CurrentPoengIndex = p.CurrentPoengIndex,
                                   PoengArray = p.PoengArray,
                                   Navn = p.Post.Navn,
-                                  ErSynlig = p.SynligFraUTC < TimeService.Now && TimeService.Now < p.SynligTilUTC
+                                  ErSynlig = p.SynligFraTid < TimeService.Now && TimeService.Now < p.SynligTilTid
                               }).ToList();
 
                 var postRegistreringer = (from l in context.LagIMatch

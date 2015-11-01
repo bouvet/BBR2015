@@ -57,8 +57,8 @@ namespace RestApi.Tests
                 {
                     MatchId = Guid.NewGuid(),
                     Navn = "Unit Test Match",
-                    StartUTC = new DateTime(2015, 10, 01),
-                    SluttUTC = new DateTime(2015, 11, 01)
+                    StartTid = new DateTime(2015, 10, 01),
+                    SluttTid = new DateTime(2015, 11, 01)
                 };
 
                 context.Matcher.Add(match);
@@ -98,8 +98,8 @@ namespace RestApi.Tests
                         Match = match,
                         Post = post,
                         PoengArray = post.DefaultPoengArray,
-                        SynligFraUTC = match.StartUTC,
-                        SynligTilUTC = match.SluttUTC
+                        SynligFraTid = match.StartTid,
+                        SynligTilTid = match.SluttTid
                     };
 
                     match.Poster.Add(postIMatch);

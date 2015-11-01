@@ -63,15 +63,15 @@ namespace RestApi.Tests.Admin
             var bombe = new Vaapen { VaapenId = Constants.Våpen.Bombe, Beskrivelse = "Sprenger posten for en tid" };
             var felle = new Vaapen { VaapenId = Constants.Våpen.Felle, Beskrivelse = "Sprenger posten ved neste stempling. Laget som stempler får ikke poeng." };
 
-            var alle = new []{bombe, felle};
+            var alle = new[] { bombe, felle };
 
             using (var context = _dataContextFactory.Create())
             {
                 if (context.Våpen.Count() == alle.Length)
                     return;
-                
+
                 context.Våpen.AddRange(alle);
-                
+
                 context.SaveChanges();
             }
         }
@@ -79,7 +79,62 @@ namespace RestApi.Tests.Admin
         [Test]
         public void Opprett_testspill_før_BBR()
         {
+            Opprett_Arrangørlag();
 
+            using (var context = _dataContextFactory.Create())
+            {
+                var match = new Match
+                {
+                    MatchId = Guid.NewGuid(),
+                    Navn = "Utvikling",
+                    StartTid = new DateTime(2015, 11, 01, 10, 00, 00),
+                    SluttTid = new DateTime(2015, 11, 06, 10, 00, 00)
+                };
+
+                var lag = context.Lag.Single(x => x.LagId == "SUPPORT_1");
+                var deltakelse = match.LeggTil(lag);
+
+                var våpen = context.Våpen.ToList();
+
+                deltakelse.LeggTilVåpen(våpen[0]);
+                deltakelse.LeggTilVåpen(våpen[1]);
+
+                foreach (var post in new PostFactory().Les(Constants.Område.Oscarsborg))
+                {
+                    post.HemmeligKode = post.Navn.Replace(" ", string.Empty);
+                    post.Navn = "Test" + post.Navn;
+                    post.Omraade = "Testrunde";
+                    
+                    context.Poster.Add(post);
+
+                    var postIMatch = new PostIMatch
+                    {
+                        Match = match,
+                        Post = post,
+                        PoengArray = post.DefaultPoengArray,
+                        SynligFraTid = match.StartTid,
+                        SynligTilTid = match.SluttTid
+                    };
+
+                    match.Poster.Add(postIMatch);
+                }
+            }
+
+        }
+
+        [Test]
+        public void Opprett_Arrangørlag()
+        {
+            using (var context = _dataContextFactory.Create())
+            {
+                if(context.Lag.Any(x => x.Navn.StartsWith("SUPPORT_")))
+                    return;
+                
+                var lag = LagFactory.SettOppLagMedDeltakere(1, 5, "SUPPORT_");
+
+                context.Lag.AddRange(lag);
+                context.SaveChanges();
+            }
         }
 
         public void Opprett_lagForHelga()
@@ -92,17 +147,36 @@ namespace RestApi.Tests.Admin
                 context.SaveChanges();
             }
         }
+
         [Test]
         public void Opprett_spill_fredag()
         {
-            
+            using (var context = _dataContextFactory.Create())
+            {
+                var match = new Match()
+                {
+                    MatchId = Guid.NewGuid(),
+                    Navn = "Treningsrunde fredag",
+                    StartTid = new DateTime(2015, 11, 06, 10, 00, 00),
+                    SluttTid = new DateTime(2015, 11, 07, 10, 00, 00)
+                };
+            }
 
         }
 
         [Test]
         public void Opprett_spill_lørdag()
         {
-
+            using (var context = _dataContextFactory.Create())
+            {
+                var match = new Match()
+                {
+                    MatchId = Guid.NewGuid(),
+                    Navn = "Bouvet Battle Royale 2015",
+                    StartTid = new DateTime(2015, 11, 07, 10, 00, 00),
+                    SluttTid = new DateTime(2015, 11, 07, 18, 00, 00)
+                };
+            }
         }
     }
 }

@@ -68,7 +68,7 @@ namespace Repository
                 var sistePosisjoner = from p in context.DeltakerPosisjoner
                     group p by p.DeltakerId
                     into g
-                    select g.OrderByDescending(x => x.TidspunktUTC).FirstOrDefault();                      
+                    select g.OrderByDescending(x => x.Tidspunkt).FirstOrDefault();                      
 
                 var dictionary = sistePosisjoner.ToDictionary(x => x.DeltakerId, siste => new DeltakerPosisjon
                 {
@@ -76,7 +76,7 @@ namespace Repository
                     LagId = siste.LagId,
                     Latitude = siste.Latitude,
                     Longitude = siste.Longitude,
-                    TidspunktUTC = siste.TidspunktUTC
+                    Tidspunkt = siste.Tidspunkt
                 });
 
                 return new ConcurrentDictionary<string, DeltakerPosisjon>(dictionary);
@@ -91,7 +91,7 @@ namespace Repository
                 LagId = lagId,
                 Latitude = latitude,
                 Longitude = longitude,
-                TidspunktUTC = TimeService.Now
+                Tidspunkt = TimeService.Now
             };
 
             LagrePosisjonTilDatabasen(deltakerPosisjon);
@@ -119,7 +119,7 @@ namespace Repository
         private bool ErForKortEllerHyppig(DeltakerPosisjon forrige, DeltakerPosisjon posisjon)
         {
             var avstandIMeter = DistanseKalkulator.MeterMellom(forrige.Latitude, forrige.Longitude, posisjon.Latitude, posisjon.Longitude);
-            var avstandISekunder = posisjon.TidspunktUTC.Subtract(forrige.TidspunktUTC).TotalSeconds;
+            var avstandISekunder = posisjon.Tidspunkt.Subtract(forrige.Tidspunkt).TotalSeconds;
 
             if (avstandISekunder < 10)
                 return true;
