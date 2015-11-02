@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Castle.Windsor;
 using Database;
 using Database.Entities;
 using NUnit.Framework;
+using OfficeOpenXml;
 using RestApi.Tests.Infrastructure;
 
 namespace RestApi.Tests.Admin
@@ -84,7 +87,7 @@ namespace RestApi.Tests.Admin
             Opprett_Demolag();
 
             using (var context = _dataContextFactory.Create())
-            {                
+            {
                 var match = new Match
                 {
                     MatchId = Guid.NewGuid(),
@@ -92,7 +95,7 @@ namespace RestApi.Tests.Admin
                     StartTid = new DateTime(2015, 11, 01, 10, 00, 00),
                     SluttTid = new DateTime(2015, 11, 06, 10, 00, 00)
                 };
-                
+
                 if (context.Matcher.Any(x => x.Navn == match.Navn))
                     return;
 
@@ -115,7 +118,7 @@ namespace RestApi.Tests.Admin
                     post.HemmeligKode = post.Navn.Replace(" ", string.Empty);
                     post.Navn = "Test" + post.Navn;
                     post.Omraade = "Testrunde";
-                    
+
                     context.Poster.Add(post);
 
                     var postIMatch = new PostIMatch
@@ -139,9 +142,9 @@ namespace RestApi.Tests.Admin
         {
             using (var context = _dataContextFactory.Create())
             {
-                if(context.Lag.Any(x => x.Navn.StartsWith("SUPPORT_")))
+                if (context.Lag.Any(x => x.Navn.StartsWith("SUPPORT_")))
                     return;
-                
+
                 var lag = LagFactory.SettOppLagMedDeltakere(1, 5, "SUPPORT_");
 
                 context.Lag.AddRange(lag);
@@ -167,7 +170,12 @@ namespace RestApi.Tests.Admin
         [Test]
         public void Opprett_lagForHelga()
         {
-            var genererteLag = LagFactory.SettOppLagMedDeltakere(10, 4, "LAG_");
+            var java = LagFactory.SettOppLagMedDeltakere(6, 4, "JAVA_");
+            var ms = LagFactory.SettOppLagMedDeltakere(5, 4, "MS_");
+
+            var genererteLag = new List<Lag>();
+            genererteLag.AddRange(java);
+            genererteLag.AddRange(ms);
 
             using (var context = _dataContextFactory.Create())
             {
@@ -176,10 +184,10 @@ namespace RestApi.Tests.Admin
                 for (int i = 0; i < genererteLag.Count; i++)
                 {
                     var lag = genererteLag[i];
-                    if(!alleLag.Any(x => x.LagId == "LAG_" + (i+1)))
+                    if (!alleLag.Any(x => x.LagId == lag.LagId))
                         context.Lag.Add(lag);
                 }
-                
+
                 context.SaveChanges();
             }
         }
@@ -275,7 +283,7 @@ namespace RestApi.Tests.Admin
                 context.Matcher.Add(match);
 
                 foreach (var post in new PostFactory().Les(Constants.Område.OscarsborgFredag))
-                {                   
+                {
                     context.Poster.Add(post);
 
                     var postIMatch = new PostIMatch
@@ -292,5 +300,57 @@ namespace RestApi.Tests.Admin
                 context.SaveChanges();
             }
         }
+
+        [Test, RequiresSTA]
+        public void LesDetaljerFraExcel()
+        {
+            var dialog = new OpenFileDialog();
+            dialog.ShowDialog();
+            var file = dialog.FileName;
+
+            using (ExcelPackage excel = new ExcelPackage(new FileInfo(file)))
+            {
+                LesInnLag(excel.Workbook.Worksheets["Lag"]);
+                LesInnDeltakere(excel.Workbook.Worksheets["Deltakere"]);
+            }
+        }
+
+        private void LesInnLag(ExcelWorksheet worksheet)
+        {
+            using (var context = _dataContextFactory.Create())
+            {
+                var alleLag = context.Lag.ToList();
+
+                var start = worksheet.Dimension.Start;
+                var end = worksheet.Dimension.End;
+
+                for (int row = start.Row + 1; row <= end.Row; row++)
+                {
+                    var lagId = GetValue(worksheet, row, "A");
+                    var lag = alleLag.SingleOrDefault(x => x.LagId == lagId);
+
+                    if (lag == null)
+                        continue;
+
+                    lag.Navn = GetValue(worksheet, row, "B");
+                    lag.Farge = GetValue(worksheet, row, "C");
+                    lag.Ikon = GetValue(worksheet, row, "D");
+                    lag.HemmeligKode = GetValue(worksheet, row, "E");
+                }
+
+                context.SaveChanges();
+            }
+        }
+
+        private static string GetValue(ExcelWorksheet worksheet, int row, string column)
+        {
+            return (string)worksheet.Cells[column + row].Value;
+        }
+
+        private void LesInnDeltakere(ExcelWorksheet excelWorksheet)
+        {
+        }
+
+        
     }
 }
