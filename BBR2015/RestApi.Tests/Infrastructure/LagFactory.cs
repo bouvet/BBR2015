@@ -25,7 +25,7 @@ namespace RestApi.Tests.Infrastructure
 
             for (int i = 1; i <= antallDeltakere; i++)
             {
-                lag.LeggTilDeltaker(new Deltaker(string.Format("Deltaker{0}-{1}", lagIndex, i), string.Format("DeltakerNavn{0}-{1}", lagIndex, i)));
+                lag.LeggTilDeltaker(new Deltaker(string.Format("{0}-{1}", lag.LagId, i), string.Format("{0}-{1}Navn", lag.LagId, i)));
             }
 
             return lag;

@@ -78,6 +78,54 @@ namespace RestApi.Tests
         }
 
         [Test]
+        public void NårEnDeltakerStårIRoLenge_SkalPosisjonenLagresIDatabasenBareEnGang()
+        {
+            var given = _gitt.ToLagMedToDeltakere();
+
+            var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
+
+            var deltaker11 = given[0].Deltakere[0];
+            var latitude = 59.6785526164;
+            var longitude = 10.6039274298;
+
+            posisjonsSevice.RegistrerPosisjon(deltaker11.Lag.LagId, deltaker11.DeltakerId, latitude, longitude);
+            TimeService.AddSeconds(30);
+            posisjonsSevice.RegistrerPosisjon(deltaker11.Lag.LagId, deltaker11.DeltakerId, latitude, longitude);
+            TimeService.AddSeconds(30);
+            posisjonsSevice.RegistrerPosisjon(deltaker11.Lag.LagId, deltaker11.DeltakerId, latitude, longitude);
+            TimeService.AddSeconds(30);
+            posisjonsSevice.RegistrerPosisjon(deltaker11.Lag.LagId, deltaker11.DeltakerId, latitude, longitude);
+
+            using (var context = _dataContextFactory.Create())
+            {
+                Assert.AreEqual(1, context.DeltakerPosisjoner.Count(), "Skulle vært 1 posisjon");
+            }
+        }
+
+        [Test]
+        public void NårEnDeltakerFlytterSegMenRegistrererOfte_SkalPosisjonenLagresIDatabasenBareHvert10Sekund()
+        {
+            var given = _gitt.ToLagMedToDeltakere();
+
+            var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
+
+            var deltaker11 = given[0].Deltakere[0];
+            var latitude = 59.6785526164;
+            var longitude = 10.6039274298;
+
+            for(int i = 1; i < 100; i++)
+            {
+                posisjonsSevice.RegistrerPosisjon(deltaker11.Lag.LagId, deltaker11.DeltakerId, latitude + 0.01 * i, longitude + 0.01 * i);
+                TimeService.AddSeconds(1);               
+            }
+
+            using (var context = _dataContextFactory.Create())
+            {
+                Assert.AreEqual(10, context.DeltakerPosisjoner.Count(), "Skulle vært 1 posisjon");
+            }
+        }
+
+        [Test]
         public void NårEnDeltakerPosterNyPosisjonToGangerMenForTettITid_SkalPosisjonenLagresIDatabasenBareEnGang()
         {
             var given = _gitt.ToLagMedToDeltakere();
