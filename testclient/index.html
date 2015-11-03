@@ -11,7 +11,7 @@
 </style>
   <body>
   <div id="left">
-    <button id="hentGameState">Hent gamestate</button>
+    <input type="checkbox" id="skalSendePosisjon">Send posisjon</button>
     <div id="infoboks">
       <label for="lagId">LagId:</label>
       <input id="lagId" value="BBR1"/><br />
@@ -54,9 +54,12 @@
   $("#hentPosisjoner").click(function() {
     hentLagposisjoner();
   });
-  $("#hentGameState").click(function() {
-    hentGameState();
+
+  $("sendPostkode").click(function() {
+    sendPostkode();
   });
+
+
   var map;
   var spillerMarkers = new Map();
   var poster = [];
@@ -89,6 +92,8 @@
       handleNoGeolocation(false);
     }
   };
+
+
 
   var handleNoGeolocation = function(errorFlag) {
     var content;
@@ -127,6 +132,27 @@
     };
     console.log(headers);
     return headers;
+  };
+
+  var sendPostkode = function() {
+    var weapon = $("vaapen").val();
+    var postId = $("postId").val();
+    console.log(weapon);
+
+    if (weapon === "") {
+      weapon = null;
+    }
+
+    $.ajax({
+      type: "POST",
+      url: baseUrl + 'Meldinger', 
+      headers:     
+      createHeader(),
+      data: JSON.stringify({
+        "postKode": postId,
+        "våpen": weapon
+      })
+    });
   };
 
   var sendMelding = function (melding) {
@@ -272,6 +298,15 @@
     console.log("Viser tilgjengelige våpen");
     // Vis dropdown med tilgjengelige våpen
   };
+
+  setInterval(function() {
+    if(document.getElementById('skalSendePosisjon')) {
+      sendPosisjon();
+    }
+    hentGameState();
+    hentMeldinger();
+    sendPosisjon();
+  }, 3000);
 
   
   google.maps.event.addDomListener(window, 'load', initMap);
