@@ -2,6 +2,8 @@
 using System;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using System.Web.Http.Results;
+using Database;
 using Repository;
 
 namespace RestApi.Controllers
@@ -10,10 +12,12 @@ namespace RestApi.Controllers
     public class AdminController : ApiController
     {
         private readonly GameStateService _gameStateService;
+        private readonly CascadingAppSettings _appSettings;
 
-        public AdminController(GameStateService gameStateService)
+        public AdminController(GameStateService gameStateService, CascadingAppSettings appSettings)
         {
             _gameStateService = gameStateService;
+            _appSettings = appSettings;
         }
 
         // Post: api/Admin/RecalculateState
@@ -32,6 +36,14 @@ namespace RestApi.Controllers
         public IHttpActionResult ThrowException()
         {
             throw new ApplicationException("Initiert av brukeren");           
+        }
+
+        // Post: api/Admin/RecalculateState
+        [Route("api/Admin/ConnectionString")]
+        [HttpGet]
+        public IHttpActionResult ConnectionString()
+        {
+            return Ok(_appSettings.DatabaseConnectionString);
         }
     }
 }
