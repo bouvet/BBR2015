@@ -23,8 +23,8 @@ namespace Repository
             _currentMatchProvider = currentMatchProvider;
         }
 
-        public void Calculate(DateTime? gyldigInntil = null)
-        {            
+        public void Calculate()
+        {
             var matchId = _currentMatchProvider.GetMatchId();
 
             using (var context = _dataContextFactory.Create())
@@ -45,7 +45,9 @@ namespace Repository
                                   CurrentPoengIndex = p.CurrentPoengIndex,
                                   PoengArray = p.PoengArray,
                                   Navn = p.Post.Navn,
-                                  ErSynlig = p.SynligFraTid < TimeService.Now && TimeService.Now < p.SynligTilTid
+                                  ErSynlig = p.SynligFraTid < TimeService.Now && TimeService.Now < p.SynligTilTid,
+                                  SynligFra = p.SynligFraTid,
+                                  SynligTil = p.SynligTilTid
                               }).ToList();
 
                 var postRegistreringer = (from l in context.LagIMatch
@@ -133,7 +135,7 @@ namespace Repository
                                             Navn = g.First().Deltaker.Navn,
                                             LagIMatchId = g.First().LagIMatchId,
                                             AntallRegistreringer = g.Count(),
-                                            Poengsum = g.Sum(x => x.Poeng)                                            
+                                            Poengsum = g.Sum(x => x.Poeng)
                                         }).ToList();
 
                 scoreboard.Deltakere = (from p in deltakerPoeng
@@ -151,8 +153,13 @@ namespace Repository
                                             MostValueablePlayerRanking = deltakerPoeng.Count(x => x.Poengsum > p.Poengsum) + 1
                                         }).ToList();
 
+                var førsteTidspunktEtterNå = (from p in poster
+                                              from t in p.Tider
+                                              where t > TimeService.Now
+                                              select t).Min();
+
                 // swap current state
-                _matchStates[matchId] = new MatchState(matchId, nyGameState, scoreboard, gyldigInntil);
+                _matchStates[matchId] = new MatchState(matchId, nyGameState, scoreboard, førsteTidspunktEtterNå);
             }
         }
 
@@ -160,10 +167,10 @@ namespace Repository
         {
             var matchId = _currentMatchProvider.GetMatchId();
 
-            if(!_matchStates.ContainsKey(matchId))
+            if (!_matchStates.ContainsKey(matchId))
                 Calculate();
 
-            if(_matchStates[matchId].ErUtløpt)
+            if (_matchStates[matchId].ErUtløpt)
                 Calculate();
 
             return _matchStates[matchId].Get(lagId);
@@ -273,6 +280,9 @@ namespace Repository
         public bool ErSynlig { get; set; }
 
         public string Navn { get; set; }
+        public DateTime[] Tider { get { return new[] { SynligFra, SynligTil }; } }
+        public DateTime SynligTil { get; set; }
+        public DateTime SynligFra { get; set; }
     }
 
     public class GameStateForLag

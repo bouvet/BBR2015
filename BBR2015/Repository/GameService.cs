@@ -13,7 +13,8 @@ namespace Repository
         private readonly GameStateService _gameState;
         private readonly CurrentMatchProvider _currentMatchProvider;
 
-        private static object _tillatBareEnStemplingIGangen = new object();
+        private static readonly object TillatBareEnStemplingIGangen = new object();
+
         public GameService(DataContextFactory dataContextFactory, GameStateService gameState, CurrentMatchProvider currentMatchProvider)
         {
             _dataContextFactory = dataContextFactory;
@@ -23,7 +24,7 @@ namespace Repository
 
         public void RegistrerNyPost(string deltakerId, string lagId, string postkode, string bruktVåpen)
         {
-            lock (_tillatBareEnStemplingIGangen)
+            lock (TillatBareEnStemplingIGangen)
             {
                 RegistrerNyPostSynkront(deltakerId, lagId, postkode, bruktVåpen);
             }
@@ -32,8 +33,6 @@ namespace Repository
         private void RegistrerNyPostSynkront(string deltakerId, string lagId, string postkode, string bruktVåpen)
         {
             var matchId = _currentMatchProvider.GetMatchId();
-
-            var gyldigInntil = DateTime.MaxValue;
 
             using (var context = _dataContextFactory.Create())
             {
@@ -91,8 +90,7 @@ namespace Repository
 
                                     if (bruktVåpen == Constants.Våpen.Bombe)
                                     {
-                                        gyldigInntil = TimeService.Now.AddSeconds(Constants.Våpen.BombeSkjulerPostIAntallSekunder);
-                                        post.SynligFraTid = gyldigInntil;
+                                        post.SynligFraTid = TimeService.Now.AddSeconds(Constants.Våpen.BombeSkjulerPostIAntallSekunder);
                                     }                                    
                                 }
                             }
@@ -109,7 +107,7 @@ namespace Repository
                 }
             }
 
-            _gameState.Calculate(gyldigInntil);
+            _gameState.Calculate();
 
         }
     }

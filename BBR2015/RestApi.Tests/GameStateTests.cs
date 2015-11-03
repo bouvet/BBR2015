@@ -170,7 +170,7 @@ namespace RestApi.Tests
         }
 
         [Test]
-        public void GittAktivPost_NårEtLagBrukerBombe_SkalLagetFåPoengOgPostenBliUsynligIEtAntallMinutter()
+        public void GittAktivPost_NårEtLagBrukerBombe_SkalLagetFåPoengOgPostenBliUsynligIEtAntallMinutterSelvOmStateBlirRekalkulert()
         {
             var match = _gitt.EnMatchMedTreLagOgTrePoster();
 
@@ -189,6 +189,8 @@ namespace RestApi.Tests
             Assert.AreEqual(100, lag1State.Score, "Skal ha fått poeng");
             Assert.AreEqual(2, lag1State.Poster.Count, "Skal bare se to poster (aktive)");
             Assert.AreEqual(0, lag1State.Vaapen.Count(x => x.VaapenId == Constants.Våpen.Bombe), "Skal ha brukt opp bomben");
+
+            gamestateservice.Calculate();
 
             TimeService.AddSeconds(Constants.Våpen.BombeSkjulerPostIAntallSekunder + 5);
 
