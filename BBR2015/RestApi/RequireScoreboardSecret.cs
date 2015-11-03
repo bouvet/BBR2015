@@ -21,7 +21,7 @@ namespace RestApi
                 return;
             }
 
-            var appSettings = ServiceLocator.Current.Resolve<CascadingAppSettings>();
+            var appSettings = ServiceLocator.Current.Resolve<OverridableSettings>();
 
             var value = header.Value.FirstOrDefault();
 

@@ -101,7 +101,7 @@ namespace Repository
                         context.SaveChanges();
                         transaction.Commit();
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         transaction.Rollback();
                         throw;

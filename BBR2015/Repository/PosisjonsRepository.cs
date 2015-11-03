@@ -14,12 +14,12 @@ namespace Repository
         private ConcurrentDictionary<string, DeltakerPosisjon> _lagretPosisjon;
 
         private readonly DataContextFactory _dataContextFactory;
-        private readonly CascadingAppSettings _appSettings;
+        private readonly OverridableSettings _appSettings;
 
         private readonly object _lockGjeldende = new object();
         private readonly object _lockLagret = new object();
 
-        public PosisjonsRepository(DataContextFactory dataContextFactory, CascadingAppSettings appSettings)
+        public PosisjonsRepository(DataContextFactory dataContextFactory, OverridableSettings appSettings)
         {
             _dataContextFactory = dataContextFactory;
             _appSettings = appSettings;

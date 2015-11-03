@@ -15,15 +15,15 @@ namespace RestApi.Tests
         private IWindsorContainer _container;
         private Gitt _gitt;
         private DataContextFactory _dataContextFactory;
-        private CascadingAppSettings _appSettings;
+        private OverridableSettings _appSettings;
        
         [SetUp]
         public void Given()
         {
             _container = RestApiApplication.CreateContainer();
 
-            _appSettings = new CascadingAppSettings();
-            _container.Register(Component.For<CascadingAppSettings>().Instance(_appSettings).IsDefault().Named(Guid.NewGuid().ToString()));
+            _appSettings = new OverridableSettings();
+            _container.Register(Component.For<OverridableSettings>().Instance(_appSettings).IsDefault().Named(Guid.NewGuid().ToString()));
 
             _gitt = new Gitt(_container);
             _dataContextFactory = _container.Resolve<DataContextFactory>();

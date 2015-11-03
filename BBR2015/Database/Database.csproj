@@ -56,8 +56,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BBRConnectionFactory.cs" />
-    <Compile Include="CascadingAppSettings.cs" />
+    <Compile Include="ConnectionFactory.cs" />
+    <Compile Include="OverridableSettings.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DataContext.cs" />
     <Compile Include="DataContextExtensions.cs" />
@@ -73,7 +73,6 @@
     <Compile Include="Entities\PostRegistrering.cs" />
     <Compile Include="Entities\Vaapen.cs" />
     <Compile Include="Entities\VaapenBeholdning.cs" />
-    <Compile Include="InitialDataCreator.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="Migrations\201510151330200_Create_Database.cs" />
     <Compile Include="Migrations\201510151330200_Create_Database.Designer.cs">

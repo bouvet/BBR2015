@@ -60,7 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdminRepository.cs" />
+    <Compile Include="TilgangsKontroll.cs" />
     <Compile Include="CurrentMatchProvider.cs" />
     <Compile Include="DistanseKalkulator.cs" />
     <Compile Include="GameService.cs" />

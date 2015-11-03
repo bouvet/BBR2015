@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Database;
 using Database.Entities;
@@ -21,10 +22,25 @@ namespace RestApi.Tests.Admin
         private IWindsorContainer _container;
         private DataContextFactory _dataContextFactory;
 
+        private const string DB_FromConfig = "";
+        private const string DB_North = "BBR_North";
+        private const string DB_West = "BBR_West";
+
+        private const string EnvironmentSettingsConnectionKey = DB_North;
+
         [TestFixtureSetUp]
         public void EnsureDatabase()
         {
-            using (var context = RestApiApplication.CreateContainer().Resolve<DataContextFactory>().Create())
+            _container = RestApiApplication.CreateContainer();
+
+            if (!string.IsNullOrEmpty(EnvironmentSettingsConnectionKey))
+            {
+                var settings = new OverridableSettings { DatabaseConnectionString = Environment.GetEnvironmentVariable(EnvironmentSettingsConnectionKey, EnvironmentVariableTarget.User) };
+
+                _container.Register(Component.For<OverridableSettings>().Instance(settings).IsDefault().Named(Guid.NewGuid().ToString()));
+            }
+
+            using (var context = _container.Resolve<DataContextFactory>().Create())
             {
                 var triggerCreateDatabase = context.Lag.Any();
             }
@@ -33,14 +49,14 @@ namespace RestApi.Tests.Admin
         [SetUp]
         public void Setup()
         {
-            _container = RestApiApplication.CreateContainer();
+
             _dataContextFactory = _container.Resolve<DataContextFactory>();
         }
 
         [Test]
         public void Dummy()
         {
-            
+
         }
 
         [Test]
@@ -314,6 +330,9 @@ namespace RestApi.Tests.Admin
             dialog.ShowDialog();
             var file = dialog.FileName;
 
+            if (string.IsNullOrEmpty(file))
+                return;
+
             using (ExcelPackage excel = new ExcelPackage(new FileInfo(file)))
             {
                 LesInnLag(excel.Workbook.Worksheets["Lag"]);
@@ -351,7 +370,7 @@ namespace RestApi.Tests.Admin
         {
             var value = worksheet.Cells[column + row].Value;
 
-            return value?.ToString();
+            return value != null ? value.ToString() : null;
         }
 
         private void LesInnDeltakere(ExcelWorksheet worksheet)

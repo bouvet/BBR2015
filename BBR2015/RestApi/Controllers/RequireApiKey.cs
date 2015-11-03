@@ -26,7 +26,7 @@ namespace RestApi.Controllers
            
             if (!string.IsNullOrEmpty(headerValue))
             {
-                var adminRepository = ServiceLocator.Current.Resolve<AdminRepository>();
+                var adminRepository = ServiceLocator.Current.Resolve<TilgangsKontroll>();
 
                 var lagId = adminRepository.FinnLagIdFraKode(headerValue);
 
@@ -48,7 +48,7 @@ namespace RestApi.Controllers
 
             if (!string.IsNullOrEmpty(headerValue))
             {
-                var adminRepository = ServiceLocator.Current.Resolve<AdminRepository>();
+                var adminRepository = ServiceLocator.Current.Resolve<TilgangsKontroll>();
 
                 var lagId = context.Request.Properties[REQUESTPROPERTY_LAGID].ToString();
                 var deltakerId = adminRepository.SlåOppDeltakerFraKode(lagId, headerValue);
@@ -68,7 +68,7 @@ namespace RestApi.Controllers
         {
             var header = context.Request.Headers.SingleOrDefault(x => x.Key == key);
 
-            return header.Value?.FirstOrDefault();
+            return header.Value != null ? header.Value.FirstOrDefault() : null;
         }
       
     }

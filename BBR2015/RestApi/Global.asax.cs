@@ -25,8 +25,7 @@ namespace RestApi
             GlobalConfiguration.Configuration.Services.Replace(typeof(IHttpControllerActivator), new WindsorControllerActivator(_container));
             GlobalConfiguration.Configure(WebApiConfig.Register);
 
-            System.Data.Entity.Database.SetInitializer(new Initializer());
-
+            //System.Data.Entity.Database.SetInitializer(new Initializer());
             ServiceLocator.Current = _container;           
         }
 

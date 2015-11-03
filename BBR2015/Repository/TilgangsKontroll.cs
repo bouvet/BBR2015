@@ -5,7 +5,7 @@ using Database.Entities;
 
 namespace Repository
 {
-    public class AdminRepository
+    public class TilgangsKontroll
     {
         private List<Lag> _lagene;
 
@@ -26,21 +26,15 @@ namespace Repository
         }
         private DataContextFactory _dataContextFactory;
 
-        public AdminRepository(DataContextFactory dataContextFactory)
+        public TilgangsKontroll(DataContextFactory dataContextFactory)
         {
             _dataContextFactory = dataContextFactory;
-        }
-
-        public Lag FinnLag(string lagKode)
-        {
-            return Lagene.FirstOrDefault(l => l.HemmeligKode == lagKode);
         }
 
         public string FinnLagIdFraKode(string hemmeligKode)
         {
             return Lagene.Where(l => l.HemmeligKode == hemmeligKode).Select(x => x.LagId).SingleOrDefault();
         }
-      
 
         public string SlåOppDeltakerFraKode(string lagId, string deltakerKode)
         {
@@ -50,6 +44,11 @@ namespace Repository
                              select d.DeltakerId;
 
             return deltakerId.SingleOrDefault();
+        }
+
+        public void Nullstill()
+        {
+            _lagene = null;
         }
     }
 }

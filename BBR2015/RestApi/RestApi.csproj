@@ -156,7 +156,9 @@
     <None Include="Properties\PublishProfiles\bbr2015 - FTP %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\bbr2015 - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\bbr2015 - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\bbr2015test - FTP %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\bbr2015test - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\bbr2015test - Web Deploy %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\bbr2015test - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\bbr2015test.pubxml" />
     <None Include="Web.Debug.config">

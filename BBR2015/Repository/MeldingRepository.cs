@@ -9,31 +9,18 @@ namespace Repository
 {
     public class MeldingRepository
     {
-        private AdminRepository _adminRepository;
         private DataContextFactory _dataContextFactory;
 
-        public MeldingRepository(AdminRepository adminRepository, DataContextFactory dataContextFactory)
+        public MeldingRepository(DataContextFactory dataContextFactory)
         {
-            _adminRepository = adminRepository;
             _dataContextFactory = dataContextFactory;
         }
 
         public void PostMelding(string deltakerId, string lagId, string meldingstekst)
         {
-            var lag = _adminRepository.FinnLag(lagId);
-            if (lag == null)
-            {
-                throw new ArgumentException("Ugyldig lagId:" + lagId);
-            }
-            var deltaker = lag.HentDeltaker(deltakerId);
-            if (deltaker == null)
-            {
-                throw new ArgumentException("Ugyldig deltakerId:" + deltakerId);
-            }
-
             using (var context = _dataContextFactory.Create())
             {
-                var melding = new Melding(deltaker.DeltakerId, lag.LagId, meldingstekst)
+                var melding = new Melding(deltakerId, lagId, meldingstekst)
                 {
                     SekvensId = TimeService.Now.Ticks,
                     Tidspunkt = TimeService.Now

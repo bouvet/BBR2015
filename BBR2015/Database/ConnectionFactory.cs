@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Database
 {
-    public class BBRConnectionFactory : IDbConnectionFactory
+    public class ConnectionFactory : IDbConnectionFactory
     {
         public DbConnection CreateConnection(string nameOrConnectionString)
         {
-            var connectionString = new CascadingAppSettings().DatabaseConnectionString;
+            var connectionString = new OverridableSettings().DatabaseConnectionString;
 
             DbConnection connection = SqlClientFactory.Instance.CreateConnection();
             connection.ConnectionString = connectionString;
