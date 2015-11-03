@@ -46,7 +46,7 @@ namespace RestApi.Tests
             var lag1 = match.DeltakendeLag.First();
             var deltaker11 = lag1.Lag.Deltakere.First();
 
-            var gameservice = _container.Resolve<GameServiceRepository>();
+            var gameservice = _container.Resolve<GameService>();
             var gamestateservice = _container.Resolve<GameStateService>();
 
             gameservice.RegistrerNyPost(deltaker11.DeltakerId, lag1.Lag.LagId, "HemmeligKode1", null);
@@ -65,7 +65,7 @@ namespace RestApi.Tests
             var lag1 = match.DeltakendeLag.First();
             var deltaker11 = lag1.Lag.Deltakere.First();
 
-            var gameservice = _container.Resolve<GameServiceRepository>();
+            var gameservice = _container.Resolve<GameService>();
             var gamestateservice = _container.Resolve<GameStateService>();
 
             var førstePost = match.Poster.First();
@@ -121,7 +121,7 @@ namespace RestApi.Tests
             var lag1 = match.DeltakendeLag.First();
             var deltaker11 = lag1.Lag.Deltakere.First();
 
-            var gameservice = _container.Resolve<GameServiceRepository>();
+            var gameservice = _container.Resolve<GameService>();
             var gamestateservice = _container.Resolve<GameStateService>();
 
             gameservice.RegistrerNyPost(deltaker11.DeltakerId, lag1.Lag.LagId, "HemmeligKode1", null);
@@ -144,7 +144,7 @@ namespace RestApi.Tests
             var lag2 = match.DeltakendeLag[1];
             var deltaker21 = lag2.Lag.Deltakere.First();
 
-            var gameservice = _container.Resolve<GameServiceRepository>();
+            var gameservice = _container.Resolve<GameService>();
             var gamestateservice = _container.Resolve<GameStateService>();
 
             gameservice.RegistrerNyPost(deltaker11.DeltakerId, lag1.Lag.LagId, "HemmeligKode1", null);
@@ -156,6 +156,45 @@ namespace RestApi.Tests
             Assert.AreEqual(1, lag2State.Poster.Count(x => x.HarRegistert), "Skal ha 1 registrering");
         }
 
-       
+        [Test]
+        public void LagSkalHaInitiellVåpenBeholdningIGamestate()
+        {
+            var match = _gitt.EnMatchMedTreLagOgTrePoster();
+
+            var lag1 = match.DeltakendeLag.First();
+
+            var gamestateservice = _container.Resolve<GameStateService>();
+
+            var lag1State = gamestateservice.Get(lag1.Lag.LagId);
+            Assert.AreEqual(2, lag1State.Vaapen.Count(), "Skal ha 2 våpen");
+        }
+
+        [Test]
+        public void GittAktivPost_NårEtLagBrukerBombe_SkalLagetFåPoengOgPostenBliUsynligIEtAntallMinutter()
+        {
+            var match = _gitt.EnMatchMedTreLagOgTrePoster();
+
+            var lag1 = match.DeltakendeLag.First();
+            var deltaker11 = lag1.Lag.Deltakere.First();
+
+            var gameservice = _container.Resolve<GameService>();
+            var gamestateservice = _container.Resolve<GameStateService>();
+
+            var lag1State = gamestateservice.Get(lag1.Lag.LagId);
+            Assert.AreEqual(1, lag1State.Vaapen.Count(x => x.VaapenId == Constants.Våpen.Bombe), "Skal ha 1 bombe");
+
+            gameservice.RegistrerNyPost(deltaker11.DeltakerId, lag1.Lag.LagId, "HemmeligKode1", Constants.Våpen.Bombe);          
+
+            lag1State = gamestateservice.Get(lag1.Lag.LagId);
+            Assert.AreEqual(100, lag1State.Score, "Skal ha fått poeng");
+            Assert.AreEqual(2, lag1State.Poster.Count, "Skal bare se to poster (aktive)");
+            Assert.AreEqual(0, lag1State.Vaapen.Count(x => x.VaapenId == Constants.Våpen.Bombe), "Skal ha brukt opp bomben");
+
+            TimeService.AddSeconds(Constants.Våpen.BombeSkjulerPostIAntallSekunder + 5);
+
+            lag1State = gamestateservice.Get(lag1.Lag.LagId);
+            
+            Assert.AreEqual(3, lag1State.Poster.Count, "Post skal bli synlig igjen");
+        }
     }
 }

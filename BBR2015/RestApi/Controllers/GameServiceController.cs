@@ -11,11 +11,11 @@ namespace RestApi.Controllers
     [RequireApiKey]
     public class GameServiceController : BaseController
     {
-        private GameServiceRepository _gameServiceRepository;
+        private GameService _gameService;
 
-        public GameServiceController(GameServiceRepository gameServiceRepository)
+        public GameServiceController(GameService gameService)
         {
-            _gameServiceRepository = gameServiceRepository;
+            _gameService = gameService;
         }
         // POST: api/GameService
         [HttpPost]
@@ -34,7 +34,7 @@ namespace RestApi.Controllers
                     return BadRequest(ModelState);
                 }
 
-                _gameServiceRepository.RegistrerNyPost(DeltakerId, LagId, registrerNyPost.PostKode, registrerNyPost.BruktVåpen);
+                _gameService.RegistrerNyPost(DeltakerId, LagId, registrerNyPost.PostKode, registrerNyPost.BruktVåpen);
                 
                 return Ok();
             }

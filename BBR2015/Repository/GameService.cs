@@ -2,16 +2,19 @@
 using Database.Entities;
 using Database;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Repository
 {
-    public class GameServiceRepository
+    public class GameService
     {
         private readonly DataContextFactory _dataContextFactory;
         private readonly GameStateService _gameState;
         private readonly CurrentMatchProvider _currentMatchProvider;
 
-        public GameServiceRepository(DataContextFactory dataContextFactory, GameStateService gameState, CurrentMatchProvider currentMatchProvider)
+        private static object _tillatBareEnStemplingIGangen = new object();
+        public GameService(DataContextFactory dataContextFactory, GameStateService gameState, CurrentMatchProvider currentMatchProvider)
         {
             _dataContextFactory = dataContextFactory;
             _gameState = gameState;
@@ -20,7 +23,17 @@ namespace Repository
 
         public void RegistrerNyPost(string deltakerId, string lagId, string postkode, string bruktVåpen)
         {
+            lock (_tillatBareEnStemplingIGangen)
+            {
+                RegistrerNyPostSynkront(deltakerId, lagId, postkode, bruktVåpen);
+            }
+        }
+
+        private void RegistrerNyPostSynkront(string deltakerId, string lagId, string postkode, string bruktVåpen)
+        {
             var matchId = _currentMatchProvider.GetMatchId();
+
+            var gyldigInntil = DateTime.MaxValue;
 
             using (var context = _dataContextFactory.Create())
             {
@@ -28,7 +41,7 @@ namespace Repository
                 {
                     try
                     {
-                        var lagIMatch = (from lm in context.LagIMatch.Include(x => x.Lag)//.Include(x => x.VåpenBeholdning).Include(x => x.PostRegistreringer)
+                        var lagIMatch = (from lm in context.LagIMatch.Include(x => x.Lag)
                                          where lm.Lag.LagId == lagId && lm.Match.MatchId == matchId
                                          select lm).SingleOrDefault();
 
@@ -75,6 +88,12 @@ namespace Repository
                                 if (brukt != null)
                                 {
                                     brukt.BruktIPostRegistrering = registrering;
+
+                                    if (bruktVåpen == Constants.Våpen.Bombe)
+                                    {
+                                        gyldigInntil = TimeService.Now.AddSeconds(Constants.Våpen.BombeSkjulerPostIAntallSekunder);
+                                        post.SynligFraTid = gyldigInntil;
+                                    }                                    
                                 }
                             }
                         }
@@ -90,7 +109,7 @@ namespace Repository
                 }
             }
 
-            _gameState.Calculate();
+            _gameState.Calculate(gyldigInntil);
 
         }
     }

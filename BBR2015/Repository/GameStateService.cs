@@ -23,14 +23,14 @@ namespace Repository
             _currentMatchProvider = currentMatchProvider;
         }
 
-        public void Calculate()
-        {
+        public void Calculate(DateTime? gyldigInntil = null)
+        {            
             var matchId = _currentMatchProvider.GetMatchId();
 
             using (var context = _dataContextFactory.Create())
             {
                 var sorterteLag =
-                    context.LagIMatch.Include(x => x.Lag)
+                    context.LagIMatch.Include(x => x.Lag).Include(x => x.VåpenBeholdning).Include("Våpenbeholdning.BruktIPostRegistrering")
                            .Where(x => x.Match.MatchId == matchId)
                            .OrderByDescending(x => x.PoengSum)
                            .ToArray();
@@ -94,7 +94,7 @@ namespace Repository
                                       HarRegistert = reg != null,
                                       Rekkefølge = random.Next(0, short.MaxValue) // order by random                                 
                                   }).OrderBy(x => x.Rekkefølge).ToList(),
-                        Vaapen = lag.VåpenBeholdning.Select(x => new GameStateVaapen
+                        Vaapen = lag.VåpenBeholdning.Where(x => x.BruktIPostRegistrering == null).Select(x => new GameStateVaapen
                         {
                             VaapenId = x.VaapenId
                         }).ToList()
@@ -152,7 +152,7 @@ namespace Repository
                                         }).ToList();
 
                 // swap current state
-                _matchStates[matchId] = new MatchState(matchId, nyGameState, scoreboard);
+                _matchStates[matchId] = new MatchState(matchId, nyGameState, scoreboard, gyldigInntil);
             }
         }
 
@@ -161,6 +161,9 @@ namespace Repository
             var matchId = _currentMatchProvider.GetMatchId();
 
             if(!_matchStates.ContainsKey(matchId))
+                Calculate();
+
+            if(_matchStates[matchId].ErUtløpt)
                 Calculate();
 
             return _matchStates[matchId].Get(lagId);
@@ -173,6 +176,9 @@ namespace Repository
             if (!_matchStates.ContainsKey(matchId))
                 Calculate();
 
+            if (_matchStates[matchId].ErUtløpt)
+                Calculate();
+
             return _matchStates[matchId].GetScoreboard();
         }
     }
@@ -181,15 +187,21 @@ namespace Repository
     {
         private Dictionary<string, GameStateForLag> _gamestates = new Dictionary<string, GameStateForLag>();
         private ScoreboardState _scoreboard = new ScoreboardState();
+        private readonly DateTime _gyldigInntil;
 
         public Guid MatchId { get; set; }
-        public MatchState(Guid matchId, Dictionary<string, GameStateForLag> gamestates, ScoreboardState scoreboard)
+        public MatchState(Guid matchId, Dictionary<string, GameStateForLag> gamestates, ScoreboardState scoreboard, DateTime? gyldigInntil)
         {
             MatchId = matchId;
             _gamestates = gamestates;
             _scoreboard = scoreboard;
+            _gyldigInntil = gyldigInntil ?? DateTime.MaxValue;
         }
 
+        public bool ErUtløpt
+        {
+            get { return TimeService.Now > _gyldigInntil; }
+        }
         public GameStateForLag Get(string lagId)
         {
             return _gamestates[lagId];

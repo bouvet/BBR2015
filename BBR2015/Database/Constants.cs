@@ -14,6 +14,8 @@ namespace Database
         {
             public const string Felle = "FELLE";
             public const string Bombe = "BOMBE";
+
+            public const int BombeSkjulerPostIAntallSekunder = 60*5;
         }
     }
 
