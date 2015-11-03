@@ -121,10 +121,10 @@ namespace Repository
             var avstandIMeter = DistanseKalkulator.MeterMellom(forrige.Latitude, forrige.Longitude, posisjon.Latitude, posisjon.Longitude);
             var avstandISekunder = posisjon.Tidspunkt.Subtract(forrige.Tidspunkt).TotalSeconds;
 
-            if (avstandISekunder < 10)
+            if (avstandISekunder < _appSettings.MinstTidMellomPosisjoner)
                 return true;
             
-            return avstandIMeter < 5;
+            return avstandIMeter < _appSettings.MinstAvstandMellomPosisjoner;
         }
 
         public LagPosisjoner HentforLag(string lagId)

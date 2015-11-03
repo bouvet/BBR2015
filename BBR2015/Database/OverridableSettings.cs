@@ -28,6 +28,28 @@ namespace Database
             set { _overrides["BBR_ScoreboardSecret"] = value; }
         }
 
+        public int MinstAvstandMellomPosisjoner
+        {
+            get
+            {
+                int meter;
+                if (int.TryParse(Get("BBR_MinstAvstandMellomPosisjoner"), out meter))
+                    return meter;
+                return 5;
+            }
+        }
+
+        public int MinstTidMellomPosisjoner
+        {
+            get
+            {
+                int sekunder;
+                if (int.TryParse(Get("BBR_MinstSekunderMellomPosisjoner"), out sekunder))
+                    return sekunder;
+                return 10;
+            }
+        }
+
         private string Get(string settingsKey)
         {
            if (_overrides.ContainsKey(settingsKey))
