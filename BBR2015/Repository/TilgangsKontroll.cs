@@ -50,5 +50,21 @@ namespace Repository
         {
             _lagene = null;
         }
+
+        public dynamic HentAlleHemmeligeKoder()
+        {
+            var koder = from l in Lagene
+                from d in l.Deltakere
+                select new
+                {
+                    d.DeltakerId,
+                    d.Navn,
+                    d.Kode,
+                    l.LagId,
+                    LagKode = l.HemmeligKode
+                };
+
+            return koder;
+        }
     }
 }

@@ -167,7 +167,7 @@ namespace RestApi.Tests.Admin
                 if (context.Lag.Any(x => x.Navn.StartsWith("SUPPORT_")))
                     return;
 
-                var lag = LagFactory.SettOppLagMedDeltakere(1, 5, "SUPPORT_");
+                var lag = LagFactory.SettOppLagMedDeltakere(1, 10, "SUPPORT_");
 
                 context.Lag.AddRange(lag);
                 context.SaveChanges();

@@ -55,5 +55,13 @@ namespace RestApi.Controllers
         {
             return Ok(_appSettings.DatabaseConnectionString);
         }
+
+        [Route("api/Admin/hemmeligekoder")]
+        [HttpGet]
+        public IHttpActionResult HemmeligeKoder()
+        {
+            return Ok(_tilgangsKontroll.HentAlleHemmeligeKoder());
+        }
+
     }
 }
