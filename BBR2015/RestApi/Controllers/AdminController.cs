@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using Repository;
@@ -23,6 +24,14 @@ namespace RestApi.Controllers
             _gameStateService.Calculate();
 
             return Ok();
+        }
+
+        // Post: api/Admin/RecalculateState
+        [Route("api/Admin/ThrowException")]
+        [HttpPost]
+        public IHttpActionResult ThrowException()
+        {
+            throw new ApplicationException("Initiert av brukeren");           
         }
     }
 }
