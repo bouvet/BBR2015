@@ -12,7 +12,6 @@ using RestApi.Models;
 namespace RestApi.Controllers
 {
 
-    [EnableCors("*", "*", "*")]
    
     public class PosisjonsServiceController : BaseController
     {

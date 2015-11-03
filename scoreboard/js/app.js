@@ -1,7 +1,7 @@
 angular.module('scoreboard', []);
 
 angular.module('scoreboard').controller('scoreboardController', function($scope, $http, $interval) {
-  $scope.hostname = "https://bbr2015test.azurewebsites.net/api/";
+  $scope.hostname = "https://bbr2015.azurewebsites.net/api/";
 
   $scope.deltakerliste = [];
   $scope.lagliste = [];

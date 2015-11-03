@@ -144,6 +144,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <None Include="Properties\PublishProfiles\bbr2015 - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\bbr2015 - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\bbr2015test - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\bbr2015test - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\bbr2015test.pubxml" />

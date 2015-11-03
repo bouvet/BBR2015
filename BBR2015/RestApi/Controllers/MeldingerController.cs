@@ -23,7 +23,6 @@ namespace RestApi.Controllers
         }
     }
 
-    [EnableCorsAttribute("*", "*", "*")]
    
     public class MeldingerController : BaseController
     {

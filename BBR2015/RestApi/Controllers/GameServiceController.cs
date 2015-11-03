@@ -8,7 +8,6 @@ using RestApi.Models;
 
 namespace RestApi.Controllers
 {
-    [EnableCors("*", "*", "*")]
     [RequireApiKey]
     public class GameServiceController : BaseController
     {

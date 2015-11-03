@@ -16,7 +16,6 @@ namespace RestApi.Controllers
         }
 
         // GET: api/GameStateFeed
-        [EnableCors("*", "*", "*")]
         [RequireApiKey]
         public GameStateForLag Get()
         {

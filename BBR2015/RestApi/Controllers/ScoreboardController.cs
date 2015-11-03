@@ -5,7 +5,6 @@ using Repository;
 namespace RestApi.Controllers
 {
     [RequireScoreboardSecret]
-    [EnableCors("*", "*", "*")]
     public class ScoreboardController : ApiController
     {
         private readonly GameStateService _gameStateService;
