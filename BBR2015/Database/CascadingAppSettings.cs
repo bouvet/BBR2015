@@ -30,13 +30,7 @@ namespace Database
                 settingValue = _overrides[settingsKey];
 
             if (string.IsNullOrWhiteSpace(settingValue))
-                settingValue = Environment.GetEnvironmentVariable(settingsKey, EnvironmentVariableTarget.Machine);
-
-            if (string.IsNullOrWhiteSpace(settingValue))
-                settingValue = Environment.GetEnvironmentVariable(settingsKey, EnvironmentVariableTarget.Process);
-
-            if (string.IsNullOrWhiteSpace(settingValue))
-                settingValue = Environment.GetEnvironmentVariable(settingsKey, EnvironmentVariableTarget.User);
+                settingValue = Environment.GetEnvironmentVariable(settingsKey);          
 
             if (string.IsNullOrWhiteSpace(settingValue))
                 settingValue = System.Configuration.ConfigurationManager.AppSettings[settingsKey];

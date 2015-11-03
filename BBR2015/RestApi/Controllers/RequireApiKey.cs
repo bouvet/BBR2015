@@ -10,43 +10,66 @@ namespace RestApi.Controllers
 {
     public class RequireApiKey : ActionFilterAttribute
     {
+        private const string HTTPHEADER_LAGKODE = "LagId";
+        private const string REQUESTPROPERTY_LAGID = "LagId";
+
+        private const string HTTPHEADER_DELTAKERKODE = "DeltakerId";
+        private const string REQUESTPROPERTY_DELTAKERID = "DeltakerId";
         public override void OnActionExecuting(HttpActionContext context)
         {
-            if (EnsureApiKey(context, "LagId"))
-                EnsureApiKey(context, "DeltakerId");
+            if (ValiderLag(context))
+                ValiderDeltaker(context);
         }
-
-        private static bool EnsureApiKey(HttpActionContext context, string key)
+        private bool ValiderLag(HttpActionContext context)
         {
-            var header = context.Request.Headers.SingleOrDefault(x => x.Key == key);
-            var keyId = string.Empty;
-
-            var valid = header.Value != null;
-            if (valid)
+            var headerValue = GetHeaderValue(context, HTTPHEADER_LAGKODE);
+           
+            if (!string.IsNullOrEmpty(headerValue))
             {
                 var adminRepository = ServiceLocator.Current.Resolve<AdminRepository>();
 
-                keyId = header.Value.FirstOrDefault();
-                switch (key)
+                var lagId = adminRepository.FinnLagIdFraKode(headerValue);
+
+                if (!string.IsNullOrEmpty(lagId))
                 {
-                    case "LagId":
-                        valid = adminRepository.GyldigLag(keyId);
-                        break;
-                    case "DeltakerId":
-                        var lagId = context.Request.Properties["LagId"].ToString();
-                        var lag = adminRepository.FinnLag(lagId);
-                        valid = lag != null && lag.GyldigDeltaker(keyId);
-                        break;
+                    context.Request.Properties[REQUESTPROPERTY_LAGID] = lagId;
+                    return true;
                 }
-                context.Request.Properties[key] = keyId;
             }
 
-            if (!valid)
-            {
-                var message = string.Format("Invalid Authorization Key ({0}) : {1}", key, keyId);
-                context.Response = context.Request.CreateErrorResponse(HttpStatusCode.Forbidden, message);
-            }
-            return valid;
+            var message = string.Format("Invalid Authorization Key ({0}) : {1}", HTTPHEADER_LAGKODE, headerValue);
+            context.Response = context.Request.CreateErrorResponse(HttpStatusCode.Forbidden, message);
+            return false;
         }
+
+        private void ValiderDeltaker(HttpActionContext context)
+        {
+            var headerValue = GetHeaderValue(context, HTTPHEADER_DELTAKERKODE);
+
+            if (!string.IsNullOrEmpty(headerValue))
+            {
+                var adminRepository = ServiceLocator.Current.Resolve<AdminRepository>();
+
+                var lagId = context.Request.Properties[REQUESTPROPERTY_LAGID].ToString();
+                var deltakerId = adminRepository.SlåOppDeltakerFraKode(lagId, headerValue);
+
+                if (!string.IsNullOrEmpty(deltakerId))
+                {
+                    context.Request.Properties[REQUESTPROPERTY_DELTAKERID] = deltakerId;
+                    return;
+                }
+            }
+
+            var message = string.Format("Invalid Authorization Key ({0}) : {1}", HTTPHEADER_DELTAKERKODE, headerValue);
+            context.Response = context.Request.CreateErrorResponse(HttpStatusCode.Forbidden, message);
+        }
+
+        private string GetHeaderValue(HttpActionContext context, string key)
+        {
+            var header = context.Request.Headers.SingleOrDefault(x => x.Key == key);
+
+            return header.Value?.FirstOrDefault();
+        }
+      
     }
 }

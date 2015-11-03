@@ -38,6 +38,12 @@ namespace RestApi.Tests.Admin
         }
 
         [Test]
+        public void Dummy()
+        {
+            
+        }
+
+        [Test]
         [Explicit("Bare hvis du virkelig vet hva du gjør!")]
         [Ignore("Må kjøres HELT separat")]
         public void Tøm_Databasen()
@@ -168,7 +174,7 @@ namespace RestApi.Tests.Admin
         }
 
         [Test]
-        public void Opprett_lagForHelga()
+        public void Opprett_LagForHelga()
         {
             var java = LagFactory.SettOppLagMedDeltakere(6, 4, "JAVA_");
             var ms = LagFactory.SettOppLagMedDeltakere(5, 4, "MS_");
@@ -197,7 +203,7 @@ namespace RestApi.Tests.Admin
         {
             Opprett_Våpen();
             Opprett_Arrangørlag();
-            Opprett_lagForHelga();
+            Opprett_LagForHelga();
 
             using (var context = _dataContextFactory.Create())
             {
@@ -212,7 +218,7 @@ namespace RestApi.Tests.Admin
                 if (context.Matcher.Any(x => x.Navn == match.Navn))
                     return;
 
-                var leggTilLag = context.Lag.Where(x => x.LagId.StartsWith("SUPPORT") || x.LagId.StartsWith("LAG")).ToList();
+                var leggTilLag = context.Lag.Where(x => x.LagId.StartsWith("SUPPORT") || x.LagId.StartsWith("JAVA_") || x.LagId.StartsWith("MS_")).ToList();
 
                 foreach (var lag in leggTilLag)
                 {
@@ -253,7 +259,7 @@ namespace RestApi.Tests.Admin
         {
             Opprett_Våpen();
             Opprett_Arrangørlag();
-            Opprett_lagForHelga();
+            Opprett_LagForHelga();
 
             using (var context = _dataContextFactory.Create())
             {
@@ -268,7 +274,7 @@ namespace RestApi.Tests.Admin
                 if (context.Matcher.Any(x => x.Navn == match.Navn))
                     return;
 
-                var leggTilLag = context.Lag.Where(x => x.LagId.StartsWith("SUPPORT") || x.LagId.StartsWith("LAG_")).ToList();
+                var leggTilLag = context.Lag.Where(x => x.LagId.StartsWith("SUPPORT") || x.LagId.StartsWith("JAVA_") || x.LagId.StartsWith("MS_")).ToList();
 
                 foreach (var lag in leggTilLag)
                 {
@@ -282,7 +288,7 @@ namespace RestApi.Tests.Admin
 
                 context.Matcher.Add(match);
 
-                foreach (var post in new PostFactory().Les(Constants.Område.OscarsborgFredag))
+                foreach (var post in new PostFactory().Les(Constants.Område.Oscarsborg))
                 {
                     context.Poster.Add(post);
 
@@ -321,10 +327,9 @@ namespace RestApi.Tests.Admin
             {
                 var alleLag = context.Lag.ToList();
 
-                var start = worksheet.Dimension.Start;
                 var end = worksheet.Dimension.End;
 
-                for (int row = start.Row + 1; row <= end.Row; row++)
+                for (int row = 2; row <= end.Row; row++)
                 {
                     var lagId = GetValue(worksheet, row, "A");
                     var lag = alleLag.SingleOrDefault(x => x.LagId == lagId);
@@ -344,13 +349,79 @@ namespace RestApi.Tests.Admin
 
         private static string GetValue(ExcelWorksheet worksheet, int row, string column)
         {
-            return (string)worksheet.Cells[column + row].Value;
+            var value = worksheet.Cells[column + row].Value;
+
+            return value?.ToString();
         }
 
-        private void LesInnDeltakere(ExcelWorksheet excelWorksheet)
+        private void LesInnDeltakere(ExcelWorksheet worksheet)
         {
+            var innlesteFraExcel = FraExcel(worksheet);
+
+            var excelGruppertPåLag = from d in innlesteFraExcel
+                                     group d by d.LagId into g
+                                     select g;
+
+            using (var context = _dataContextFactory.Create())
+            {
+                var alleDeltakere = context.Deltakere.Include(x => x.Lag).ToList();
+
+                foreach (var excelGruppe in excelGruppertPåLag)
+                {
+                    var excelDeltakere = excelGruppe.ToList();
+
+                    var deltakere = alleDeltakere.Where(x => x.Lag.LagId == excelGruppe.Key).ToList();
+
+                    int i = 0;
+                    foreach (var deltaker in deltakere)
+                    {
+                        if (i < excelDeltakere.Count)
+                        {
+                            var excelDeltaker = excelDeltakere[i];
+
+                            deltaker.Kode = excelDeltaker.Mobil;
+                            deltaker.Navn = excelDeltaker.Navn;
+                        }
+                        else
+                        {
+                            // ikke match: forsikre at en ikke får tull med duplikate id'er
+                            deltaker.Kode = Guid.NewGuid().ToString();
+                            deltaker.Navn = "Ikke i lista";
+                        }
+                        i++;
+                    }
+                }
+
+                context.SaveChanges();
+            }
         }
 
-        
+        private List<ExcelDeltaker> FraExcel(ExcelWorksheet worksheet)
+        {
+            var deltakere = new List<ExcelDeltaker>();
+
+            var end = worksheet.Dimension.End;
+
+            for (int row = 2; row <= end.Row; row++)
+            {
+                var deltaker = new ExcelDeltaker
+                {
+                    LagId = GetValue(worksheet, row, "A"),
+                    Navn = GetValue(worksheet, row, "B"),
+                    Mobil = GetValue(worksheet, row, "C")
+                };
+
+                deltakere.Add(deltaker);
+            }
+
+            return deltakere;
+        }
+
+        private class ExcelDeltaker
+        {
+            public string LagId { get; set; }
+            public string Navn { get; set; }
+            public string Mobil { get; set; }
+        }
     }
 }

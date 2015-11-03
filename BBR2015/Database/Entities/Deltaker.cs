@@ -12,7 +12,8 @@ namespace Database.Entities
         public string Navn { get; set; }
         public virtual Lag Lag { get; set; }
 
-        public static string NormaliserDeltakerId(string input)
+        public string Kode { get; set; }
+        public static string NormaliserKode(string input)
         {
             if (string.IsNullOrEmpty(input))
                 return input;
@@ -23,10 +24,18 @@ namespace Database.Entities
                         .Replace("+46", string.Empty);
         }
 
+        public bool MatcherKode(string kode)
+        {
+            var normalisert = NormaliserKode(kode);
+
+            return Kode.Equals(normalisert, StringComparison.OrdinalIgnoreCase);
+        }
+
         public Deltaker(string deltakerId, string navn)
         {
             DeltakerId = deltakerId;
             Navn = navn;
+            Kode = deltakerId;
         }
 
         public Deltaker()

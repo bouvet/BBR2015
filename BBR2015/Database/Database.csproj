@@ -87,6 +87,10 @@
     <Compile Include="Migrations\201511012025127_Lag_HemmeligKode.Designer.cs">
       <DependentUpon>201511012025127_Lag_HemmeligKode.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201511031310045_Deltaker_Kode.cs" />
+    <Compile Include="Migrations\201511031310045_Deltaker_Kode.Designer.cs">
+      <DependentUpon>201511031310045_Deltaker_Kode.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="DbQueryExtensions.cs" />
     <Compile Include="PostFactory.cs" />
@@ -99,6 +103,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511012025127_Lag_HemmeligKode.resx">
       <DependentUpon>201511012025127_Lag_HemmeligKode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511031310045_Deltaker_Kode.resx">
+      <DependentUpon>201511031310045_Deltaker_Kode.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
     <None Include="Entities\ClassDiagram1.cd" />

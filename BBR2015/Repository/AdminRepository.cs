@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-
 using Database;
-using System;
 using Database.Entities;
 
 namespace Repository
@@ -18,7 +16,7 @@ namespace Repository
                 if (_lagene != null)
                     return _lagene;
 
-                using(var context = _dataContextFactory.Create())
+                using (var context = _dataContextFactory.Create())
                 {
                     _lagene = context.Lag.Include(x => x.Deltakere).ToList();
                 }
@@ -33,35 +31,25 @@ namespace Repository
             _dataContextFactory = dataContextFactory;
         }
 
-        public void LeggTilLag(string lagId, string navn, string farge, string ikon)
+        public Lag FinnLag(string lagKode)
         {
-            var lag = new Lag(lagId, navn, farge, ikon);
-            LeggTilLag(lag);
+            return Lagene.FirstOrDefault(l => l.HemmeligKode == lagKode);
         }
 
-        public void LeggTilLag(Lag lag)
+        public string FinnLagIdFraKode(string hemmeligKode)
         {
-            Lagene.Add(lag);
+            return Lagene.Where(l => l.HemmeligKode == hemmeligKode).Select(x => x.LagId).SingleOrDefault();
         }
+      
 
-        public Lag FinnLag(string lagId)
+        public string SlåOppDeltakerFraKode(string lagId, string deltakerKode)
         {
-            return Lagene.FirstOrDefault(l => l.LagId == lagId);
-        }
+            var deltakerId = from l in Lagene
+                             from d in l.Deltakere
+                             where l.LagId == lagId && d.MatcherKode(deltakerKode)
+                             select d.DeltakerId;
 
-        public bool GyldigLag(string lagId)
-        {
-            return Lagene.Any(l => l.LagId == lagId);
-        }
-
-        public bool GyldigDeltaker(string lagId, string deltakerId)
-        {
-            return Lagene.Any(l => l.LagId == lagId && l.Deltakere.Exists(d => d.DeltakerId == deltakerId));
-        }
-
-        public IEnumerable<Lag> AlleLag()
-        {
-            return Lagene;
+            return deltakerId.SingleOrDefault();
         }
     }
 }
