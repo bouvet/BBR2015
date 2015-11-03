@@ -157,6 +157,44 @@ namespace RestApi.Tests
         }
 
         [Test]
+        public void GittMatch_NårToLagStemplerOgHarSammePoengsum_SkalDeFåLikRangeringOgSisteLagSkalBliBakerst()
+        {
+            var match = _gitt.EnMatchMedTreLagOgTrePoster();
+
+            var lag1 = match.DeltakendeLag.First();
+            var deltaker11 = lag1.Lag.Deltakere.First();
+
+            var lag2 = match.DeltakendeLag[1];
+            var deltaker21 = lag2.Lag.Deltakere.First();
+
+            var lag3 = match.DeltakendeLag[2];
+
+            var gameservice = _container.Resolve<GameService>();
+            var gamestateservice = _container.Resolve<GameStateService>();
+
+            gameservice.RegistrerNyPost(deltaker11.DeltakerId, lag1.Lag.LagId, "HemmeligKode1", null);
+            gameservice.RegistrerNyPost(deltaker21.DeltakerId, lag2.Lag.LagId, "HemmeligKode2", null);
+
+            var lag1State = gamestateservice.Get(lag1.Lag.LagId);
+            var lag2State = gamestateservice.Get(lag2.Lag.LagId);
+            var lag3State = gamestateservice.Get(lag3.Lag.LagId);
+
+            Assert.AreEqual(1, lag1State.Ranking.Rank, "1: Skal lede");
+            Assert.AreEqual(0, lag1State.Ranking.PoengBakLagetForan, "1: Poeng bak");
+            Assert.AreEqual(100, lag1State.Ranking.PoengForanLagetBak, "1: Poeng foran");
+
+            Assert.AreEqual(1, lag2State.Ranking.Rank, "2: Skal lede");
+            Assert.AreEqual(0, lag2State.Ranking.PoengBakLagetForan, "2: Poeng bak");
+            Assert.AreEqual(100, lag2State.Ranking.PoengForanLagetBak, "2: Poeng foran");
+
+            Assert.AreEqual(3, lag3State.Ranking.Rank, "3: Skal være sist");
+            Assert.AreEqual(100, lag3State.Ranking.PoengBakLagetForan, "3: Poeng bak");
+            Assert.AreEqual(0, lag3State.Ranking.PoengForanLagetBak, "3: Poeng foran");
+
+
+        }
+
+        [Test]
         public void LagSkalHaInitiellVåpenBeholdningIGamestate()
         {
             var match = _gitt.EnMatchMedTreLagOgTrePoster();
