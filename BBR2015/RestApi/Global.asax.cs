@@ -3,6 +3,7 @@ using Database;
 using RestApi.Infrastructure;
 using System.Web.Http;
 using System.Web.Http.Dispatcher;
+using Repository;
 
 namespace RestApi
 {
@@ -26,10 +27,7 @@ namespace RestApi
 
             System.Data.Entity.Database.SetInitializer(new Initializer());
 
-            ServiceLocator.Current = _container;
-
-            //var initialDataCreator = _container.Resolve<InitialDataCreator>();
-            //initialDataCreator.FyllDatabasen();
+            ServiceLocator.Current = _container;           
         }
 
         public override void Dispose()

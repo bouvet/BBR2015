@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Script.Serialization;
@@ -14,15 +15,12 @@ namespace Repository
         private readonly DataContextFactory _dataContextFactory;
         private readonly CurrentMatchProvider _currentMatchProvider;
 
-        private Dictionary<string, GameStateForLag> _gamestates = new Dictionary<string, GameStateForLag>();
-        private ScoreboardState _scoreboard = new ScoreboardState();
+        private ConcurrentDictionary<Guid, MatchState> _matchStates = new ConcurrentDictionary<Guid, MatchState>();
 
         public GameStateService(DataContextFactory dataContextFactory, CurrentMatchProvider currentMatchProvider)
         {
             _dataContextFactory = dataContextFactory;
             _currentMatchProvider = currentMatchProvider;
-
-            Calculate();
         }
 
         public void Calculate()
@@ -153,11 +151,43 @@ namespace Repository
                                             MostValueablePlayerRanking = deltakerPoeng.Count(x => x.Poengsum > p.Poengsum) + 1
                                         }).ToList();
 
-
                 // swap current state
-                _gamestates = nyGameState;
-                _scoreboard = scoreboard;
+                _matchStates[matchId] = new MatchState(matchId, nyGameState, scoreboard);
             }
+        }
+
+        public GameStateForLag Get(string lagId)
+        {
+            var matchId = _currentMatchProvider.GetMatchId();
+
+            if(!_matchStates.ContainsKey(matchId))
+                Calculate();
+
+            return _matchStates[matchId].Get(lagId);
+        }
+
+        public ScoreboardState GetScoreboard()
+        {
+            var matchId = _currentMatchProvider.GetMatchId();
+
+            if (!_matchStates.ContainsKey(matchId))
+                Calculate();
+
+            return _matchStates[matchId].GetScoreboard();
+        }
+    }
+
+    public class MatchState
+    {
+        private Dictionary<string, GameStateForLag> _gamestates = new Dictionary<string, GameStateForLag>();
+        private ScoreboardState _scoreboard = new ScoreboardState();
+
+        public Guid MatchId { get; set; }
+        public MatchState(Guid matchId, Dictionary<string, GameStateForLag> gamestates, ScoreboardState scoreboard)
+        {
+            MatchId = matchId;
+            _gamestates = gamestates;
+            _scoreboard = scoreboard;
         }
 
         public GameStateForLag Get(string lagId)

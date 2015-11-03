@@ -129,7 +129,6 @@ namespace Repository
 
         public LagPosisjoner HentforLag(string lagId)
         {
-
             return new LagPosisjoner
             {
                 LagId = lagId,
