@@ -4,6 +4,7 @@ using System.Web.Http.Cors;
 using System.Web.Http.Description;
 using System.Web.Http.Results;
 using Repository;
+using RestApi.Filters;
 using RestApi.Models;
 
 namespace RestApi.Controllers

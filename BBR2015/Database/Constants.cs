@@ -22,6 +22,15 @@ namespace Database
         {
             public const int MaxAntallUtenSekvensId = 10;
         }
+
+        public class Headers
+        {
+            public const string HTTPHEADER_LAGKODE = "LagId";
+            public const string REQUESTPROPERTY_LAGID = "LagId";
+
+            public const string HTTPHEADER_DELTAKERKODE = "DeltakerId";
+            public const string REQUESTPROPERTY_DELTAKERID = "DeltakerId";
+        }
     }
 
 }

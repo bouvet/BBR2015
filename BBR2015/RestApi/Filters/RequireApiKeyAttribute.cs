@@ -3,26 +3,23 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
+using Database;
 using Repository;
 using RestApi.Infrastructure;
 
-namespace RestApi.Controllers
+namespace RestApi.Filters
 {
-    public class RequireApiKey : ActionFilterAttribute
+    public class RequireApiKeyAttribute : ActionFilterAttribute
     {
-        private const string HTTPHEADER_LAGKODE = "LagId";
-        private const string REQUESTPROPERTY_LAGID = "LagId";
-
-        private const string HTTPHEADER_DELTAKERKODE = "DeltakerId";
-        private const string REQUESTPROPERTY_DELTAKERID = "DeltakerId";
+       
         public override void OnActionExecuting(HttpActionContext context)
         {
-            var lagKode = GetHeaderValue(context, HTTPHEADER_LAGKODE);
-            var deltakerKode = GetHeaderValue(context, HTTPHEADER_DELTAKERKODE);
+            var lagKode = GetHeaderValue(context, Constants.Headers.HTTPHEADER_LAGKODE);
+            var deltakerKode = GetHeaderValue(context, Constants.Headers.HTTPHEADER_DELTAKERKODE);
 
             if (string.IsNullOrEmpty(lagKode) || string.IsNullOrEmpty(deltakerKode))
             {
-                var message = string.Format("Mangler en eller flere påkrevde HTTP Headere: '{0}', '{1}'", HTTPHEADER_LAGKODE, HTTPHEADER_DELTAKERKODE);
+                var message = string.Format("Mangler en eller flere påkrevde HTTP Headere: '{0}', '{1}'", Constants.Headers.HTTPHEADER_LAGKODE, Constants.Headers.HTTPHEADER_DELTAKERKODE);
                 context.Response = context.Request.CreateErrorResponse(HttpStatusCode.Forbidden, message);
                 return;
             }
@@ -33,13 +30,13 @@ namespace RestApi.Controllers
 
             if (resultat == null)
             {
-                var message = string.Format("Ugyldige verdier i HTTP Headere: '{0}', '{1}'. Sjekk lagoppstillingen.", HTTPHEADER_LAGKODE, HTTPHEADER_DELTAKERKODE);
+                var message = string.Format("Ugyldige verdier i HTTP Headere: '{0}', '{1}'. Sjekk lagoppstillingen.", Constants.Headers.HTTPHEADER_LAGKODE, Constants.Headers.HTTPHEADER_DELTAKERKODE);
                 context.Response = context.Request.CreateErrorResponse(HttpStatusCode.Forbidden, message);
                 return;
             }
 
-            context.Request.Properties[REQUESTPROPERTY_LAGID] = resultat.LagId;
-            context.Request.Properties[REQUESTPROPERTY_DELTAKERID] = resultat.DeltakerId;
+            context.Request.Properties[Constants.Headers.REQUESTPROPERTY_LAGID] = resultat.LagId;
+            context.Request.Properties[Constants.Headers.REQUESTPROPERTY_DELTAKERID] = resultat.DeltakerId;
         }        
         private string GetHeaderValue(HttpActionContext context, string key)
         {

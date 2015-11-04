@@ -149,10 +149,11 @@
     <Compile Include="Controllers\GameServiceController.cs" />
     <Compile Include="Controllers\GameStateFeedController.cs" />
     <Compile Include="Controllers\PosisjonsServiceController.cs" />
-    <Compile Include="Controllers\RequireApiKey.cs" />
+    <Compile Include="Filters\RequireApiKeyAttribute.cs" />
     <Compile Include="Controllers\DefaultController.cs" />
     <Compile Include="Controllers\MeldingerController.cs" />
     <Compile Include="Controllers\ScoreboardController.cs" />
+    <Compile Include="Filters\ThrottleAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -162,7 +163,7 @@
     <Compile Include="Models\Koordinat.cs" />
     <Compile Include="Models\RegistrerNyPost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RequireScoreboardSecret.cs" />
+    <Compile Include="Filters\RequireScoreboardSecretAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

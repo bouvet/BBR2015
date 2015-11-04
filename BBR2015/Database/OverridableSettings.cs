@@ -13,7 +13,7 @@ namespace Database
         public string DatabaseConnectionString
         {
             get
-            {                
+            {
                 if (_overrides.ContainsKey(ConnectionStringKey))
                     return _overrides[ConnectionStringKey];
 
@@ -50,9 +50,21 @@ namespace Database
             }
         }
 
+
+        public int MinsteTidMellomRequestsIMs
+        {
+            get
+            {
+                int ms;
+                if (int.TryParse(Get("BBR_MinsteTidMellomRequestsIMs"), out ms))
+                    return ms;
+                return 1;
+            }
+        }
+
         private string Get(string settingsKey)
         {
-           if (_overrides.ContainsKey(settingsKey))
+            if (_overrides.ContainsKey(settingsKey))
                 return _overrides[settingsKey];
 
             return ConfigurationManager.AppSettings[settingsKey];

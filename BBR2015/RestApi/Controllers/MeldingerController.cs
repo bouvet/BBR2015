@@ -7,6 +7,7 @@ using Repository;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
 using System.Web.Http.Results;
+using RestApi.Filters;
 
 namespace RestApi.Controllers
 {
@@ -37,7 +38,8 @@ namespace RestApi.Controllers
         // GET: api/Meldinger
         [HttpGet]
         [ResponseType(typeof (IEnumerable<Object>))]
-       
+        [Throttle]
+
         public IHttpActionResult Get(long id)
         {
             return HttpActionResult(id);
@@ -71,6 +73,7 @@ namespace RestApi.Controllers
         // POST: api/Meldinger
         [HttpPost]
         [ResponseType(typeof(OkResult))]
+        [Throttle]
         public IHttpActionResult Post([FromBody] NyMelding nyMelding)
         {
             try

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web.Http.Cors;
 using Database.Entities;
 using Repository;
+using RestApi.Filters;
 
 namespace RestApi.Controllers
 {

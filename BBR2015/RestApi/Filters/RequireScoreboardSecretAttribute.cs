@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http.Controllers;
@@ -7,9 +6,9 @@ using System.Web.Http.Filters;
 using Database;
 using RestApi.Infrastructure;
 
-namespace RestApi
+namespace RestApi.Filters
 {
-    public class RequireScoreboardSecret : ActionFilterAttribute
+    public class RequireScoreboardSecretAttribute : ActionFilterAttribute
     {
         public override void OnActionExecuting(HttpActionContext context)
         {

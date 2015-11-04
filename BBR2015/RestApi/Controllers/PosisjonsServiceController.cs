@@ -7,6 +7,7 @@ using System.Web.Http.Description;
 using System.Web.Http.Results;
 using Repository;
 using Database.Entities;
+using RestApi.Filters;
 using RestApi.Models;
 
 namespace RestApi.Controllers
@@ -24,7 +25,10 @@ namespace RestApi.Controllers
 
         // GET: api/PosisjonsService
         [RequireApiKey]
+        [Throttle]
         [ResponseType(typeof (DeltakerPosisjon))]
+        [HttpGet]
+
         public IHttpActionResult Get()
         {
             try
@@ -40,6 +44,7 @@ namespace RestApi.Controllers
         [RequireScoreboardSecret]
         [Route("api/PosisjonsService/Alle")]
         [ResponseType(typeof(List<LagPosisjoner>))]
+        [HttpGet]
         public IHttpActionResult GetAlle()
         {
             try
@@ -58,7 +63,9 @@ namespace RestApi.Controllers
 
         // POST: api/PosisjonsService
         [ResponseType(typeof(OkResult))]
+        [Throttle]
         [RequireApiKey]
+        [HttpPost]
         public IHttpActionResult Post([FromBody] Koordinat koordinat)
         {
             try

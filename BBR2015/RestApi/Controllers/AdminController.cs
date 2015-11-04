@@ -5,6 +5,7 @@ using System.Web.Http.Cors;
 using System.Web.Http.Results;
 using Database;
 using Repository;
+using RestApi.Filters;
 
 namespace RestApi.Controllers
 {
@@ -45,6 +46,7 @@ namespace RestApi.Controllers
         {
             _gameStateService.Calculate();
             _tilgangsKontroll.Nullstill();
+            ThrottleAttribute.Reload();
             return Ok();
         }
 
