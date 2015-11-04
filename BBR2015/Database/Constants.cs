@@ -17,6 +17,11 @@ namespace Database
 
             public const int BombeSkjulerPostIAntallSekunder = 60*5;
         }
+
+        public class Meldinger
+        {
+            public const int MaxAntallUtenSekvensId = 10;
+        }
     }
 
 }

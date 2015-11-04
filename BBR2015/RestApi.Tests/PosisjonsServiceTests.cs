@@ -32,7 +32,7 @@ namespace RestApi.Tests
             // Slett alle posisjoner (blir rullet tilbake i transaksjon uansett)
             using (var context = _dataContextFactory.Create())
             {
-                context.DeltakerPosisjoner.RemoveRange(context.DeltakerPosisjoner);
+                context.DeltakerPosisjoner.Clear();
                 context.SaveChanges();
             }
         }
@@ -42,7 +42,7 @@ namespace RestApi.Tests
         {
             var givenLag = _gitt.ToLagMedToDeltakere();
 
-            var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
+            var posisjonsSevice = _container.Resolve<PosisjonsService>();
 
             var deltaker11 = givenLag[0].Deltakere[0];
             var latitude = 59.6785526164;
@@ -61,7 +61,7 @@ namespace RestApi.Tests
         {
             var given = _gitt.ToLagMedToDeltakere();
 
-            var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
+            var posisjonsSevice = _container.Resolve<PosisjonsService>();
 
             var deltaker11 = given[0].Deltakere[0];
             var latitude = 59.6785526164;
@@ -82,7 +82,7 @@ namespace RestApi.Tests
         {
             var given = _gitt.ToLagMedToDeltakere();
 
-            var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
+            var posisjonsSevice = _container.Resolve<PosisjonsService>();
 
             var deltaker11 = given[0].Deltakere[0];
             var latitude = 59.6785526164;
@@ -107,7 +107,7 @@ namespace RestApi.Tests
         {
             var given = _gitt.ToLagMedToDeltakere();
 
-            var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
+            var posisjonsSevice = _container.Resolve<PosisjonsService>();
 
             var deltaker11 = given[0].Deltakere[0];
             var latitude = 59.6785526164;
@@ -130,7 +130,7 @@ namespace RestApi.Tests
         {
             var given = _gitt.ToLagMedToDeltakere();
 
-            var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
+            var posisjonsSevice = _container.Resolve<PosisjonsService>();
 
             var deltaker11 = given[0].Deltakere[0];
             var latitude = 59.6785526164;
@@ -151,7 +151,7 @@ namespace RestApi.Tests
         {
             var given = _gitt.ToLagMedToDeltakere();
 
-            var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
+            var posisjonsSevice = _container.Resolve<PosisjonsService>();
 
             var deltaker11 = given[0].Deltakere[0];
             var latitude = 59.6785526164;
@@ -174,7 +174,7 @@ namespace RestApi.Tests
         {
             var givenLag = _gitt.ToLagMedToDeltakere();
 
-            var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
+            var posisjonsSevice = _container.Resolve<PosisjonsService>();
 
             var latitude = 59.6785526164;
             var longitude = 10.6039274298;
@@ -203,7 +203,7 @@ namespace RestApi.Tests
         {
             var givenLag = _gitt.ToLagMedToDeltakere();
 
-            var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
+            var posisjonsSevice = _container.Resolve<PosisjonsService>();
 
             var latitude = 59.6785526164;
             var longitude = 10.6039274298;
@@ -231,7 +231,7 @@ namespace RestApi.Tests
         {
             var given = _gitt.ToLagMedToDeltakere();
 
-            var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
+            var posisjonsSevice = _container.Resolve<PosisjonsService>();
 
             var deltaker11 = given[0].Deltakere[0];
             var latitude = 59.6785526164;
@@ -256,7 +256,7 @@ namespace RestApi.Tests
         {
             var givenLag = _gitt.ToLagMedToDeltakere();
 
-            var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
+            var posisjonsSevice = _container.Resolve<PosisjonsService>();
 
             var latitude = 59.6785526164;
             var longitude = 10.6039274298;
@@ -275,7 +275,7 @@ namespace RestApi.Tests
             // Lag ny container for å simulere restart
             _container = RestApiApplication.CreateContainer();
 
-            var posisjonService = _container.Resolve<PosisjonsRepository>();
+            var posisjonService = _container.Resolve<PosisjonsService>();
 
             var posisjonForLag1 = posisjonService.HentforLag(givenLag[0].LagId);
             Assert.AreEqual(2, posisjonForLag1.Posisjoner.Count, "Feil antall posisjoner etter restart - lag1");

@@ -15,11 +15,11 @@ namespace RestApi.Controllers
    
     public class PosisjonsServiceController : BaseController
     {
-        private PosisjonsRepository _posisjonsRepository;
+        private PosisjonsService _posisjonsService;
 
-        public PosisjonsServiceController(PosisjonsRepository posisjonsRepository)
+        public PosisjonsServiceController(PosisjonsService posisjonsService)
         {
-            _posisjonsRepository = posisjonsRepository;
+            _posisjonsService = posisjonsService;
         }
 
         // GET: api/PosisjonsService
@@ -29,7 +29,7 @@ namespace RestApi.Controllers
         {
             try
             {
-                return Ok(_posisjonsRepository.HentforLag(LagId).Posisjoner);
+                return Ok(_posisjonsService.HentforLag(LagId).Posisjoner);
             }
             catch (Exception ex)
             {
@@ -48,7 +48,7 @@ namespace RestApi.Controllers
                 if (header.Value == null)
                     return NotFound();
 
-                return Ok(_posisjonsRepository.HentforAlleLag(header.Value.FirstOrDefault()));
+                return Ok(_posisjonsService.HentforAlleLag(header.Value.FirstOrDefault()));
             }
             catch (Exception ex)
             {
@@ -73,7 +73,7 @@ namespace RestApi.Controllers
                     return BadRequest(ModelState);
                 }
 
-                DeltakerPosisjon deltakerPosisjon = _posisjonsRepository.RegistrerPosisjon(LagId,DeltakerId,koordinat.Latitude, koordinat.Longitude);
+                DeltakerPosisjon deltakerPosisjon = _posisjonsService.RegistrerPosisjon(LagId,DeltakerId,koordinat.Latitude, koordinat.Longitude);
                 if (deltakerPosisjon == null)
                 {
                     return Conflict();

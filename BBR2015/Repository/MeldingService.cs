@@ -7,13 +7,15 @@ using Database;
 
 namespace Repository
 {
-    public class MeldingRepository
+    public class MeldingService
     {
         private DataContextFactory _dataContextFactory;
+        private readonly TilgangsKontroll _tilgangsKontroll;
 
-        public MeldingRepository(DataContextFactory dataContextFactory)
+        public MeldingService(DataContextFactory dataContextFactory, TilgangsKontroll tilgangsKontroll)
         {
             _dataContextFactory = dataContextFactory;
+            _tilgangsKontroll = tilgangsKontroll;
         }
 
         public void PostMelding(string deltakerId, string lagId, string meldingstekst)
@@ -34,6 +36,9 @@ namespace Repository
 
         public IEnumerable<Melding> HentMeldinger(string lagId, long sekvensIfra = 0, int maksAntall = 10)
         {
+            if (sekvensIfra > 0)
+                maksAntall = int.MaxValue;
+
             using (var context = _dataContextFactory.Create())
             {
                 var resultat = (from m in context.Meldinger
@@ -44,6 +49,13 @@ namespace Repository
                 return resultat;
 
             }
+        }
+
+        public void PostMeldingTilAlle(string deltakerId, string lagId, string tekst)
+        {
+            var alleLag = _tilgangsKontroll.HentAlleLagIder();
+
+            alleLag.ForEach(x => PostMelding(deltakerId, x, tekst));
         }
     }
 }

@@ -23,14 +23,14 @@ namespace RestApi.Controllers
         }
     }
 
-   
+    [RequireApiKey]
     public class MeldingerController : BaseController
     {
-        private MeldingRepository _meldingRepository;
+        private MeldingService _meldingService;
 
-        public MeldingerController(MeldingRepository meldingRepository)
+        public MeldingerController(MeldingService meldingService)
         {
-            _meldingRepository = meldingRepository;
+            _meldingService = meldingService;
         }
         // GET: api/Meldinger
         //[ResponseType(typeof (IEnumerable<Object>))]
@@ -44,7 +44,7 @@ namespace RestApi.Controllers
         // GET: api/Meldinger
         [HttpGet]
         [ResponseType(typeof (IEnumerable<Object>))]
-        [RequireApiKey]
+       
         public IHttpActionResult Get(long id)
         {
             return HttpActionResult(id);
@@ -58,7 +58,7 @@ namespace RestApi.Controllers
             try
             {
                 //TODO: Allow message from Admin to all teams!
-                var rawData = _meldingRepository.HentMeldinger(LagId, sekvensIfra, maksAntall).ToList();
+                var rawData = _meldingService.HentMeldinger(LagId, sekvensIfra, maksAntall).ToList();
                 var meldinger = rawData.Select(m => new
                 {
                     Sekvens = m.SekvensId,
@@ -79,7 +79,6 @@ namespace RestApi.Controllers
         // POST: api/Meldinger
         [HttpPost]
         [ResponseType(typeof(OkResult))]
-        [RequireApiKey]
         public IHttpActionResult Post([FromBody] NyMelding nyMelding)
         {
             try
@@ -94,7 +93,34 @@ namespace RestApi.Controllers
                     return BadRequest(ModelState);
                 }
 
-                _meldingRepository.PostMelding(DeltakerId, LagId, nyMelding.Tekst);
+                _meldingService.PostMelding(DeltakerId, LagId, nyMelding.Tekst);
+               
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpPost]
+        [ResponseType(typeof(OkResult))]
+        [RequireScoreboardSecret]
+        public IHttpActionResult PostTilAlle([FromBody] NyMelding nyMelding)
+        {
+            try
+            {
+                if (nyMelding == null)
+                {
+                    return BadRequest("Melding cannot be null");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                _meldingService.PostMeldingTilAlle(DeltakerId, LagId, nyMelding.Tekst);
                
                 return Ok();
             }

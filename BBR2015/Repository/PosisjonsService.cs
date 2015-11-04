@@ -7,7 +7,7 @@ using Database;
 
 namespace Repository
 {
-    public class PosisjonsRepository
+    public class PosisjonsService
     {
         // Registreres som singleton, så dictionary trenger ikke være static (sjekk ut threadsafety, dog)
         private ConcurrentDictionary<string, DeltakerPosisjon> _gjeldendePosisjon;
@@ -19,7 +19,7 @@ namespace Repository
         private readonly object _lockGjeldende = new object();
         private readonly object _lockLagret = new object();
 
-        public PosisjonsRepository(DataContextFactory dataContextFactory, OverridableSettings appSettings)
+        public PosisjonsService(DataContextFactory dataContextFactory, OverridableSettings appSettings)
         {
             _dataContextFactory = dataContextFactory;
             _appSettings = appSettings;

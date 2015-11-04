@@ -88,7 +88,12 @@ namespace Repository
         private string LagKodeKombinasjon(string lagKode, string deltakerKode)
         {
             return string.Format("{0}¤¤¤{1}", lagKode, deltakerKode);
-        }      
+        }
+
+        public List<string> HentAlleLagIder()
+        {
+            return Lagene.Select(x => x.LagId).ToList();
+        }
     }
 
     public class KontrollResultat
