@@ -33,7 +33,7 @@ namespace Repository
                     context.LagIMatch.Include(x => x.Lag).Include(x => x.VåpenBeholdning).Include("Våpenbeholdning.BruktIPostRegistrering")
                            .Where(x => x.Match.MatchId == matchId)
                            .OrderByDescending(x => x.PoengSum)
-                           .ToArray();
+                           .ToList();
 
                 var poster = (from p in context.PosterIMatch.Include(x => x.Post)
                               where p.Match.MatchId == matchId
@@ -62,16 +62,29 @@ namespace Repository
                                           }).ToList();
 
 
+                var rankedeLag = (from l in sorterteLag
+                                  select new
+                                  {
+                                      Id = l.Id,
+                                      Lag = l.Lag,
+                                      Rank = sorterteLag.Count(x => x.PoengSum > l.PoengSum) + 1,
+                                      PoengSum = l.PoengSum,
+                                      LagIMatch = l
+                                  }).OrderBy(x => x.Rank).ToList();
+
+                var poengsummer = (from l in rankedeLag
+                                   select l.PoengSum).Distinct().OrderByDescending(x => x).ToList();
+
                 var nyGameState = new Dictionary<string, GameStateForLag>();
                 var random = new Random();
 
-                for (int i = 0; i < sorterteLag.Length; i++)
+                foreach (var lag in rankedeLag)
                 {
-                    var lag = sorterteLag[i];
+                    var egenPoengIndex = poengsummer.IndexOf(lag.PoengSum);
 
-                    LagIMatch plassenForan = i == 0 ? null : sorterteLag[i - 1];
-                    LagIMatch plassenBak = i == sorterteLag.Length - 1 ? null : sorterteLag[i + 1];
-
+                    var poengForover = egenPoengIndex == 0 ? lag.PoengSum : poengsummer[egenPoengIndex - 1];
+                    var poengBakover = egenPoengIndex == poengsummer.Count - 1 ? lag.PoengSum : poengsummer[egenPoengIndex + 1];
+                  
                     var state = new GameStateForLag
                     {
                         LagId = lag.Lag.LagId,
@@ -81,9 +94,9 @@ namespace Repository
                         Score = lag.PoengSum,
                         Ranking = new GameStateRanking
                         {
-                            Rank = i + 1,
-                            PoengBakLagetForan = (plassenForan ?? lag).PoengSum - lag.PoengSum,
-                            PoengForanLagetBak = lag.PoengSum - (plassenBak ?? lag).PoengSum,
+                            Rank = lag.Rank,
+                            PoengBakLagetForan = poengForover - lag.PoengSum,
+                            PoengForanLagetBak = lag.PoengSum - poengBakover,
                         },
                         Poster = (from p in poster.Where(x => x.ErSynlig)
                                   join r in postRegistreringer.Where(x => x.LagIMatchId == lag.Id) on p.PostId equals r.PostId into j
@@ -96,7 +109,7 @@ namespace Repository
                                       HarRegistert = reg != null,
                                       Rekkefølge = random.Next(0, short.MaxValue) // order by random                                 
                                   }).OrderBy(x => x.Rekkefølge).ToList(),
-                        Vaapen = lag.VåpenBeholdning.Where(x => x.BruktIPostRegistrering == null).Select(x => new GameStateVaapen
+                        Vaapen = lag.LagIMatch.VåpenBeholdning.Where(x => x.BruktIPostRegistrering == null).Select(x => new GameStateVaapen
                         {
                             VaapenId = x.VaapenId
                         }).ToList()
