@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
+using Castle.Core.Internal;
 using Castle.Windsor;
 using Database;
 using Database.Entities;
 using NUnit.Framework;
 using Repository;
 using RestApi.Tests.Infrastructure;
+using Constants = Database.Constants;
 
 namespace RestApi.Tests
 {
@@ -28,6 +30,34 @@ namespace RestApi.Tests
         public void GittMatch_NårEtLagIkkeHarRegistrertNoenPoster_SkalDeIkkeHaNoenPoeng()
         {
             var match = _gitt.EnMatchMedTreLagOgTrePoster();
+
+            var lag1 = match.DeltakendeLag.First();
+            var gamestateservice = _container.Resolve<GameStateService>();
+
+            var lag1State = gamestateservice.Get(lag1.Lag.LagId);
+
+            Assert.AreEqual(0, lag1State.Score, "Skal ikke ha noen poeng");
+            Assert.AreEqual(false, lag1State.Poster.Any(x => x.HarRegistert), "Skal ikke ha noen registreringer");
+        }
+
+        [Test]
+        public void GittMatch_IngenPosterErFramITid_SkalIkkeKræsje()
+        {
+            var match = _gitt.EnMatchMedTreLagOgTrePoster();
+
+            using (var context = _dataContextFactory.Create())
+            {
+                context.PosterIMatch
+                       .Include(x => x.Post)
+                       .Include(x => x.Match)
+                       .ForEach(x =>
+                {
+                    x.SynligFraTid = TimeService.Now.Subtract(new TimeSpan(0, 60, 0));
+                    x.SynligTilTid = TimeService.Now.Subtract(new TimeSpan(0, 30, 0));
+                });
+
+                context.SaveChanges();
+            }
 
             var lag1 = match.DeltakendeLag.First();
             var gamestateservice = _container.Resolve<GameStateService>();
@@ -70,7 +100,7 @@ namespace RestApi.Tests
 
             var førstePost = match.Poster.First();
 
-            DisablePostIMatch(førstePost);          
+            DisablePostIMatch(førstePost);
 
             gameservice.RegistrerNyPost(deltaker11.DeltakerId, lag1.Lag.LagId, førstePost.Post.HemmeligKode, null);
 
@@ -221,7 +251,7 @@ namespace RestApi.Tests
             var lag1State = gamestateservice.Get(lag1.Lag.LagId);
             Assert.AreEqual(1, lag1State.Vaapen.Count(x => x.VaapenId == Constants.Våpen.Bombe), "Skal ha 1 bombe");
 
-            gameservice.RegistrerNyPost(deltaker11.DeltakerId, lag1.Lag.LagId, "HemmeligKode1", Constants.Våpen.Bombe);          
+            gameservice.RegistrerNyPost(deltaker11.DeltakerId, lag1.Lag.LagId, "HemmeligKode1", Constants.Våpen.Bombe);
 
             lag1State = gamestateservice.Get(lag1.Lag.LagId);
             Assert.AreEqual(100, lag1State.Score, "Skal ha fått poeng");
@@ -233,7 +263,7 @@ namespace RestApi.Tests
             TimeService.AddSeconds(Constants.Våpen.BombeSkjulerPostIAntallSekunder + 5);
 
             lag1State = gamestateservice.Get(lag1.Lag.LagId);
-            
+
             Assert.AreEqual(3, lag1State.Poster.Count, "Post skal bli synlig igjen");
         }
     }

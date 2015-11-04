@@ -84,7 +84,7 @@ namespace Repository
 
                     var poengForover = egenPoengIndex == 0 ? lag.PoengSum : poengsummer[egenPoengIndex - 1];
                     var poengBakover = egenPoengIndex == poengsummer.Count - 1 ? lag.PoengSum : poengsummer[egenPoengIndex + 1];
-                  
+
                     var state = new GameStateForLag
                     {
                         LagId = lag.Lag.LagId,
@@ -169,7 +169,7 @@ namespace Repository
                 var førsteTidspunktEtterNå = (from p in poster
                                               from t in p.Tider
                                               where t > TimeService.Now
-                                              select t).Min();
+                                              select t).Union(new[] { DateTime.MaxValue }).Min();
 
                 // swap current state
                 _matchStates[matchId] = new MatchState(matchId, nyGameState, scoreboard, førsteTidspunktEtterNå);
