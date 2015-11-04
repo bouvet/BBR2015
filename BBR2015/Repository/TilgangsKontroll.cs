@@ -7,7 +7,14 @@ namespace Repository
 {
     public class TilgangsKontroll
     {
+        private readonly DataContextFactory _dataContextFactory;
         private List<Lag> _lagene;
+        private Dictionary<string, KontrollResultat> _kodeKombinasjoner;
+
+        public TilgangsKontroll(DataContextFactory dataContextFactory)
+        {
+            _dataContextFactory = dataContextFactory;
+        }
 
         private List<Lag> Lagene
         {
@@ -24,47 +31,70 @@ namespace Repository
                 return _lagene;
             }
         }
-        private DataContextFactory _dataContextFactory;
 
-        public TilgangsKontroll(DataContextFactory dataContextFactory)
+        private Dictionary<string, KontrollResultat> KodeKombinasjoner
         {
-            _dataContextFactory = dataContextFactory;
+            get
+            {
+                if (_kodeKombinasjoner == null)
+                {
+                    _kodeKombinasjoner = (from l in Lagene
+                                          from d in l.Deltakere
+                                          select new KontrollResultat
+                                          {
+                                              KodeKombinasjon = LagKodeKombinasjon(l.HemmeligKode, d.Kode),
+                                              LagId = l.LagId,
+                                              DeltakerId = d.DeltakerId
+                                          }
+                        ).ToDictionary(x => x.KodeKombinasjon, x => x);
+                }
+
+                return _kodeKombinasjoner;
+            }
         }
-
-        public string FinnLagIdFraKode(string hemmeligKode)
-        {
-            return Lagene.Where(l => l.HemmeligKode == hemmeligKode).Select(x => x.LagId).SingleOrDefault();
-        }
-
-        public string SlåOppDeltakerFraKode(string lagId, string deltakerKode)
-        {
-            var deltakerId = from l in Lagene
-                             from d in l.Deltakere
-                             where l.LagId == lagId && d.MatcherKode(deltakerKode)
-                             select d.DeltakerId;
-
-            return deltakerId.SingleOrDefault();
-        }
-
+              
         public void Nullstill()
         {
             _lagene = null;
+            _kodeKombinasjoner = null;
         }
 
         public dynamic HentAlleHemmeligeKoder()
         {
             var koder = from l in Lagene
-                from d in l.Deltakere
-                select new
-                {
-                    d.DeltakerId,
-                    d.Navn,
-                    d.Kode,
-                    l.LagId,
-                    LagKode = l.HemmeligKode
-                };
+                        from d in l.Deltakere
+                        select new
+                        {
+                            d.DeltakerId,
+                            d.Navn,
+                            d.Kode,
+                            l.LagId,
+                            LagKode = l.HemmeligKode
+                        };
 
             return koder;
         }
+
+        public KontrollResultat SjekkTilgang(string lagKode, string deltakerKode)
+        {
+            var kodeKombinasjon = LagKodeKombinasjon(lagKode, deltakerKode);
+
+            if (!KodeKombinasjoner.ContainsKey(kodeKombinasjon))
+                return null;
+
+            return KodeKombinasjoner[kodeKombinasjon];
+        }
+
+        private string LagKodeKombinasjon(string lagKode, string deltakerKode)
+        {
+            return string.Format("{0}¤¤¤{1}", lagKode, deltakerKode);
+        }      
+    }
+
+    public class KontrollResultat
+    {
+        public string KodeKombinasjon { get; set; }
+        public string LagId { get; set; }
+        public string DeltakerId { get; set; }
     }
 }

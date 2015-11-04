@@ -17,53 +17,30 @@ namespace RestApi.Controllers
         private const string REQUESTPROPERTY_DELTAKERID = "DeltakerId";
         public override void OnActionExecuting(HttpActionContext context)
         {
-            if (ValiderLag(context))
-                ValiderDeltaker(context);
-        }
-        private bool ValiderLag(HttpActionContext context)
-        {
-            var headerValue = GetHeaderValue(context, HTTPHEADER_LAGKODE);
-           
-            if (!string.IsNullOrEmpty(headerValue))
+            var lagKode = GetHeaderValue(context, HTTPHEADER_LAGKODE);
+            var deltakerKode = GetHeaderValue(context, HTTPHEADER_DELTAKERKODE);
+
+            if (string.IsNullOrEmpty(lagKode) || string.IsNullOrEmpty(deltakerKode))
             {
-                var adminRepository = ServiceLocator.Current.Resolve<TilgangsKontroll>();
-
-                var lagId = adminRepository.FinnLagIdFraKode(headerValue);
-
-                if (!string.IsNullOrEmpty(lagId))
-                {
-                    context.Request.Properties[REQUESTPROPERTY_LAGID] = lagId;
-                    return true;
-                }
+                var message = string.Format("Mangler en eller flere påkrevde HTTP Headere: '{0}', '{1}'", HTTPHEADER_LAGKODE, HTTPHEADER_DELTAKERKODE);
+                context.Response = context.Request.CreateErrorResponse(HttpStatusCode.Forbidden, message);
+                return;
             }
 
-            var message = string.Format("Invalid Authorization Key ({0}) : {1}", HTTPHEADER_LAGKODE, headerValue);
-            context.Response = context.Request.CreateErrorResponse(HttpStatusCode.Forbidden, message);
-            return false;
-        }
+            var tilgangsKontroll = ServiceLocator.Current.Resolve<TilgangsKontroll>();
 
-        private void ValiderDeltaker(HttpActionContext context)
-        {
-            var headerValue = GetHeaderValue(context, HTTPHEADER_DELTAKERKODE);
+            var resultat = tilgangsKontroll.SjekkTilgang(lagKode, deltakerKode);
 
-            if (!string.IsNullOrEmpty(headerValue))
+            if (resultat == null)
             {
-                var adminRepository = ServiceLocator.Current.Resolve<TilgangsKontroll>();
-
-                var lagId = context.Request.Properties[REQUESTPROPERTY_LAGID].ToString();
-                var deltakerId = adminRepository.SlåOppDeltakerFraKode(lagId, headerValue);
-
-                if (!string.IsNullOrEmpty(deltakerId))
-                {
-                    context.Request.Properties[REQUESTPROPERTY_DELTAKERID] = deltakerId;
-                    return;
-                }
+                var message = string.Format("Ugyldige verdier i HTTP Headere: '{0}', '{1}'. Sjekk lagoppstillingen.", HTTPHEADER_LAGKODE, HTTPHEADER_DELTAKERKODE);
+                context.Response = context.Request.CreateErrorResponse(HttpStatusCode.Forbidden, message);
+                return;
             }
 
-            var message = string.Format("Invalid Authorization Key ({0}) : {1}", HTTPHEADER_DELTAKERKODE, headerValue);
-            context.Response = context.Request.CreateErrorResponse(HttpStatusCode.Forbidden, message);
-        }
-
+            context.Request.Properties[REQUESTPROPERTY_LAGID] = resultat.LagId;
+            context.Request.Properties[REQUESTPROPERTY_DELTAKERID] = resultat.DeltakerId;
+        }        
         private string GetHeaderValue(HttpActionContext context, string key)
         {
             var header = context.Request.Headers.SingleOrDefault(x => x.Key == key);

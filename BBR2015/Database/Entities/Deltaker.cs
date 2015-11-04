@@ -13,23 +13,23 @@ namespace Database.Entities
         public virtual Lag Lag { get; set; }
 
         public string Kode { get; set; }
-        public static string NormaliserKode(string input)
-        {
-            if (string.IsNullOrEmpty(input))
-                return input;
+        //public static string NormaliserKode(string input)
+        //{
+        //    if (string.IsNullOrEmpty(input))
+        //        return input;
 
-            return input.Trim()
-                        .Replace(" ", string.Empty)
-                        .Replace("+47", string.Empty)
-                        .Replace("+46", string.Empty);
-        }
+        //    return input.Trim()
+        //                .Replace(" ", string.Empty)
+        //                .Replace("+47", string.Empty)
+        //                .Replace("+46", string.Empty);
+        //}
 
-        public bool MatcherKode(string kode)
-        {
-            var normalisert = NormaliserKode(kode);
+        //public bool MatcherKode(string kode)
+        //{
+        //    var normalisert = NormaliserKode(kode);
 
-            return Kode.Equals(normalisert, StringComparison.OrdinalIgnoreCase);
-        }
+        //    return Kode.Equals(normalisert, StringComparison.OrdinalIgnoreCase);
+        //}
 
         public Deltaker(string deltakerId, string navn)
         {
