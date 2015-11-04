@@ -32,14 +32,7 @@ namespace RestApi.Controllers
         {
             _meldingService = meldingService;
         }
-        // GET: api/Meldinger
-        //[ResponseType(typeof (IEnumerable<Object>))]
-        //public IHttpActionResult Get()
-        //{
-        //    long sekvensIfra = 0;
-        //    int maksAntall = 10;
-        //    return HttpActionResult(sekvensIfra, maksAntall);
-        //}
+       
 
         // GET: api/Meldinger
         [HttpGet]
@@ -57,7 +50,6 @@ namespace RestApi.Controllers
 
             try
             {
-                //TODO: Allow message from Admin to all teams!
                 var rawData = _meldingService.HentMeldinger(LagId, sekvensIfra, maksAntall).ToList();
                 var meldinger = rawData.Select(m => new
                 {

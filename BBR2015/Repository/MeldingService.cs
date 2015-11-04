@@ -34,7 +34,7 @@ namespace Repository
 
         }
 
-        public IEnumerable<Melding> HentMeldinger(string lagId, long sekvensIfra = 0, int maksAntall = 10)
+        public IEnumerable<Melding> HentMeldinger(string lagId, long sekvensIfra = 0, int maksAntall = Constants.Meldinger.MaxAntallUtenSekvensId)
         {
             if (sekvensIfra > 0)
                 maksAntall = int.MaxValue;
