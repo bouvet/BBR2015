@@ -22,7 +22,7 @@ namespace RestApi.Filters
             var lagKode = GetHeaderValue(context, Constants.Headers.HTTPHEADER_LAGKODE);
             var deltakerKode = GetHeaderValue(context, Constants.Headers.HTTPHEADER_DELTAKERKODE);
 
-            var key = LagKey(lagKode, deltakerKode);
+            var key = LagKey(lagKode, deltakerKode, context.Request);
 
             if (_lastRequest.ContainsKey(key))
             {
@@ -37,9 +37,9 @@ namespace RestApi.Filters
             }
         }
 
-        private string LagKey(string lagKode, string deltakerKode)
+        private string LagKey(string lagKode, string deltakerKode, HttpRequestMessage request)
         {
-            return string.Format("{0}¤¤¤{1}", lagKode, deltakerKode);
+            return string.Format("{0}¤¤¤{1}¤¤¤{2}¤¤¤{3}", lagKode, deltakerKode, request.Method, request.RequestUri);
         }
         private string GetHeaderValue(HttpActionContext context, string key)
         {

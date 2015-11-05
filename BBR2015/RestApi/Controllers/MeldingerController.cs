@@ -39,8 +39,8 @@ namespace RestApi.Controllers
         [HttpGet]
         [ResponseType(typeof (IEnumerable<Object>))]
         [Throttle]
-
-        public IHttpActionResult Get(long id)
+        [Route("api/Meldinger/{id:int?}")]
+        public IHttpActionResult Get(long id = 0)
         {
             return HttpActionResult(id);
         }
