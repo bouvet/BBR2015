@@ -1,4 +1,5 @@
-﻿using System.Web.Http;
+﻿using System;
+using System.Web.Http;
 using System.Web.Http.Cors;
 using Repository;
 using RestApi.Filters;
@@ -16,7 +17,7 @@ namespace RestApi.Controllers
         }
 
         // GET: api/Scoreboard/
-      
+        [Obsolete]
         public ScoreboardState Get()
         {
             return _gameStateService.GetScoreboard();

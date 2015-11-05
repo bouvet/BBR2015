@@ -97,10 +97,11 @@ namespace RestApi.Controllers
                 return InternalServerError(ex);
             }
         }
-
+        /*
         [HttpPost]
         [ResponseType(typeof(OkResult))]
         [RequireScoreboardSecret]
+        [Obsolete]
         public IHttpActionResult PostTilAlle([FromBody] NyMelding nyMelding)
         {
             try
@@ -123,6 +124,6 @@ namespace RestApi.Controllers
             {
                 return InternalServerError(ex);
             }
-        }
+        }*/
     }
 }
