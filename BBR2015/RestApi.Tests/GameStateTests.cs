@@ -286,7 +286,7 @@ namespace RestApi.Tests
             lag1State = gamestateservice.Get(lag1.Lag.LagId);
             Assert.AreEqual(100, lag1State.Score, "Skal ha fått poeng");
             Assert.AreEqual(3, lag1State.Poster.Count, "Skal bare se alle poster (aktive)");
-            Assert.AreEqual(0, lag1State.Vaapen.Count(x => x.VaapenId == Constants.Våpen.Felle), "Skal ha brukt opp bomben");
+            Assert.AreEqual(0, lag1State.Vaapen.Count(x => x.VaapenId == Constants.Våpen.Felle), "Skal ha brukt opp fellen");
 
             var lag2 = match.DeltakendeLag[1];
             var deltaker21 = lag2.Lag.Deltakere.First();
