@@ -29,7 +29,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\RestApi.XML</DocumentationFile>
+    <DocumentationFile>\docs\RestApi.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -137,6 +137,9 @@
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Global.asax" />
     <Content Include="Index.html" />
+    <Content Include="docs\RestApi.XML">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -151,7 +154,6 @@
     <Compile Include="Controllers\GameStateFeedController.cs" />
     <Compile Include="Controllers\PosisjonsServiceController.cs" />
     <Compile Include="Filters\RequireApiKeyAttribute.cs" />
-    <Compile Include="Controllers\DefaultController.cs" />
     <Compile Include="Controllers\MeldingerController.cs" />
     <Compile Include="Controllers\ScoreboardController.cs" />
     <Compile Include="Filters\ThrottleAttribute.cs" />
@@ -221,6 +223,9 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y "$(ProjectDir)bin\RestApi.XML" "$(ProjectDir)docs\RestApi.XML"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

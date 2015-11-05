@@ -57,10 +57,11 @@ namespace RestApi
                         //c.BasicAuth("basic")
                         //    .Description("Basic HTTP Authentication");
                         //
-                        //c.ApiKey("apiKey")
-                        //    .Description("API Key Authentication")
-                        //    .Name("apiKey")
+                        //c.ApiKey("LagKode")
+                        //    .Description("Hemmlig kode til laget")
+                        //    .Name("LagKode")
                         //    .In("header");
+
                         //
                         //c.OAuth2("oauth2")
                         //    .Description("OAuth2 Implicit Grant")
@@ -223,7 +224,7 @@ namespace RestApi
 
         private static string GetXmlCommentsPath()
         {
-            return string.Format(@"{0}\bin\RestApi.XML",
+            return string.Format(@"{0}\docs\RestApi.XML",
                 System.AppDomain.CurrentDomain.BaseDirectory);
         }
     }
