@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Transactions;
 using Database.Entities;
 using Database;
 
@@ -29,11 +30,11 @@ namespace Repository
         {
             get
             {
-                if(_gjeldendePosisjon == null)
+                if (_gjeldendePosisjon == null)
                 {
                     lock (_lockGjeldende)
                     {
-                        if(_gjeldendePosisjon == null)
+                        if (_gjeldendePosisjon == null)
                             _gjeldendePosisjon = HentFraDatabasen();
                     }
                 }
@@ -47,11 +48,11 @@ namespace Repository
         {
             get
             {
-                if(_lagretPosisjon == null)
+                if (_lagretPosisjon == null)
                 {
                     lock (_lockLagret)
                     {
-                        if(_lagretPosisjon == null)
+                        if (_lagretPosisjon == null)
                             _lagretPosisjon = HentFraDatabasen();
                     }
                 }
@@ -61,27 +62,32 @@ namespace Repository
             }
         }
 
-        private ConcurrentDictionary<string, DeltakerPosisjon> HentFraDatabasen()
+        protected virtual ConcurrentDictionary<string, DeltakerPosisjon> HentFraDatabasen()
         {
-            using (var context = _dataContextFactory.Create())
+            using (var noLock = NoLock.CreateScope())
             {
-                var sistePosisjoner = from p in context.DeltakerPosisjoner
-                    group p by p.DeltakerId
-                    into g
-                    select g.OrderByDescending(x => x.Tidspunkt).FirstOrDefault();                      
-
-                var dictionary = sistePosisjoner.ToDictionary(x => x.DeltakerId, siste => new DeltakerPosisjon
+                using (var context = _dataContextFactory.Create())
                 {
-                    DeltakerId = siste.DeltakerId,
-                    LagId = siste.LagId,
-                    Latitude = siste.Latitude,
-                    Longitude = siste.Longitude,
-                    Tidspunkt = siste.Tidspunkt
-                });
+                    var sistePosisjoner = from p in context.DeltakerPosisjoner
+                                          group p by p.DeltakerId
+                                              into g
+                                              select g.OrderByDescending(x => x.Tidspunkt).FirstOrDefault();
 
-                return new ConcurrentDictionary<string, DeltakerPosisjon>(dictionary);
+                    var dictionary = sistePosisjoner.ToDictionary(x => x.DeltakerId, siste => new DeltakerPosisjon
+                    {
+                        DeltakerId = siste.DeltakerId,
+                        LagId = siste.LagId,
+                        Latitude = siste.Latitude,
+                        Longitude = siste.Longitude,
+                        Tidspunkt = siste.Tidspunkt
+                    });
+
+                    return new ConcurrentDictionary<string, DeltakerPosisjon>(dictionary);
+                }
             }
         }
+
+
 
         public DeltakerPosisjon RegistrerPosisjon(string lagId, string deltakerId, double latitude, double longitude)
         {
@@ -109,11 +115,16 @@ namespace Repository
             // Oppdater før skriving til databasen - eventual consistent, men strammer inn mulighenten for å smette forbi under lagring
             LagretPosisjon[posisjon.DeltakerId] = posisjon;
 
+            Lagre(posisjon);
+        }
+
+        protected virtual void Lagre(DeltakerPosisjon posisjon)
+        {
             using (var context = _dataContextFactory.Create())
             {
                 context.DeltakerPosisjoner.Add(posisjon);
                 context.SaveChanges();
-            }            
+            }
         }
 
         private bool ErForKortEllerHyppig(DeltakerPosisjon forrige, DeltakerPosisjon posisjon)
@@ -123,7 +134,7 @@ namespace Repository
 
             if (avstandISekunder < _appSettings.MinstTidMellomPosisjoner)
                 return true;
-            
+
             return avstandIMeter < _appSettings.MinstAvstandMellomPosisjoner;
         }
 
