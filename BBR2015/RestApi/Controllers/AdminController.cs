@@ -65,5 +65,11 @@ namespace RestApi.Controllers
             return Ok(_tilgangsKontroll.HentAlleHemmeligeKoder());
         }
 
+        [Route("api/Admin/DateTimeNow")]
+        [HttpGet]
+        public IHttpActionResult DateTimeNow()
+        {
+            return Ok(TimeService.Now);
+        }
     }
 }

@@ -2,8 +2,6 @@
 using Database.Entities;
 using Database;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Repository
 {
@@ -62,6 +60,15 @@ namespace Repository
                             var deltaker = context.Deltakere.Single(x => x.DeltakerId == deltakerId);
 
                             var poeng = post.HentPoengOgInkrementerIndex();
+
+                            if (post.VåpenImplClass == Constants.Våpen.Felle)
+                            {
+                                poeng = -poeng;
+                                post.VåpenImplClass = null; // nullstill
+                                post.SynligFraTid = TimeService.Now.AddSeconds(Constants.Våpen.BombeSkjulerPostIAntallSekunder);
+                                bruktVåpen = null; // Skal ikke bruke eget våpen når fellen går av
+                            }                            
+
                             lagIMatch.PoengSum += poeng;
 
                             var registrering = new PostRegistrering
@@ -91,7 +98,11 @@ namespace Repository
                                     if (bruktVåpen == Constants.Våpen.Bombe)
                                     {
                                         post.SynligFraTid = TimeService.Now.AddSeconds(Constants.Våpen.BombeSkjulerPostIAntallSekunder);
-                                    }                                    
+                                    }
+                                    if (bruktVåpen == Constants.Våpen.Felle)
+                                    {
+                                        post.VåpenImplClass = Constants.Våpen.Felle;
+                                    }
                                 }
                             }
                         }

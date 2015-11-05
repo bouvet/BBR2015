@@ -266,5 +266,78 @@ namespace RestApi.Tests
 
             Assert.AreEqual(3, lag1State.Poster.Count, "Post skal bli synlig igjen");
         }
+
+        [Test]
+        public void GittAktivPost_NårEtLagBrukerFelle_SkalLagetFåPoengOgPostenForbliSynlig_VedNesteRegistreringSkalRegistrerendeLagFåFratrekkAvPoeng_OgPostenSkalBliUsynligEnPeriode()
+        {
+            var match = _gitt.EnMatchMedTreLagOgTrePoster();
+
+            var lag1 = match.DeltakendeLag.First();
+            var deltaker11 = lag1.Lag.Deltakere.First();
+
+            var gameservice = _container.Resolve<GameService>();
+            var gamestateservice = _container.Resolve<GameStateService>();
+
+            var lag1State = gamestateservice.Get(lag1.Lag.LagId);
+            Assert.AreEqual(1, lag1State.Vaapen.Count(x => x.VaapenId == Constants.Våpen.Felle), "Skal ha 1 felle");
+
+            gameservice.RegistrerNyPost(deltaker11.DeltakerId, lag1.Lag.LagId, "HemmeligKode1", Constants.Våpen.Felle);
+
+            lag1State = gamestateservice.Get(lag1.Lag.LagId);
+            Assert.AreEqual(100, lag1State.Score, "Skal ha fått poeng");
+            Assert.AreEqual(3, lag1State.Poster.Count, "Skal bare se alle poster (aktive)");
+            Assert.AreEqual(0, lag1State.Vaapen.Count(x => x.VaapenId == Constants.Våpen.Felle), "Skal ha brukt opp bomben");
+
+            var lag2 = match.DeltakendeLag[1];
+            var deltaker21 = lag2.Lag.Deltakere.First();
+
+            var lag2State = gamestateservice.Get(lag2.Lag.LagId);
+            gameservice.RegistrerNyPost(deltaker21.DeltakerId, lag2.Lag.LagId, "HemmeligKode1", null);
+            var lag2StateEtterRegistrering = gamestateservice.Get(lag2.Lag.LagId);
+
+            Assert.AreEqual(lag2State.Score - 80, lag2StateEtterRegistrering.Score, "Skal ha fått fratrekk i score");
+
+
+            TimeService.AddSeconds(Constants.Våpen.BombeSkjulerPostIAntallSekunder + 5);
+
+            lag1State = gamestateservice.Get(lag1.Lag.LagId);
+
+            Assert.AreEqual(3, lag1State.Poster.Count, "Post skal bli synlig igjen");
+        }
+
+        [Test]
+        public void GittAktivPostSomErSattOppMedFelle_NårLagetSomStemplerBrukerEtVåpenSkalVåpenetIkkeBliSattoppOgLagetIkkeFåFratrekkIVåpenbeholdningen()
+        {
+            var match = _gitt.EnMatchMedTreLagOgTrePoster();
+
+            var lag1 = match.DeltakendeLag.First();
+            var deltaker11 = lag1.Lag.Deltakere.First();
+
+            var gameservice = _container.Resolve<GameService>();
+            var gamestateservice = _container.Resolve<GameStateService>();
+
+            var lag1State = gamestateservice.Get(lag1.Lag.LagId);
+            Assert.AreEqual(1, lag1State.Vaapen.Count(x => x.VaapenId == Constants.Våpen.Felle), "Skal ha 1 felle");
+
+            gameservice.RegistrerNyPost(deltaker11.DeltakerId, lag1.Lag.LagId, "HemmeligKode1", Constants.Våpen.Felle);
+
+           
+            var lag2 = match.DeltakendeLag[1];
+            var deltaker21 = lag2.Lag.Deltakere.First();
+
+            
+            gameservice.RegistrerNyPost(deltaker21.DeltakerId, lag2.Lag.LagId, "HemmeligKode1", Constants.Våpen.Felle);
+            var lag2StateEtterRegistrering = gamestateservice.Get(lag2.Lag.LagId);
+
+            Assert.AreEqual(1, lag2StateEtterRegistrering.Vaapen.Count(x => x.VaapenId == Constants.Våpen.Felle), "Skal ha 1 felle");
+            using (var context = _dataContextFactory.Create())
+            {
+                var postIMatch = (from p in context.PosterIMatch
+                    where p.Post.HemmeligKode == "HemmeligKode1"
+                    select p).Single();
+
+                Assert.IsNull(postIMatch.VåpenImplClass, "Våpenet som ble forsøkt brukt da fellen gikk av, skal ikke ha blitt satt opp");
+            }
+        }
     }
 }
