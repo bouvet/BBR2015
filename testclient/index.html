@@ -13,9 +13,9 @@
   <div id="left">
     <button id="hentGameState">Hent gamestate</button>
     <div id="infoboks">
-      <label for="lagId">LagId:</label>
+      <label for="lagId">LagKode:</label>
       <input id="lagId" value="BBR1"/><br />
-      <label for="deltakerId">DeltakerId:</label>
+      <label for="deltakerId">DeltakerKode:</label>
       <input id="deltakerId" value="BBR1-A"/>
       <br />
       <br />
@@ -23,8 +23,8 @@
       <input id="postId" />
       <select id="vaapen">
         <option value="">Ingen våpen</option>
-        <option value="Bombe">Bombe</option>
-        <option value="EMP">EMP</option>
+        <option value="BOMBE">Bombe</option>
+        <option value="FELLE">FELLE</option>
       </select>
       <button id="sendPostkode">Send</button>
     </div>
@@ -122,8 +122,8 @@
     var lagId = $('#lagId').val();
     var deltakerId = $('#deltakerId').val();
     headers = {
-        "LagId": $('#lagId').val(),
-        "DeltakerId": $('#deltakerId').val()
+        "LagKode": $('#lagId').val(),
+        "DeltakerKode": $('#deltakerId').val()
     };
     console.log(headers);
     return headers;
@@ -186,7 +186,7 @@
   };
 
   var tegnLagposisjoner = function(data) {
-    console.log("Tegner posjisjoner");
+    console.log("Tegner posisjoner");
         data.forEach(function(player) {
         console.log(player);
         var spillerMaker;
@@ -205,7 +205,7 @@
     };
 
     var sendPosisjon = function() {
-      console.log("Sender posisjone");
+      console.log("Sender posisjoner");
       navigator.geolocation.getCurrentPosition(success);
       function success(position) {
          var lat = position.coords.latitude;
@@ -219,8 +219,8 @@
           type: "POST",
           url: baseUrl + 'PosisjonsService',
           headers: {
-            "LagId": $('#lagId').val(),
-            "DeltakerId": $('#deltakerId').val(),
+            "LagKode": $('#lagId').val(),
+            "DeltakerKode": $('#deltakerId').val(),
             "Content-Type": "application/json"
           },
           data: data

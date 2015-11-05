@@ -25,10 +25,10 @@ namespace Database
 
         public class Headers
         {
-            public const string HTTPHEADER_LAGKODE = "LagId";
+            public const string HTTPHEADER_LAGKODE = "LagKode";
             public const string REQUESTPROPERTY_LAGID = "LagId";
 
-            public const string HTTPHEADER_DELTAKERKODE = "DeltakerId";
+            public const string HTTPHEADER_DELTAKERKODE = "DeltakerKode";
             public const string REQUESTPROPERTY_DELTAKERID = "DeltakerId";
         }
     }
