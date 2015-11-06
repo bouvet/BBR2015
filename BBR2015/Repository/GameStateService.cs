@@ -183,7 +183,7 @@ namespace Repository
                                             LagIkon = l.Lag.Ikon,
                                             LagNavn = l.Lag.Navn,
                                             MostValueablePlayerRanking = deltakerPoeng.Count(x => x.Poengsum > p.Poengsum) + 1
-                                        }).ToList();
+                                        }).OrderByDescending(x => x.MostValueablePlayerRanking).ToList();
 
                 var førsteTidspunktEtterNå = (from p in poster
                                               from t in p.Tider

@@ -6,6 +6,10 @@ namespace Database
 {
     public class OverridableSettings
     {
+        public OverridableSettings()
+        {
+            
+        }
         private readonly Dictionary<string, string> _overrides = new Dictionary<string, string>();
 
         private const string ConnectionStringKey = "BBR_DatabaseConnectionString";

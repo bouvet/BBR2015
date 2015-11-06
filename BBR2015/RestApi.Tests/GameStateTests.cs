@@ -24,6 +24,13 @@ namespace RestApi.Tests
             _gitt = new Gitt(_container);
             _dataContextFactory = _container.Resolve<DataContextFactory>();
             TimeService.ResetToRealTime();
+
+            // Slett alle meldinger (blir rullet tilbake i transaksjon uansett)
+            using (var context = _dataContextFactory.Create())
+            {
+                context.Meldinger.Clear();
+                context.SaveChanges();
+            }
         }
 
         [Test]
@@ -265,6 +272,11 @@ namespace RestApi.Tests
             lag1State = gamestateservice.Get(lag1.Lag.LagId);
 
             Assert.AreEqual(3, lag1State.Poster.Count, "Post skal bli synlig igjen");
+
+            var meldingService = _container.Resolve<MeldingService>();
+            var lag2 = match.DeltakendeLag[1];
+            Assert.AreEqual(1, meldingService.HentMeldinger(lag1.Lag.LagId).Count(), "Laget som rigget fellen skulle fått melding");
+            Assert.AreEqual(1, meldingService.HentMeldinger(lag2.Lag.LagId).Count(), "Laget gikk i fellen skulle fått melding");
         }
 
         [Test]

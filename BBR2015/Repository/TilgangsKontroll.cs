@@ -12,6 +12,7 @@ namespace Repository
         private List<Lag> _lagene;
         private ConcurrentDictionary<string, KontrollResultat> _kodeKombinasjoner;
         private ConcurrentDictionary<string, string> _deltakerNavn = new ConcurrentDictionary<string, string>();
+        private ConcurrentDictionary<string, string> _lagNavn = new ConcurrentDictionary<string, string>();
 
         public TilgangsKontroll(DataContextFactory dataContextFactory)
         {
@@ -61,6 +62,7 @@ namespace Repository
             _lagene = null;
             _kodeKombinasjoner = null;
             _deltakerNavn = new ConcurrentDictionary<string, string>();
+            _lagNavn = new ConcurrentDictionary<string, string>();
         }
 
         public dynamic HentAlleHemmeligeKoder()
@@ -111,6 +113,16 @@ namespace Repository
                 _deltakerNavn[deltakerId] = navn;
             }
             return _deltakerNavn[deltakerId];
+        }
+
+        public string HentLagNavn(string lagId)
+        {
+            if (!_lagNavn.ContainsKey(lagId))
+            {
+                var navn = Lagene.Where(x => x.LagId == lagId).Select(x => x.Navn).SingleOrDefault();
+                _lagNavn[lagId] = navn;
+            }
+            return _lagNavn[lagId];
         }
     }
 

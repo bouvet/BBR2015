@@ -58,6 +58,7 @@ namespace RestApi.Tests.Admin
         }
 
         [Test, RequiresSTA]
+        [Explicit("Bare hvis du virkelig vet hva du gjør!")]
         public void Nullstill_Fredag()
         {
             Tøm_Databasen();
