@@ -32,8 +32,8 @@
             window.swaggerUi.api.clientAuthorizations.add("basicAuth", basicAuth);
             console.log("authorization added: LagKode = " + LagKode + ", DeltakerKode = " + DeltakerKode);
             */
-            swaggerUi.api.clientAuthorizations.add("key", new SwaggerClient.ApiKeyAuthorization("LagKode", LagKode, "header"));
-            swaggerUi.api.clientAuthorizations.add("key", new SwaggerClient.ApiKeyAuthorization("DeltakerKode", DeltakerKode, "header"));
+            swaggerUi.api.clientAuthorizations.add("keyLagKode", new SwaggerClient.ApiKeyAuthorization("LagKode", LagKode, "header"));
+            swaggerUi.api.clientAuthorizations.add("keyDeltakerKode", new SwaggerClient.ApiKeyAuthorization("DeltakerKode", DeltakerKode, "header"));
             console.log("clientAuthorizations added: LagKode = " + LagKode + ", DeltakerKode = " + DeltakerKode);
         }
     }
