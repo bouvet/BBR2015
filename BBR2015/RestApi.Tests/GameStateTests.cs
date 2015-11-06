@@ -28,6 +28,7 @@ namespace RestApi.Tests
             // Slett alle meldinger (blir rullet tilbake i transaksjon uansett)
             using (var context = _dataContextFactory.Create())
             {
+                context.Achievements.Clear();
                 context.Meldinger.Clear();
                 context.SaveChanges();
             }
@@ -273,10 +274,7 @@ namespace RestApi.Tests
 
             Assert.AreEqual(3, lag1State.Poster.Count, "Post skal bli synlig igjen");
 
-            var meldingService = _container.Resolve<MeldingService>();
-            var lag2 = match.DeltakendeLag[1];
-            Assert.AreEqual(1, meldingService.HentMeldinger(lag1.Lag.LagId).Count(), "Laget som rigget fellen skulle fått melding");
-            Assert.AreEqual(1, meldingService.HentMeldinger(lag2.Lag.LagId).Count(), "Laget gikk i fellen skulle fått melding");
+           
         }
 
         [Test]
@@ -315,6 +313,10 @@ namespace RestApi.Tests
             lag1State = gamestateservice.Get(lag1.Lag.LagId);
 
             Assert.AreEqual(3, lag1State.Poster.Count, "Post skal bli synlig igjen");
+
+            var meldingService = _container.Resolve<MeldingService>();
+            Assert.AreEqual(3, meldingService.HentMeldinger(lag1.Lag.LagId).Count(), "Laget som rigget fellen skulle fått melding");
+            Assert.AreEqual(2, meldingService.HentMeldinger(lag2.Lag.LagId).Count(), "Laget gikk i fellen skulle fått melding");
         }
 
         [Test]
@@ -350,6 +352,30 @@ namespace RestApi.Tests
 
                 Assert.IsNull(postIMatch.RiggetVåpen, "Våpenet som ble forsøkt brukt da fellen gikk av, skal ikke ha blitt satt opp");
             }
+        }
+
+        [Test]
+        public void GittAktivPost_NårEtLagBrukerBombeOgNullstillerEtterPå_SkalLagetMistePoengOgFåTilbakeVåpen()
+        {
+            var match = _gitt.EnMatchMedTreLagOgTrePoster();
+
+            var lag1 = match.DeltakendeLag.First();
+            var deltaker11 = lag1.Lag.Deltakere.First();
+
+            var gameservice = _container.Resolve<GameService>();
+            var gamestateservice = _container.Resolve<GameStateService>();
+
+            var lag1State = gamestateservice.Get(lag1.Lag.LagId);
+            Assert.AreEqual(1, lag1State.Vaapen.Count(x => x.VaapenId == Constants.Våpen.Bombe), "Skal ha 1 bombe");
+
+            gameservice.RegistrerNyPost(deltaker11.DeltakerId, lag1.Lag.LagId, "HemmeligKode1", Constants.Våpen.Bombe);
+
+            gameservice.Nullstill(lag1.Lag.LagId);
+
+            lag1State = gamestateservice.Get(lag1.Lag.LagId);
+            Assert.AreEqual(0, lag1State.Score, "Nullstilt lagets poeng");
+            Assert.AreEqual(0, lag1State.Poster.Count(x => x.HarRegistert), "Ingen poster registert");
+            Assert.AreEqual(1, lag1State.Vaapen.Count(x => x.VaapenId == Constants.Våpen.Bombe), "Skal ha fått våpen tilbake");
         }
     }
 }

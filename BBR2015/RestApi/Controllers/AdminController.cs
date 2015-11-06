@@ -15,12 +15,14 @@ namespace RestApi.Controllers
         private readonly GameStateService _gameStateService;
         private readonly OverridableSettings _appSettings;
         private readonly TilgangsKontroll _tilgangsKontroll;
+        private readonly PosisjonsService _posisjonsService;
 
-        public AdminController(GameStateService gameStateService, OverridableSettings appSettings, TilgangsKontroll tilgangsKontroll)
+        public AdminController(GameStateService gameStateService, OverridableSettings appSettings, TilgangsKontroll tilgangsKontroll, PosisjonsService posisjonsService)
         {
             _gameStateService = gameStateService;
             _appSettings = appSettings;
             _tilgangsKontroll = tilgangsKontroll;
+            _posisjonsService = posisjonsService;
         }
 
         [Route("api/Admin/RecalculateState")]
@@ -49,6 +51,7 @@ namespace RestApi.Controllers
         {
             _gameStateService.Calculate();
             _tilgangsKontroll.Nullstill();
+            _posisjonsService.Nullstill();
             ThrottleAttribute.Reload();
             return Ok();
         }

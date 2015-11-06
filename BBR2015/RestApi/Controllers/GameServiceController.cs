@@ -55,6 +55,19 @@ namespace RestApi.Controllers
             {
                 return InternalServerError(ex);
             }
-        }      
+        }
+
+        /// <summary>
+        /// Sletter alle postregistreringer i runden og tilbakestiller våpenbeholdningen.
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/GameService/RykkTilbakeTilStart")]
+        [HttpPost]
+        [ResponseType(typeof (OkResult))]
+        public IHttpActionResult RykkTilbakeTilStart()
+        {
+            _gameService.Nullstill(LagId);
+            return Ok();
+        }
     }
 }

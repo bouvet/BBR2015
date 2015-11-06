@@ -182,6 +182,11 @@ namespace Repository
                 Tidspunkt = posisjon.Tidspunkt
             };
         }
+
+        public void Nullstill()
+        {
+            _gjeldendePosisjon = HentFraDatabasen();
+        }
     }
 
     public class LagPosisjoner

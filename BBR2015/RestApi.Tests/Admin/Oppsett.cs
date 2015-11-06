@@ -63,7 +63,7 @@ namespace RestApi.Tests.Admin
         {
             Tøm_Databasen();
             Opprett_spill_fredag();
-            LesDetaljerFraExcel();
+            //LesDetaljerFraExcel();
         }
 
         [Test]
@@ -174,7 +174,7 @@ namespace RestApi.Tests.Admin
                 if (context.Lag.Any(x => x.LagId.StartsWith("SUPPORT_")))
                     return;
 
-                var lag = LagFactory.SettOppLagMedDeltakere(1, 10, "SUPPORT_");
+                var lag = LagFactory.SettOppLagMedDeltakere(1, 7, "SUPPORT_");
 
                 context.Lag.AddRange(lag);
                 context.SaveChanges();
@@ -199,8 +199,8 @@ namespace RestApi.Tests.Admin
         [Test]
         public void Opprett_LagForHelga()
         {
-            var java = LagFactory.SettOppLagMedDeltakere(6, 4, "JAVA_");
-            var ms = LagFactory.SettOppLagMedDeltakere(5, 4, "MS_");
+            var java = LagFactory.SettOppLagMedDeltakere(5, 4, "JAVA_");
+            var ms = LagFactory.SettOppLagMedDeltakere(3, 4, "MS_");
 
             var genererteLag = new List<Lag>();
             genererteLag.AddRange(java);
@@ -225,7 +225,7 @@ namespace RestApi.Tests.Admin
         public void Opprett_spill_fredag()
         {
             Opprett_Våpen();
-            Opprett_Demolag();
+            //Opprett_Demolag();
             Opprett_Arrangørlag();
             Opprett_LagForHelga();
 

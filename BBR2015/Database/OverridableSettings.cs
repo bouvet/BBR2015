@@ -54,6 +54,16 @@ namespace Database
             }
         }
 
+        public int PostSkjulesISekunderEtterVåpen
+        {
+            get
+            {
+                int sekunder;
+                if (int.TryParse(Get("BBR_PostSkjulesISekunderEtterVåpen"), out sekunder))
+                    return sekunder;
+                return Constants.Våpen.BombeSkjulerPostIAntallSekunder;
+            }
+        }
 
         public int MinsteTidMellomRequestsIMs
         {
