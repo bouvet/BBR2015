@@ -24,11 +24,36 @@
 
   <div class="content" ng-controller="scoreboardController">
     <div class="left">
+     <div class="toppliste">
+        <h3>Resultater:</h3>
+        <table>
+          <thead>
+            <th>#</th>
+            <th></th>
+            <th>Lag</th>
+            <th>Antall poster</th>
+            <th>Poeng</th>
+          </thead>
+          <tbody>
+            <tr ng-repeat="lag in lagliste | orderBy:ranking track by lag.lagNavn" >
+              <td>{{ lag.ranking }}</td>
+              <td>
+                <img class="bildeicon" ng-if="lag.lagId.indexOf('JAVA') > -1" src="/images/java.svg" />
+                <img class="bildeicon" ng-if="lag.lagId.indexOf('MS') > -1" src="/images/ms.svg" /> 
+              </td>
+              <td><span class="fargesirkel" ng-style="{'background-color': '#' + lag.lagFarge }"></span>{{lag.lagNavn }}</td>
+              <td>{{ lag.antallRegistreringer }}</td>
+              <td>{{ lag.score }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <div class="mvpliste">
         <h3>MVP:</h3>
         <table>
           <thead>
             <th>#</th>
+            <th></th>
             <th>Poeng</th>
             <th>Lag</th>
             <th>Deltaker<th>
@@ -50,29 +75,7 @@
         </table>
       </div>
 
-      <div class="toppliste">
-        <h3>Resultater:</h3>
-        <table>
-          <thead>
-            <th>#</th>
-            <th>Lag</th>
-            <th>Antall poster</th>
-            <th>Poeng</th>
-          </thead>
-          <tbody>
-            <tr ng-repeat="lag in lagliste | orderBy:ranking track by lag.lagNavn" >
-              <td>{{ lag.ranking }}</td>
-              <td>
-                <img class="bildeicon" ng-if="lag.lagId.indexOf('BBR') > -1" src="/images/java.svg" />
-                <img class="bildeicon" ng-if="lag.lagId.indexOf('MS') > -1" src="/images/ms.svg" /> 
-              </td>
-              <td><span class="fargesirkel" ng-style="{'background-color': '#' + lag.lagFarge }"></span>{{lag.lagNavn }}</td>
-              <td>{{ lag.antallRegistreringer }}</td>
-              <td>{{ lag.score }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+     
     </div>
     <div class="right">
       <div id="map"></div>

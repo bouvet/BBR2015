@@ -13,10 +13,10 @@ angular.module('scoreboard').controller('scoreboardController', function($scope,
 
 
   $scope.finnLagfarge = function(lagId) {
-    for(var i = 1; i < $scope.deltakerliste.length; i++) {
-      var lag = $scope.deltakerliste[i];
+    for(var i = 1; i < $scope.lagliste.length; i++) {
+      var lag = $scope.lagliste[i];
       if (lag.lagId === lagId) {
-        return lag.lagFarge;
+        return '#' + lag.lagFarge;
       }
     }
     return "#FFFFFF";
@@ -42,6 +42,7 @@ angular.module('scoreboard').controller('scoreboardController', function($scope,
           var marker = L.marker([post.latitude, post.longitude], {icon: awesomeMarker}).addTo(map);
           $scope.kartposter.push({post: post, marker: marker});
         } else {
+          console.log("POST FINNES");
         }
     });
   });
@@ -54,6 +55,7 @@ angular.module('scoreboard').controller('scoreboardController', function($scope,
         for(var i = 0; i < $scope.kartdeltakere.length; i++) {
           var deltakerpos = $scope.kartdeltakere[i];
           if(deltakerpos.deltaker.deltakerId === player.deltakerId) {
+            console.log(player);
             newPlayer = false;
             oldPlayer = deltakerpos;
             break;
@@ -61,16 +63,18 @@ angular.module('scoreboard').controller('scoreboardController', function($scope,
         }
         if (newPlayer) {
           var html = "";
+          var lagFarge = $scope.finnLagfarge(player.lagId);
           if (player.lagId.indexOf('JAVA') > -1) {
-            html = '<div style=\'background-color: ' + $scope.finnLagfarge(player.lagid) +  ';height: 4px; width: 4px; border: 1px solid #101010; border-radius: 4px;\'></div>'; 
+            html = '<div style=\'background-color: ' + lagFarge +  ';height: 8px; width: 8px; border: 1px solid #101010; border-radius: 4px;\'></div>'; 
           } else {
-            html = '<div style=\'background-color: ' + $scope.finnLagfarge(player.lagid) +  ';height: 4px; width: 4px; border: 1px solid #101010\'></div>'; 
+            html = '<div style=\'background-color: ' + lagFarge +  ';height: 8px; width: 8px; border: 1px solid #101010\'></div>'; 
           }
           var myIcon = L.divIcon({className: 'java-marker', html: html});
 
           var marker = L.marker([player.latitude, player.longitude], 
                       {
-                        icon: myIcon
+                        icon: myIcon,
+                        title: 'Spiller: ' + player.deltakerId + '\n Lag: ' + player.lagId
                       }).addTo(map);
           $scope.kartdeltakere.push({deltaker: player, marker: marker});
         } else {

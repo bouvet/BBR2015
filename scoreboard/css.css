@@ -24,11 +24,12 @@ body {
 .left .mvpliste {
   height: 50%;
   width: 100%;
+  float: left;
 }
 
 .left .toppliste {
-  height: 100%;
   width: 100%;
+  float: left;
 }
 
 .right {

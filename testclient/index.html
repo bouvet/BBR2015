@@ -11,12 +11,12 @@
 </style>
   <body>
   <div id="left">
-    <input type="checkbox" id="skalSendePosisjon">Send posisjon</button>
+    <input type="checkbox" id="skalSendePosisjon">Automatisk pull/post</button>
     <div id="infoboks">
       <label for="lagId">LagKode:</label>
       <input id="lagId" value="BBR1"/><br />
       <label for="deltakerId">DeltakerKode:</label>
-      <input id="deltakerId" value="BBR1-A"/>
+      <input id="deltakerId" value="BBR1-1"/>
       <br />
       <br />
       <label for="postId">Postkode:</label>
@@ -41,6 +41,7 @@
   <div id="mapWrapper">
     <button id="sendPosisjon" onclick="sendPosisjon">Send posisjon</button>
     <button id="hentPosisjoner" onclick="hentLagposisjoner">Hent posisjoner</button>
+    <button id="hentGameState">Hent GameStateFeed</button>
     <div id="map-canvas"></div>
   </div>
 
@@ -55,10 +56,12 @@
     hentLagposisjoner();
   });
 
-  $("sendPostkode").click(function() {
+  $("#sendPostkode").click(function() {
     sendPostkode();
   });
-
+  $("#hentGameState").click(function() {
+    hentGameState();
+  });
 
   var map;
   var spillerMarkers = new Map();
@@ -131,6 +134,7 @@
     var lagId = $('#lagId').val();
     var deltakerId = $('#deltakerId').val();
     headers = {
+        "Content-Type": "application/json",
         "LagKode": $('#lagId').val(),
         "DeltakerKode": $('#deltakerId').val()
     };
@@ -139,8 +143,10 @@
   };
 
   var sendPostkode = function() {
-    var weapon = $("vaapen").val();
-    var postId = $("postId").val();
+    console.log("HUHEUHEU")
+    var weapon = $("#vaapen").val();
+    var postId = $("#postId").val();
+    console.log(postId);
     console.log(weapon);
 
     if (weapon === "") {
@@ -149,12 +155,12 @@
 
     $.ajax({
       type: "POST",
-      url: baseUrl + 'Meldinger', 
+      url: baseUrl + 'GameService', 
       headers:     
       createHeader(),
       data: JSON.stringify({
-        "postKode": postId,
-        "våpen": weapon
+        'postKode': postId,
+        'våpen': weapon
       })
     });
   };
@@ -165,9 +171,9 @@
       url: baseUrl + 'Meldinger', 
       headers:     
       createHeader(),
-      data: {
+      data: JSON.stringify({
         "tekst": melding
-      }
+      })
     });
   };
 
@@ -200,8 +206,8 @@
     var marker = new google.maps.Marker({
         position: myLatlng,
         map: map,
-        title: "Test"
-    });
+        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+      });
     marker.setMap(map);
     return marker;
   };
@@ -228,7 +234,7 @@
         } else {
           console.log("Oppdaterer posisjon på spiller");
           spillerMarker = spillerMarkers.get(player.deltakerId);
-          console.log(spillerMaker);
+          console.log(spillerMarker);
           spillerMarker.setPosition(new google.maps.LatLng(player.latitude, player.longitude));
         }
       });
@@ -280,7 +286,7 @@
     var marker = new google.maps.Marker({
         position: myLatlng,
         map: map,
-        title: "Fullført: " + punkt.fullført
+        title: "Fullført: " + punkt.harRegistert
     });
     marker.setMap(map);
     return marker;
@@ -300,12 +306,13 @@
   };
 
   setInterval(function() {
-    if(document.getElementById('skalSendePosisjon')) {
+    if(document.getElementById('skalSendePosisjon').checked) {
       sendPosisjon();
+      hentGameState();
+      hentMeldinger();
+      sendPosisjon();
+      hentLagposisjoner();
     }
-    hentGameState();
-    hentMeldinger();
-    sendPosisjon();
   }, 3000);
 
   
