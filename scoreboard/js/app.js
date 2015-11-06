@@ -11,6 +11,17 @@ angular.module('scoreboard').controller('scoreboardController', function($scope,
   $scope.kartdeltakere = [];
 
 
+
+  $scope.finnLagfarge = function(lagId) {
+    for(var i = 1; i < $scope.lagliste.length; i++) {
+      var lag = $scope.deltakerliste[i];
+      if (lag.lagId === lagId) {
+        return lag.lagFarge;
+      }
+    }
+    return "#FFFFFF";
+  }
+
   $scope.$watch('poster', function(newValue, oldValue) {
     var newPost = true;
     var oldKartpost;
@@ -45,13 +56,11 @@ angular.module('scoreboard').controller('scoreboardController', function($scope,
           }
         }
         if (newPlayer) {
-          console.log("New pos");
-          var marker = L.circleMarker([player.latitude, player.longitude], 
+          var myIcon = L.divIcon({className: 'java-marker'});
+
+          var marker = L.marker([player.latitude, player.longitude], 
                       {
-                        color: 'red',
-                        fillColor: 'red',
-                        fillOpacity: '0.7',
-                        radius: '5'
+                        icon: myIcon
                       }).addTo(map);
           $scope.kartdeltakere.push({deltaker: player, marker: marker});
         } else {
@@ -63,7 +72,7 @@ angular.module('scoreboard').controller('scoreboardController', function($scope,
     });
   });
 
-
+  
   $interval(function() {
     $http.get(
       $scope.hostname + "scoreboard",
@@ -98,9 +107,6 @@ angular.module('scoreboard').controller('scoreboardController', function($scope,
 
   }, 3000);
   
-
-  $scope.test = "test";
-
 
   var map = L.map('map').setView([59.676598, 10.606179], 16);
   L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {

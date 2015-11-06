@@ -30,11 +30,12 @@
             <th>Deltaker<th>
           </thead>
           <tbody>
-            <tr ng-repeat="deltaker in deltakerliste | orderBy:mostValueablePlayerRanking track by deltaker.deltakerId" 
-              ng-style="{'background-color': '#' + deltaker.lagFarge }">
+            <tr ng-repeat="deltaker in deltakerliste | orderBy:mostValueablePlayerRanking track by deltaker.deltakerId">
               <td>{{ deltaker.mostValueablePlayerRanking }}</td>
               <td>{{ deltaker.score }}</td>
-              <td>{{ deltaker.lagNavn }}</td>
+              <td>
+              <span class="fargesirkel" ng-style="{'background-color': '#' + deltaker.lagFarge }"></span>{{ deltaker.lagNavn }}
+              </td>
               <td>{{ deltaker.navn }}</td>
             </tr>
           </tbody>
@@ -51,10 +52,9 @@
             <th>Poeng</th>
           </thead>
           <tbody>
-            <tr ng-repeat="lag in lagliste | orderBy:ranking track by lag.lagNavn" 
-              ng-style="{'background-color': '#' + lag.lagFarge }">
+            <tr ng-repeat="lag in lagliste | orderBy:ranking track by lag.lagNavn" >
               <td>{{ lag.ranking }}</td>
-              <td>{{ lag.lagNavn }}</td>
+              <td><span class="fargesirkel" ng-style="{'background-color': '#' + lag.lagFarge }"></span>{{lag.lagNavn }}</td>
               <td>{{ lag.antallRegistreringer }}</td>
               <td>{{ lag.score }}</td>
             </tr>

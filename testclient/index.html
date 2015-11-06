@@ -244,11 +244,7 @@
         $.ajax({
           type: "POST",
           url: baseUrl + 'PosisjonsService',
-          headers: {
-            "LagKode": $('#lagId').val(),
-            "DeltakerKode": $('#deltakerId').val(),
-            "Content-Type": "application/json"
-          },
+          headers: createHeader(),
           data: data
         }).success(console.log("Posisjon sendt"));
       }
