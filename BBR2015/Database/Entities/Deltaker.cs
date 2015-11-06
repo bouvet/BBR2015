@@ -12,21 +12,30 @@ namespace Database.Entities
         public string Navn { get; set; }
         public virtual Lag Lag { get; set; }
 
-        public static string NormaliserDeltakerId(string input)
-        {
-            if (string.IsNullOrEmpty(input))
-                return input;
+        public string Kode { get; set; }
+        //public static string NormaliserKode(string input)
+        //{
+        //    if (string.IsNullOrEmpty(input))
+        //        return input;
 
-            return input.Trim()
-                        .Replace(" ", string.Empty)
-                        .Replace("+47", string.Empty)
-                        .Replace("+46", string.Empty);
-        }
+        //    return input.Trim()
+        //                .Replace(" ", string.Empty)
+        //                .Replace("+47", string.Empty)
+        //                .Replace("+46", string.Empty);
+        //}
+
+        //public bool MatcherKode(string kode)
+        //{
+        //    var normalisert = NormaliserKode(kode);
+
+        //    return Kode.Equals(normalisert, StringComparison.OrdinalIgnoreCase);
+        //}
 
         public Deltaker(string deltakerId, string navn)
         {
             DeltakerId = deltakerId;
             Navn = navn;
+            Kode = deltakerId;
         }
 
         public Deltaker()

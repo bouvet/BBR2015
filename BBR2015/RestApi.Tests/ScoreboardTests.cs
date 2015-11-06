@@ -69,8 +69,8 @@ namespace RestApi.Tests
                                         .Include(x => x.Match)
                                         .Single(x => x.Id == førstePost.Id);
 
-                postIMatch.SynligFraUTC = new DateTime(2001, 01, 01);
-                postIMatch.SynligTilUTC = new DateTime(2001, 01, 02);
+                postIMatch.SynligFraTid = new DateTime(2001, 01, 01);
+                postIMatch.SynligTilTid = new DateTime(2001, 01, 02);
                 context.SaveChanges();
             }
         }
@@ -83,7 +83,7 @@ namespace RestApi.Tests
             var lag1 = match.DeltakendeLag.First();
             var deltaker11 = lag1.Lag.Deltakere.First();
 
-            var gameservice = _container.Resolve<GameServiceRepository>();
+            var gameservice = _container.Resolve<GameService>();
             var gamestateservice = _container.Resolve<GameStateService>();
 
             gameservice.RegistrerNyPost(deltaker11.DeltakerId, lag1.Lag.LagId, "HemmeligKode1", null);
@@ -99,8 +99,8 @@ namespace RestApi.Tests
             Assert.AreEqual(1, scoreboard.Deltakere.Single().AntallRegistreringer, "Antall deltakere med score");
             Assert.AreEqual(1, scoreboard.Deltakere.Single().MostValueablePlayerRanking, "Ranking");
             Assert.AreEqual(100, scoreboard.Deltakere.Single().Score, "Score");
-            Assert.AreEqual("Deltaker1-1", scoreboard.Deltakere.Single().DeltakerId, "DeltakerId");
-            Assert.AreEqual("DeltakerNavn1-1", scoreboard.Deltakere.Single().Navn, "DeltakerNavn");
+            Assert.AreEqual("Lag1-1", scoreboard.Deltakere.Single().DeltakerId, "DeltakerId");
+            Assert.AreEqual("Lag1-1Navn", scoreboard.Deltakere.Single().Navn, "DeltakerNavn");
 
             Assert.AreEqual(1, scoreboard.Lag.Count(x => x.Ranking == 1), "Bare ett lag skal lede");
             Assert.AreEqual(2, scoreboard.Lag.Count(x => x.Ranking == 2), "Lag med samme poengsum skal ha samme rank");

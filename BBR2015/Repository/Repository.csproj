@@ -60,13 +60,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdminRepository.cs" />
+    <Compile Include="TilgangsKontroll.cs" />
     <Compile Include="CurrentMatchProvider.cs" />
     <Compile Include="DistanseKalkulator.cs" />
-    <Compile Include="GameServiceRepository.cs" />
+    <Compile Include="GameService.cs" />
     <Compile Include="GameStateService.cs" />
-    <Compile Include="MeldingRepository.cs" />
-    <Compile Include="PosisjonsRepository.cs" />
+    <Compile Include="LagOppstillingService.cs" />
+    <Compile Include="MeldingService.cs" />
+    <Compile Include="PosisjonsService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

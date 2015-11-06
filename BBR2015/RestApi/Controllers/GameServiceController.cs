@@ -4,19 +4,19 @@ using System.Web.Http.Cors;
 using System.Web.Http.Description;
 using System.Web.Http.Results;
 using Repository;
+using RestApi.Filters;
 using RestApi.Models;
 
 namespace RestApi.Controllers
 {
-    [EnableCors("*", "*", "*")]
     [RequireApiKey]
     public class GameServiceController : BaseController
     {
-        private GameServiceRepository _gameServiceRepository;
+        private GameService _gameService;
 
-        public GameServiceController(GameServiceRepository gameServiceRepository)
+        public GameServiceController(GameService gameService)
         {
-            _gameServiceRepository = gameServiceRepository;
+            _gameService = gameService;
         }
         // POST: api/GameService
         [HttpPost]
@@ -35,7 +35,7 @@ namespace RestApi.Controllers
                     return BadRequest(ModelState);
                 }
 
-                _gameServiceRepository.RegistrerNyPost(DeltakerId, LagId, registrerNyPost.PostKode, registrerNyPost.BruktVåpen);
+                _gameService.RegistrerNyPost(DeltakerId, LagId, registrerNyPost.PostKode, registrerNyPost.BruktVåpen);
                 
                 return Ok();
             }

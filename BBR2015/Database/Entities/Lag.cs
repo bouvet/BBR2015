@@ -18,6 +18,8 @@ namespace Database.Entities
 
         public virtual List<Deltaker> Deltakere { get; set; }
 
+        public string HemmeligKode { get; set; }
+
         public Lag()
         {
             Deltakere = new List<Deltaker>();

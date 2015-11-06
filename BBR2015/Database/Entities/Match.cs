@@ -12,9 +12,9 @@ namespace Database.Entities
 
         public string Navn { get; set; }
 
-        public DateTime StartUTC { get; set; }
+        public DateTime StartTid { get; set; }
 
-        public DateTime SluttUTC { get; set; }
+        public DateTime SluttTid { get; set; }
 
         public virtual List<LagIMatch> DeltakendeLag { get; set; }
 
@@ -26,9 +26,23 @@ namespace Database.Entities
             Poster = new List<PostIMatch>();
         }
 
-        public void LeggTil(LagIMatch lag)
+        public LagIMatch LeggTil(LagIMatch lag)
         {
             DeltakendeLag.Add(lag);
+
+            return lag;
+        }
+
+        public LagIMatch LeggTil(Lag lag)
+        {
+            var lagIMatch = new LagIMatch
+            {
+                Lag = lag,
+                Match = this
+            };
+            LeggTil(lagIMatch);
+
+            return lagIMatch;
         }
     }
 }

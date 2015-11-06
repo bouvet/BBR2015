@@ -7,17 +7,19 @@ using Database;
 
 namespace Repository
 {
-    public class PosisjonsRepository
+    public class PosisjonsService
     {
         // Registreres som singleton, så dictionary trenger ikke være static (sjekk ut threadsafety, dog)
         private ConcurrentDictionary<string, DeltakerPosisjon> _gjeldendePosisjon;
+        private ConcurrentDictionary<string, DeltakerPosisjon> _lagretPosisjon;
 
-        private DataContextFactory _dataContextFactory;
-        private readonly CascadingAppSettings _appSettings;
+        private readonly DataContextFactory _dataContextFactory;
+        private readonly OverridableSettings _appSettings;
 
-        private object _lock = new object();
+        private readonly object _lockGjeldende = new object();
+        private readonly object _lockLagret = new object();
 
-        public PosisjonsRepository(DataContextFactory dataContextFactory, CascadingAppSettings appSettings)
+        public PosisjonsService(DataContextFactory dataContextFactory, OverridableSettings appSettings)
         {
             _dataContextFactory = dataContextFactory;
             _appSettings = appSettings;
@@ -27,9 +29,9 @@ namespace Repository
         {
             get
             {
-                if (_gjeldendePosisjon == null)
+                if(_gjeldendePosisjon == null)
                 {
-                    lock (_lock)
+                    lock (_lockGjeldende)
                     {
                         if(_gjeldendePosisjon == null)
                             _gjeldendePosisjon = HentFraDatabasen();
@@ -37,7 +39,25 @@ namespace Repository
                 }
 
                 return _gjeldendePosisjon;
-                
+
+            }
+        }
+
+        private ConcurrentDictionary<string, DeltakerPosisjon> LagretPosisjon
+        {
+            get
+            {
+                if(_lagretPosisjon == null)
+                {
+                    lock (_lockLagret)
+                    {
+                        if(_lagretPosisjon == null)
+                            _lagretPosisjon = HentFraDatabasen();
+                    }
+                }
+
+                return _lagretPosisjon;
+
             }
         }
 
@@ -48,7 +68,7 @@ namespace Repository
                 var sistePosisjoner = from p in context.DeltakerPosisjoner
                     group p by p.DeltakerId
                     into g
-                    select g.OrderByDescending(x => x.TidspunktUTC).FirstOrDefault();                      
+                    select g.OrderByDescending(x => x.Tidspunkt).FirstOrDefault();                      
 
                 var dictionary = sistePosisjoner.ToDictionary(x => x.DeltakerId, siste => new DeltakerPosisjon
                 {
@@ -56,7 +76,7 @@ namespace Repository
                     LagId = siste.LagId,
                     Latitude = siste.Latitude,
                     Longitude = siste.Longitude,
-                    TidspunktUTC = siste.TidspunktUTC
+                    Tidspunkt = siste.Tidspunkt
                 });
 
                 return new ConcurrentDictionary<string, DeltakerPosisjon>(dictionary);
@@ -71,7 +91,7 @@ namespace Repository
                 LagId = lagId,
                 Latitude = latitude,
                 Longitude = longitude,
-                TidspunktUTC = TimeService.Now
+                Tidspunkt = TimeService.Now
             };
 
             LagrePosisjonTilDatabasen(deltakerPosisjon);
@@ -82,29 +102,33 @@ namespace Repository
 
         private void LagrePosisjonTilDatabasen(DeltakerPosisjon posisjon)
         {
-            if (GjeldendePosisjon.ContainsKey(posisjon.DeltakerId) &&
-                ErForKortEllerHyppig(GjeldendePosisjon[posisjon.DeltakerId], posisjon))
+            if (LagretPosisjon.ContainsKey(posisjon.DeltakerId) &&
+                ErForKortEllerHyppig(LagretPosisjon[posisjon.DeltakerId], posisjon))
                 return;
+
+            // Oppdater før skriving til databasen - eventual consistent, men strammer inn mulighenten for å smette forbi under lagring
+            LagretPosisjon[posisjon.DeltakerId] = posisjon;
 
             using (var context = _dataContextFactory.Create())
             {
                 context.DeltakerPosisjoner.Add(posisjon);
                 context.SaveChanges();
-            }
+            }            
         }
 
         private bool ErForKortEllerHyppig(DeltakerPosisjon forrige, DeltakerPosisjon posisjon)
         {
             var avstandIMeter = DistanseKalkulator.MeterMellom(forrige.Latitude, forrige.Longitude, posisjon.Latitude, posisjon.Longitude);
-            var avstandISekunder = posisjon.TidspunktUTC.Subtract(forrige.TidspunktUTC).TotalSeconds;
+            var avstandISekunder = posisjon.Tidspunkt.Subtract(forrige.Tidspunkt).TotalSeconds;
 
-            // Forkast for små forflytninger eller for tette rapporteringer
-            return avstandIMeter < 5 || avstandISekunder < 10;
+            if (avstandISekunder < _appSettings.MinstTidMellomPosisjoner)
+                return true;
+            
+            return avstandIMeter < _appSettings.MinstAvstandMellomPosisjoner;
         }
 
         public LagPosisjoner HentforLag(string lagId)
         {
-
             return new LagPosisjoner
             {
                 LagId = lagId,

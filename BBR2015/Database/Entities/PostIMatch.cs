@@ -23,13 +23,17 @@ namespace Database.Entities
 
         public string PoengArray { get; set; }
 
-        public DateTime SynligFraUTC { get; set; }
-        public DateTime SynligTilUTC { get; set; }
+        public DateTime SynligFraTid { get; set; }
+        public DateTime SynligTilTid { get; set; }
 
-        public bool ErSynlig 
-        { get
+        public string VåpenImplClass { get; set; }
+        public string VåpenParamJson { get; set; }
+
+        public bool ErSynlig
+        {
+            get
             {
-                return SynligFraUTC < TimeService.Now && TimeService.Now < SynligTilUTC;
+                return SynligFraTid < TimeService.Now && TimeService.Now < SynligTilTid;
             }
         }
         public static int[] SplitOgParse(string poengArray)

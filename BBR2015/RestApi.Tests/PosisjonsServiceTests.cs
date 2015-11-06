@@ -15,15 +15,15 @@ namespace RestApi.Tests
         private IWindsorContainer _container;
         private Gitt _gitt;
         private DataContextFactory _dataContextFactory;
-        private CascadingAppSettings _appSettings;
+        private OverridableSettings _appSettings;
        
         [SetUp]
         public void Given()
         {
             _container = RestApiApplication.CreateContainer();
 
-            _appSettings = new CascadingAppSettings();
-            _container.Register(Component.For<CascadingAppSettings>().Instance(_appSettings).IsDefault().Named(Guid.NewGuid().ToString()));
+            _appSettings = new OverridableSettings();
+            _container.Register(Component.For<OverridableSettings>().Instance(_appSettings).IsDefault().Named(Guid.NewGuid().ToString()));
 
             _gitt = new Gitt(_container);
             _dataContextFactory = _container.Resolve<DataContextFactory>();
@@ -32,7 +32,7 @@ namespace RestApi.Tests
             // Slett alle posisjoner (blir rullet tilbake i transaksjon uansett)
             using (var context = _dataContextFactory.Create())
             {
-                context.DeltakerPosisjoner.RemoveRange(context.DeltakerPosisjoner);
+                context.DeltakerPosisjoner.Clear();
                 context.SaveChanges();
             }
         }
@@ -42,7 +42,7 @@ namespace RestApi.Tests
         {
             var givenLag = _gitt.ToLagMedToDeltakere();
 
-            var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
+            var posisjonsSevice = _container.Resolve<PosisjonsService>();
 
             var deltaker11 = givenLag[0].Deltakere[0];
             var latitude = 59.6785526164;
@@ -61,7 +61,7 @@ namespace RestApi.Tests
         {
             var given = _gitt.ToLagMedToDeltakere();
 
-            var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
+            var posisjonsSevice = _container.Resolve<PosisjonsService>();
 
             var deltaker11 = given[0].Deltakere[0];
             var latitude = 59.6785526164;
@@ -78,11 +78,59 @@ namespace RestApi.Tests
         }
 
         [Test]
+        public void NårEnDeltakerStårIRoLenge_SkalPosisjonenLagresIDatabasenBareEnGang()
+        {
+            var given = _gitt.ToLagMedToDeltakere();
+
+            var posisjonsSevice = _container.Resolve<PosisjonsService>();
+
+            var deltaker11 = given[0].Deltakere[0];
+            var latitude = 59.6785526164;
+            var longitude = 10.6039274298;
+
+            posisjonsSevice.RegistrerPosisjon(deltaker11.Lag.LagId, deltaker11.DeltakerId, latitude, longitude);
+            TimeService.AddSeconds(30);
+            posisjonsSevice.RegistrerPosisjon(deltaker11.Lag.LagId, deltaker11.DeltakerId, latitude, longitude);
+            TimeService.AddSeconds(30);
+            posisjonsSevice.RegistrerPosisjon(deltaker11.Lag.LagId, deltaker11.DeltakerId, latitude, longitude);
+            TimeService.AddSeconds(30);
+            posisjonsSevice.RegistrerPosisjon(deltaker11.Lag.LagId, deltaker11.DeltakerId, latitude, longitude);
+
+            using (var context = _dataContextFactory.Create())
+            {
+                Assert.AreEqual(1, context.DeltakerPosisjoner.Count(), "Skulle vært 1 posisjon");
+            }
+        }
+
+        [Test]
+        public void NårEnDeltakerFlytterSegMenRegistrererOfte_SkalPosisjonenLagresIDatabasenBareHvert10Sekund()
+        {
+            var given = _gitt.ToLagMedToDeltakere();
+
+            var posisjonsSevice = _container.Resolve<PosisjonsService>();
+
+            var deltaker11 = given[0].Deltakere[0];
+            var latitude = 59.6785526164;
+            var longitude = 10.6039274298;
+
+            for(int i = 1; i < 100; i++)
+            {
+                posisjonsSevice.RegistrerPosisjon(deltaker11.Lag.LagId, deltaker11.DeltakerId, latitude + 0.01 * i, longitude + 0.01 * i);
+                TimeService.AddSeconds(1);               
+            }
+
+            using (var context = _dataContextFactory.Create())
+            {
+                Assert.AreEqual(10, context.DeltakerPosisjoner.Count(), "Skulle vært 1 posisjon");
+            }
+        }
+
+        [Test]
         public void NårEnDeltakerPosterNyPosisjonToGangerMenForTettITid_SkalPosisjonenLagresIDatabasenBareEnGang()
         {
             var given = _gitt.ToLagMedToDeltakere();
 
-            var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
+            var posisjonsSevice = _container.Resolve<PosisjonsService>();
 
             var deltaker11 = given[0].Deltakere[0];
             var latitude = 59.6785526164;
@@ -103,7 +151,7 @@ namespace RestApi.Tests
         {
             var given = _gitt.ToLagMedToDeltakere();
 
-            var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
+            var posisjonsSevice = _container.Resolve<PosisjonsService>();
 
             var deltaker11 = given[0].Deltakere[0];
             var latitude = 59.6785526164;
@@ -126,7 +174,7 @@ namespace RestApi.Tests
         {
             var givenLag = _gitt.ToLagMedToDeltakere();
 
-            var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
+            var posisjonsSevice = _container.Resolve<PosisjonsService>();
 
             var latitude = 59.6785526164;
             var longitude = 10.6039274298;
@@ -155,7 +203,7 @@ namespace RestApi.Tests
         {
             var givenLag = _gitt.ToLagMedToDeltakere();
 
-            var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
+            var posisjonsSevice = _container.Resolve<PosisjonsService>();
 
             var latitude = 59.6785526164;
             var longitude = 10.6039274298;
@@ -183,7 +231,7 @@ namespace RestApi.Tests
         {
             var given = _gitt.ToLagMedToDeltakere();
 
-            var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
+            var posisjonsSevice = _container.Resolve<PosisjonsService>();
 
             var deltaker11 = given[0].Deltakere[0];
             var latitude = 59.6785526164;
@@ -208,7 +256,7 @@ namespace RestApi.Tests
         {
             var givenLag = _gitt.ToLagMedToDeltakere();
 
-            var posisjonsSevice = _container.Resolve<PosisjonsRepository>();
+            var posisjonsSevice = _container.Resolve<PosisjonsService>();
 
             var latitude = 59.6785526164;
             var longitude = 10.6039274298;
@@ -227,7 +275,7 @@ namespace RestApi.Tests
             // Lag ny container for å simulere restart
             _container = RestApiApplication.CreateContainer();
 
-            var posisjonService = _container.Resolve<PosisjonsRepository>();
+            var posisjonService = _container.Resolve<PosisjonsService>();
 
             var posisjonForLag1 = posisjonService.HentforLag(givenLag[0].LagId);
             Assert.AreEqual(2, posisjonForLag1.Posisjoner.Count, "Feil antall posisjoner etter restart - lag1");

@@ -5,13 +5,15 @@ using System.Linq;
 
 namespace Repository
 {
-    public class GameServiceRepository
+    public class GameService
     {
         private readonly DataContextFactory _dataContextFactory;
         private readonly GameStateService _gameState;
         private readonly CurrentMatchProvider _currentMatchProvider;
 
-        public GameServiceRepository(DataContextFactory dataContextFactory, GameStateService gameState, CurrentMatchProvider currentMatchProvider)
+        private static readonly object TillatBareEnStemplingIGangen = new object();
+
+        public GameService(DataContextFactory dataContextFactory, GameStateService gameState, CurrentMatchProvider currentMatchProvider)
         {
             _dataContextFactory = dataContextFactory;
             _gameState = gameState;
@@ -19,6 +21,14 @@ namespace Repository
         }
 
         public void RegistrerNyPost(string deltakerId, string lagId, string postkode, string bruktVåpen)
+        {
+            lock (TillatBareEnStemplingIGangen)
+            {
+                RegistrerNyPostSynkront(deltakerId, lagId, postkode, bruktVåpen);
+            }
+        }
+
+        private void RegistrerNyPostSynkront(string deltakerId, string lagId, string postkode, string bruktVåpen)
         {
             var matchId = _currentMatchProvider.GetMatchId();
 
@@ -28,7 +38,7 @@ namespace Repository
                 {
                     try
                     {
-                        var lagIMatch = (from lm in context.LagIMatch.Include(x => x.Lag)//.Include(x => x.VåpenBeholdning).Include(x => x.PostRegistreringer)
+                        var lagIMatch = (from lm in context.LagIMatch.Include(x => x.Lag)
                                          where lm.Lag.LagId == lagId && lm.Match.MatchId == matchId
                                          select lm).SingleOrDefault();
 
@@ -50,6 +60,15 @@ namespace Repository
                             var deltaker = context.Deltakere.Single(x => x.DeltakerId == deltakerId);
 
                             var poeng = post.HentPoengOgInkrementerIndex();
+
+                            if (post.VåpenImplClass == Constants.Våpen.Felle)
+                            {
+                                poeng = -poeng;
+                                post.VåpenImplClass = null; // nullstill
+                                post.SynligFraTid = TimeService.Now.AddSeconds(Constants.Våpen.BombeSkjulerPostIAntallSekunder);
+                                bruktVåpen = null; // Skal ikke bruke eget våpen når fellen går av
+                            }                            
+
                             lagIMatch.PoengSum += poeng;
 
                             var registrering = new PostRegistrering
@@ -75,6 +94,15 @@ namespace Repository
                                 if (brukt != null)
                                 {
                                     brukt.BruktIPostRegistrering = registrering;
+
+                                    if (bruktVåpen == Constants.Våpen.Bombe)
+                                    {
+                                        post.SynligFraTid = TimeService.Now.AddSeconds(Constants.Våpen.BombeSkjulerPostIAntallSekunder);
+                                    }
+                                    if (bruktVåpen == Constants.Våpen.Felle)
+                                    {
+                                        post.VåpenImplClass = Constants.Våpen.Felle;
+                                    }
                                 }
                             }
                         }
@@ -82,7 +110,7 @@ namespace Repository
                         context.SaveChanges();
                         transaction.Commit();
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         transaction.Rollback();
                         throw;

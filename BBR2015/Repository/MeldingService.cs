@@ -7,36 +7,25 @@ using Database;
 
 namespace Repository
 {
-    public class MeldingRepository
+    public class MeldingService
     {
-        private AdminRepository _adminRepository;
         private DataContextFactory _dataContextFactory;
+        private readonly TilgangsKontroll _tilgangsKontroll;
 
-        public MeldingRepository(AdminRepository adminRepository, DataContextFactory dataContextFactory)
+        public MeldingService(DataContextFactory dataContextFactory, TilgangsKontroll tilgangsKontroll)
         {
-            _adminRepository = adminRepository;
             _dataContextFactory = dataContextFactory;
+            _tilgangsKontroll = tilgangsKontroll;
         }
 
         public void PostMelding(string deltakerId, string lagId, string meldingstekst)
         {
-            var lag = _adminRepository.FinnLag(lagId);
-            if (lag == null)
-            {
-                throw new ArgumentException("Ugyldig lagId:" + lagId);
-            }
-            var deltaker = lag.HentDeltaker(deltakerId);
-            if (deltaker == null)
-            {
-                throw new ArgumentException("Ugyldig deltakerId:" + deltakerId);
-            }
-
             using (var context = _dataContextFactory.Create())
             {
-                var melding = new Melding(deltaker.DeltakerId, lag.LagId, meldingstekst)
+                var melding = new Melding(deltakerId, lagId, meldingstekst)
                 {
                     SekvensId = TimeService.Now.Ticks,
-                    TidspunktUTC = TimeService.Now
+                    Tidspunkt = TimeService.Now
                 };
                 context.Meldinger.Add(melding);
 
@@ -45,8 +34,11 @@ namespace Repository
 
         }
 
-        public IEnumerable<Melding> HentMeldinger(string lagId, long sekvensIfra = 0, int maksAntall = 10)
+        public IEnumerable<Melding> HentMeldinger(string lagId, long sekvensIfra = 0, int maksAntall = Constants.Meldinger.MaxAntallUtenSekvensId)
         {
+            if (sekvensIfra > 0)
+                maksAntall = int.MaxValue;
+
             using (var context = _dataContextFactory.Create())
             {
                 var resultat = (from m in context.Meldinger
@@ -57,6 +49,13 @@ namespace Repository
                 return resultat;
 
             }
+        }
+
+        public void PostMeldingTilAlle(string deltakerId, string lagId, string tekst)
+        {
+            var alleLag = _tilgangsKontroll.HentAlleLagIder();
+
+            alleLag.ForEach(x => PostMelding(deltakerId, x, tekst));
         }
     }
 }

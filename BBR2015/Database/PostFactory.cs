@@ -71,5 +71,39 @@ namespace Database
         }
     }
 
+    public class ImportPostMedKode
+    {
+        [JsonProperty("postnr")]
+        public int PostNr { get; set; }
+        [JsonProperty("koder")]
+        public string[] Koder { get; set; }
+    }
+
+    public class ImportPost
+    {
+        [JsonProperty("description")]
+        public string Description { get; set; }
+
+        [JsonProperty("position")]
+        public ImportPosition[] Position { get; set; }
+
+        [JsonProperty("image")]
+        public string[] Image { get; set; }
+    }
+
+
+
+    public class ImportPosition
+    {
+        [JsonProperty("source")]
+        public string Source { get; set; }
+        [JsonProperty("latitude")]
+        public double Latitude { get; set; }
+        [JsonProperty("longitude")]
+        public double Longitude { get; set; }
+        [JsonProperty("altitude")]
+        public double Altitude { get; set; }
+
+    }
 
 }

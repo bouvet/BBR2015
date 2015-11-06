@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Script.Serialization;
@@ -14,15 +15,12 @@ namespace Repository
         private readonly DataContextFactory _dataContextFactory;
         private readonly CurrentMatchProvider _currentMatchProvider;
 
-        private Dictionary<string, GameStateForLag> _gamestates = new Dictionary<string, GameStateForLag>();
-        private ScoreboardState _scoreboard = new ScoreboardState();
+        private ConcurrentDictionary<Guid, MatchState> _matchStates = new ConcurrentDictionary<Guid, MatchState>();
 
         public GameStateService(DataContextFactory dataContextFactory, CurrentMatchProvider currentMatchProvider)
         {
             _dataContextFactory = dataContextFactory;
             _currentMatchProvider = currentMatchProvider;
-
-            Calculate();
         }
 
         public void Calculate()
@@ -32,10 +30,10 @@ namespace Repository
             using (var context = _dataContextFactory.Create())
             {
                 var sorterteLag =
-                    context.LagIMatch.Include(x => x.Lag)
+                    context.LagIMatch.Include(x => x.Lag).Include(x => x.VåpenBeholdning).Include("Våpenbeholdning.BruktIPostRegistrering")
                            .Where(x => x.Match.MatchId == matchId)
                            .OrderByDescending(x => x.PoengSum)
-                           .ToArray();
+                           .ToList();
 
                 var poster = (from p in context.PosterIMatch.Include(x => x.Post)
                               where p.Match.MatchId == matchId
@@ -47,7 +45,9 @@ namespace Repository
                                   CurrentPoengIndex = p.CurrentPoengIndex,
                                   PoengArray = p.PoengArray,
                                   Navn = p.Post.Navn,
-                                  ErSynlig = p.SynligFraUTC < TimeService.Now && TimeService.Now < p.SynligTilUTC
+                                  ErSynlig = p.SynligFraTid < TimeService.Now && TimeService.Now < p.SynligTilTid,
+                                  SynligFra = p.SynligFraTid,
+                                  SynligTil = p.SynligTilTid
                               }).ToList();
 
                 var postRegistreringer = (from l in context.LagIMatch
@@ -62,15 +62,28 @@ namespace Repository
                                           }).ToList();
 
 
+                var rankedeLag = (from l in sorterteLag
+                                  select new
+                                  {
+                                      Id = l.Id,
+                                      Lag = l.Lag,
+                                      Rank = sorterteLag.Count(x => x.PoengSum > l.PoengSum) + 1,
+                                      PoengSum = l.PoengSum,
+                                      LagIMatch = l
+                                  }).OrderBy(x => x.Rank).ToList();
+
+                var poengsummer = (from l in rankedeLag
+                                   select l.PoengSum).Distinct().OrderByDescending(x => x).ToList();
+
                 var nyGameState = new Dictionary<string, GameStateForLag>();
                 var random = new Random();
 
-                for (int i = 0; i < sorterteLag.Length; i++)
+                foreach (var lag in rankedeLag)
                 {
-                    var lag = sorterteLag[i];
+                    var egenPoengIndex = poengsummer.IndexOf(lag.PoengSum);
 
-                    LagIMatch plassenForan = i == 0 ? null : sorterteLag[i - 1];
-                    LagIMatch plassenBak = i == sorterteLag.Length - 1 ? null : sorterteLag[i + 1];
+                    var poengForover = egenPoengIndex == 0 ? lag.PoengSum : poengsummer[egenPoengIndex - 1];
+                    var poengBakover = egenPoengIndex == poengsummer.Count - 1 ? lag.PoengSum : poengsummer[egenPoengIndex + 1];
 
                     var state = new GameStateForLag
                     {
@@ -81,9 +94,9 @@ namespace Repository
                         Score = lag.PoengSum,
                         Ranking = new GameStateRanking
                         {
-                            Rank = i + 1,
-                            PoengBakLagetForan = (plassenForan ?? lag).PoengSum - lag.PoengSum,
-                            PoengForanLagetBak = lag.PoengSum - (plassenBak ?? lag).PoengSum,
+                            Rank = lag.Rank,
+                            PoengBakLagetForan = poengForover - lag.PoengSum,
+                            PoengForanLagetBak = lag.PoengSum - poengBakover,
                         },
                         Poster = (from p in poster.Where(x => x.ErSynlig)
                                   join r in postRegistreringer.Where(x => x.LagIMatchId == lag.Id) on p.PostId equals r.PostId into j
@@ -96,7 +109,7 @@ namespace Repository
                                       HarRegistert = reg != null,
                                       Rekkefølge = random.Next(0, short.MaxValue) // order by random                                 
                                   }).OrderBy(x => x.Rekkefølge).ToList(),
-                        Vaapen = lag.VåpenBeholdning.Select(x => new GameStateVaapen
+                        Vaapen = lag.LagIMatch.VåpenBeholdning.Where(x => x.BruktIPostRegistrering == null).Select(x => new GameStateVaapen
                         {
                             VaapenId = x.VaapenId
                         }).ToList()
@@ -135,7 +148,7 @@ namespace Repository
                                             Navn = g.First().Deltaker.Navn,
                                             LagIMatchId = g.First().LagIMatchId,
                                             AntallRegistreringer = g.Count(),
-                                            Poengsum = g.Sum(x => x.Poeng)                                            
+                                            Poengsum = g.Sum(x => x.Poeng)
                                         }).ToList();
 
                 scoreboard.Deltakere = (from p in deltakerPoeng
@@ -153,13 +166,62 @@ namespace Repository
                                             MostValueablePlayerRanking = deltakerPoeng.Count(x => x.Poengsum > p.Poengsum) + 1
                                         }).ToList();
 
+                var førsteTidspunktEtterNå = (from p in poster
+                                              from t in p.Tider
+                                              where t > TimeService.Now
+                                              select t).Union(new[] { DateTime.MaxValue }).Min();
 
                 // swap current state
-                _gamestates = nyGameState;
-                _scoreboard = scoreboard;
+                _matchStates[matchId] = new MatchState(matchId, nyGameState, scoreboard, førsteTidspunktEtterNå);
             }
         }
 
+        public GameStateForLag Get(string lagId)
+        {
+            var matchId = _currentMatchProvider.GetMatchId();
+
+            if (!_matchStates.ContainsKey(matchId))
+                Calculate();
+
+            if (_matchStates[matchId].ErUtløpt)
+                Calculate();
+
+            return _matchStates[matchId].Get(lagId);
+        }
+
+        public ScoreboardState GetScoreboard()
+        {
+            var matchId = _currentMatchProvider.GetMatchId();
+
+            if (!_matchStates.ContainsKey(matchId))
+                Calculate();
+
+            if (_matchStates[matchId].ErUtløpt)
+                Calculate();
+
+            return _matchStates[matchId].GetScoreboard();
+        }
+    }
+
+    public class MatchState
+    {
+        private Dictionary<string, GameStateForLag> _gamestates = new Dictionary<string, GameStateForLag>();
+        private ScoreboardState _scoreboard = new ScoreboardState();
+        private readonly DateTime _gyldigInntil;
+
+        public Guid MatchId { get; set; }
+        public MatchState(Guid matchId, Dictionary<string, GameStateForLag> gamestates, ScoreboardState scoreboard, DateTime? gyldigInntil)
+        {
+            MatchId = matchId;
+            _gamestates = gamestates;
+            _scoreboard = scoreboard;
+            _gyldigInntil = gyldigInntil ?? DateTime.MaxValue;
+        }
+
+        public bool ErUtløpt
+        {
+            get { return TimeService.Now > _gyldigInntil; }
+        }
         public GameStateForLag Get(string lagId)
         {
             return _gamestates[lagId];
@@ -231,6 +293,9 @@ namespace Repository
         public bool ErSynlig { get; set; }
 
         public string Navn { get; set; }
+        public DateTime[] Tider { get { return new[] { SynligFra, SynligTil }; } }
+        public DateTime SynligTil { get; set; }
+        public DateTime SynligFra { get; set; }
     }
 
     public class GameStateForLag

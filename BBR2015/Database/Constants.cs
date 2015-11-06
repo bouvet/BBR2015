@@ -14,6 +14,22 @@ namespace Database
         {
             public const string Felle = "FELLE";
             public const string Bombe = "BOMBE";
+
+            public const int BombeSkjulerPostIAntallSekunder = 60*5;
+        }
+
+        public class Meldinger
+        {
+            public const int MaxAntallUtenSekvensId = 10;
+        }
+
+        public class Headers
+        {
+            public const string HTTPHEADER_LAGKODE = "LagKode";
+            public const string REQUESTPROPERTY_LAGID = "LagId";
+
+            public const string HTTPHEADER_DELTAKERKODE = "DeltakerKode";
+            public const string REQUESTPROPERTY_DELTAKERID = "DeltakerId";
         }
     }
 

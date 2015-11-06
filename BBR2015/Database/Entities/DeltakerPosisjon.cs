@@ -26,6 +26,6 @@ namespace Database.Entities
         public double Longitude { get; set; }
 
         [Required]
-        public DateTime TidspunktUTC { get; set; }
+        public DateTime Tidspunkt { get; set; }
     }
 }

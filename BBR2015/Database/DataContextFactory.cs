@@ -8,9 +8,9 @@ namespace Database
 {
     public class DataContextFactory
     {
-        private CascadingAppSettings _appSettings;
+        private OverridableSettings _appSettings;
 
-        public DataContextFactory(CascadingAppSettings appSettings)
+        public DataContextFactory(OverridableSettings appSettings)
         {
             _appSettings = appSettings;
         }

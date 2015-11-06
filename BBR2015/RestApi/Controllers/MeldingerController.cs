@@ -7,6 +7,7 @@ using Repository;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
 using System.Web.Http.Results;
+using RestApi.Filters;
 
 namespace RestApi.Controllers
 {
@@ -23,30 +24,23 @@ namespace RestApi.Controllers
         }
     }
 
-    [EnableCorsAttribute("*", "*", "*")]
-   
+    [RequireApiKey]
     public class MeldingerController : BaseController
     {
-        private MeldingRepository _meldingRepository;
+        private MeldingService _meldingService;
 
-        public MeldingerController(MeldingRepository meldingRepository)
+        public MeldingerController(MeldingService meldingService)
         {
-            _meldingRepository = meldingRepository;
+            _meldingService = meldingService;
         }
-        // GET: api/Meldinger
-        //[ResponseType(typeof (IEnumerable<Object>))]
-        //public IHttpActionResult Get()
-        //{
-        //    long sekvensIfra = 0;
-        //    int maksAntall = 10;
-        //    return HttpActionResult(sekvensIfra, maksAntall);
-        //}
+       
 
         // GET: api/Meldinger
         [HttpGet]
         [ResponseType(typeof (IEnumerable<Object>))]
-        [RequireApiKey]
-        public IHttpActionResult Get(long id)
+        [Throttle]
+        [Route("api/Meldinger/{id:int?}")]
+        public IHttpActionResult Get(long id = 0)
         {
             return HttpActionResult(id);
         }
@@ -58,12 +52,11 @@ namespace RestApi.Controllers
 
             try
             {
-                //TODO: Allow message from Admin to all teams!
-                var rawData = _meldingRepository.HentMeldinger(LagId, sekvensIfra, maksAntall).ToList();
+                var rawData = _meldingService.HentMeldinger(LagId, sekvensIfra, maksAntall).ToList();
                 var meldinger = rawData.Select(m => new
                 {
                     Sekvens = m.SekvensId,
-                    TidspunktUtc = m.TidspunktUTC,
+                    TidspunktUtc = m.Tidspunkt,
                     Deltaker = m.DeltakerId,
                     Melding = m.Tekst
                 }).OrderByDescending(m => m.Sekvens);
@@ -80,7 +73,8 @@ namespace RestApi.Controllers
         // POST: api/Meldinger
         [HttpPost]
         [ResponseType(typeof(OkResult))]
-        [RequireApiKey]
+        [Throttle]
+        [Route("api/Meldinger")]
         public IHttpActionResult Post([FromBody] NyMelding nyMelding)
         {
             try
@@ -95,7 +89,36 @@ namespace RestApi.Controllers
                     return BadRequest(ModelState);
                 }
 
-                _meldingRepository.PostMelding(DeltakerId, LagId, nyMelding.Tekst);
+                _meldingService.PostMelding(DeltakerId, LagId, nyMelding.Tekst);
+               
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+      
+        [HttpPost]
+        [ResponseType(typeof(OkResult))]
+        [RequireScoreboardSecret]
+        [Obsolete]
+        [Route("api/Meldinger/PostTilAlle")]
+        public IHttpActionResult PostTilAlle([FromBody] NyMelding nyMelding)
+        {
+            try
+            {
+                if (nyMelding == null)
+                {
+                    return BadRequest("Melding cannot be null");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                _meldingService.PostMeldingTilAlle(DeltakerId, LagId, nyMelding.Tekst);
                
                 return Ok();
             }

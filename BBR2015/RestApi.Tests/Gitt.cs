@@ -29,8 +29,8 @@ namespace RestApi.Tests
         {
             using (var context = _dataContextFactory.Create())
             {
-                var lag1 = SettOppEtLagMedDeltakere(1, 2);
-                var lag2 = SettOppEtLagMedDeltakere(2, 2);
+                var lag1 = LagFactory.SettOppEtLagMedDeltakere(1, 2);
+                var lag2 = LagFactory.SettOppEtLagMedDeltakere(2, 2);
                 context.Lag.Add(lag1);
                 context.Lag.Add(lag2);
 
@@ -44,9 +44,9 @@ namespace RestApi.Tests
         {
             using (var context = _dataContextFactory.Create())
             {
-                var lag1 = SettOppEtLagMedDeltakere(1, 2);
-                var lag2 = SettOppEtLagMedDeltakere(2, 2);
-                var lag3 = SettOppEtLagMedDeltakere(3, 2);
+                var lag1 = LagFactory.SettOppEtLagMedDeltakere(1, 2);
+                var lag2 = LagFactory.SettOppEtLagMedDeltakere(2, 2);
+                var lag3 = LagFactory.SettOppEtLagMedDeltakere(3, 2);
                 context.Lag.Add(lag1);
                 context.Lag.Add(lag2);
                 context.Lag.Add(lag3);
@@ -57,8 +57,8 @@ namespace RestApi.Tests
                 {
                     MatchId = Guid.NewGuid(),
                     Navn = "Unit Test Match",
-                    StartUTC = new DateTime(2015, 10, 01),
-                    SluttUTC = new DateTime(2015, 11, 01)
+                    StartTid = new DateTime(2015, 10, 01),
+                    SluttTid = new DateTime(2015, 12, 01)
                 };
 
                 context.Matcher.Add(match);
@@ -98,8 +98,8 @@ namespace RestApi.Tests
                         Match = match,
                         Post = post,
                         PoengArray = post.DefaultPoengArray,
-                        SynligFraUTC = match.StartUTC,
-                        SynligTilUTC = match.SluttUTC
+                        SynligFraTid = match.StartTid,
+                        SynligTilTid = match.SluttTid
                     };
 
                     match.Poster.Add(postIMatch);
@@ -153,24 +153,7 @@ namespace RestApi.Tests
 
             return resultat;
         }
-
-        private Lag SettOppEtLagMedDeltakere(int lagIndex, int antallDeltakere)
-        {
-            var lag = new Lag
-            {
-                LagId = string.Format("Lag{0}", lagIndex),
-                Navn = string.Format("LagNavn{0}", lagIndex),
-                Farge = string.Format("LagFarge{0}", lagIndex),
-                Ikon = string.Format("LagIkon{0}.gif", lagIndex),
-            };
-
-            for (int i = 1; i <= antallDeltakere; i++)
-            {
-                lag.LeggTilDeltaker(new Deltaker(string.Format("Deltaker{0}-{1}", lagIndex, i), string.Format("DeltakerNavn{0}-{1}", lagIndex, i)));
-            }
-
-            return lag;
-        }
+       
     }
 
     public class HardcodedMatchProvider : CurrentMatchProvider

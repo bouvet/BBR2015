@@ -7,30 +7,33 @@ using System.Web.Http.Description;
 using System.Web.Http.Results;
 using Repository;
 using Database.Entities;
+using RestApi.Filters;
 using RestApi.Models;
 
 namespace RestApi.Controllers
 {
 
-    [EnableCors("*", "*", "*")]
    
     public class PosisjonsServiceController : BaseController
     {
-        private PosisjonsRepository _posisjonsRepository;
+        private PosisjonsService _posisjonsService;
 
-        public PosisjonsServiceController(PosisjonsRepository posisjonsRepository)
+        public PosisjonsServiceController(PosisjonsService posisjonsService)
         {
-            _posisjonsRepository = posisjonsRepository;
+            _posisjonsService = posisjonsService;
         }
 
         // GET: api/PosisjonsService
         [RequireApiKey]
+        [Throttle]
         [ResponseType(typeof (DeltakerPosisjon))]
+        [HttpGet]
+
         public IHttpActionResult Get()
         {
             try
             {
-                return Ok(_posisjonsRepository.HentforLag(LagId).Posisjoner);
+                return Ok(_posisjonsService.HentforLag(LagId).Posisjoner);
             }
             catch (Exception ex)
             {
@@ -41,6 +44,8 @@ namespace RestApi.Controllers
         [RequireScoreboardSecret]
         [Route("api/PosisjonsService/Alle")]
         [ResponseType(typeof(List<LagPosisjoner>))]
+        [HttpGet]
+        [Obsolete]
         public IHttpActionResult GetAlle()
         {
             try
@@ -49,7 +54,7 @@ namespace RestApi.Controllers
                 if (header.Value == null)
                     return NotFound();
 
-                return Ok(_posisjonsRepository.HentforAlleLag(header.Value.FirstOrDefault()));
+                return Ok(_posisjonsService.HentforAlleLag(header.Value.FirstOrDefault()));
             }
             catch (Exception ex)
             {
@@ -59,7 +64,9 @@ namespace RestApi.Controllers
 
         // POST: api/PosisjonsService
         [ResponseType(typeof(OkResult))]
+        [Throttle]
         [RequireApiKey]
+        [HttpPost]
         public IHttpActionResult Post([FromBody] Koordinat koordinat)
         {
             try
@@ -74,7 +81,7 @@ namespace RestApi.Controllers
                     return BadRequest(ModelState);
                 }
 
-                DeltakerPosisjon deltakerPosisjon = _posisjonsRepository.RegistrerPosisjon(LagId,DeltakerId,koordinat.Latitude, koordinat.Longitude);
+                DeltakerPosisjon deltakerPosisjon = _posisjonsService.RegistrerPosisjon(LagId,DeltakerId,koordinat.Latitude, koordinat.Longitude);
                 if (deltakerPosisjon == null)
                 {
                     return Conflict();
