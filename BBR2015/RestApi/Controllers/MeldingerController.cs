@@ -34,6 +34,18 @@ namespace RestApi.Controllers
             _meldingService = meldingService;
         }
 
+
+        /// <summary>
+        /// Tjenesten tilbyr to funksjonaliteter: POST for å sende en ny melding på formen { "tekst": "Dette er en melding!" } eller GET for å hente lagets meldinger. <br />
+        /// Meldinger som hentes ut har et sekvensnummer som kan brukes ved neste GET api/Meldinger/{sekvensnummer}. Dette kan brukes til å bare hente nye meldinger siden siste uthenting. Hvis en ikke angir sekvensnummer, får en de ti nyeste meldingene. Laget kan kommunisere på valgfri måte (f.eks. går rundt sammen og kommunisere muntlig), men det gis ekstrapoeng i form av en Achievement for å bruke spillets meldingstjeneste. <br />
+        /// Spillets administrasjon vil bruke meldingstjenesten til å gi informasjon som kan gi fordeler i spillets gang. <br />
+        /// NB: En melding kan være maksimalt 256 tegn lang. Det gjøres ikke noe filtrering av innhold, men siden meldingene bare går til de andre på laget, vil forsøk på Cross-Side-Scripting bare ramme de andre på laget.
+        /// </summary>
+        /// <remarks>GET api/Meldinger</remarks>
+        /// <response code="200">Ok</response>
+        /// <response code="400">Bad request</response>
+        /// <response code="403">Forbidden - Husk LagKode og DeltakerKode</response>
+        /// <response code="500">Internal Server Error</response>
         [HttpGet]
         [ResponseType(typeof(IEnumerable<Object>))]
         [Throttle]
@@ -43,6 +55,17 @@ namespace RestApi.Controllers
             return HttpActionResult("0");
         }
 
+        /// <summary>
+        /// Tjenesten tilbyr to funksjonaliteter: POST for å sende en ny melding på formen { "tekst": "Dette er en melding!" } eller GET for å hente lagets meldinger. <br />
+        /// Meldinger som hentes ut har et sekvensnummer som kan brukes ved neste GET api/Meldinger/{sekvensnummer}. Dette kan brukes til å bare hente nye meldinger siden siste uthenting. Hvis en ikke angir sekvensnummer, får en de ti nyeste meldingene. Laget kan kommunisere på valgfri måte (f.eks. går rundt sammen og kommunisere muntlig), men det gis ekstrapoeng i form av en Achievement for å bruke spillets meldingstjeneste. <br />
+        /// Spillets administrasjon vil bruke meldingstjenesten til å gi informasjon som kan gi fordeler i spillets gang. <br />
+        /// NB: En melding kan være maksimalt 256 tegn lang. Det gjøres ikke noe filtrering av innhold, men siden meldingene bare går til de andre på laget, vil forsøk på Cross-Side-Scripting bare ramme de andre på laget.
+        /// </summary>
+        /// <remarks>GET api/Meldinger/{sekvensNr}</remarks>
+        /// <response code="200">Ok</response>
+        /// <response code="400">Bad request</response>
+        /// <response code="403">Forbidden - Husk LagKode og DeltakerKode</response>
+        /// <response code="500">Internal Server Error</response>
         [HttpGet]
         [ResponseType(typeof (IEnumerable<Object>))]
         [Throttle]
@@ -81,7 +104,17 @@ namespace RestApi.Controllers
             }
         }
 
-        // POST: api/Meldinger
+        /// <summary>
+        /// Tjenesten tilbyr to funksjonaliteter: POST for å sende en ny melding på formen { "tekst": "Dette er en melding!" } eller GET for å hente lagets meldinger. <br />
+        /// Meldinger som hentes ut har et sekvensnummer som kan brukes ved neste GET api/Meldinger/{sekvensnummer}. Dette kan brukes til å bare hente nye meldinger siden siste uthenting. Hvis en ikke angir sekvensnummer, får en de ti nyeste meldingene. Laget kan kommunisere på valgfri måte (f.eks. går rundt sammen og kommunisere muntlig), men det gis ekstrapoeng i form av en Achievement for å bruke spillets meldingstjeneste. <br />
+        /// Spillets administrasjon vil bruke meldingstjenesten til å gi informasjon som kan gi fordeler i spillets gang. <br />
+        /// NB: En melding kan være maksimalt 256 tegn lang. Det gjøres ikke noe filtrering av innhold, men siden meldingene bare går til de andre på laget, vil forsøk på Cross-Side-Scripting bare ramme de andre på laget.
+        /// </summary>
+        /// <remarks>POST api/Meldinger</remarks>
+        /// <response code="200">Ok</response>
+        /// <response code="400">Bad request</response>
+        /// <response code="403">Forbidden - Husk LagKode og DeltakerKode</response>
+        /// <response code="500">Internal Server Error</response>
         [HttpPost]
         [ResponseType(typeof(OkResult))]
         [Throttle]

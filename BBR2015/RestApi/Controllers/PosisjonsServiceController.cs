@@ -23,7 +23,16 @@ namespace RestApi.Controllers
             _posisjonsService = posisjonsService;
         }
 
-        // GET: api/PosisjonsService
+        /// <summary>
+        /// Her melder hver av deltakerne inn sin posisjon fortløpende underveis i spillet ved å gjøre en POST på en koordinat av formen { "latitude": 59.676035, "longitude": 10.604844 } <br />
+        /// Det er teknisk mulig å gjennomføre spillet uten å melde inn koordinater, men det vil bli gitt ekstrapoeng i form av en Achievement til lagene som melder dette inn. <br />
+        /// Under spillet vil deltakernes posisjoner vises på et Scoreboard.
+        /// </summary>
+        /// <remarks>GET api/PosisjonsService</remarks>
+        /// <response code="200">Ok</response>
+        /// <response code="400">Bad request</response>
+        /// <response code="403">Forbidden - Husk LagKode og DeltakerKode</response>
+        /// <response code="500">Internal Server Error</response>
         [RequireApiKey]
         [Throttle]
         [ResponseType(typeof (DeltakerPosisjon))]
@@ -62,7 +71,16 @@ namespace RestApi.Controllers
             }
         }
 
-        // POST: api/PosisjonsService
+        /// <summary>
+        /// Her melder hver av deltakerne inn sin posisjon fortløpende underveis i spillet ved å gjøre en POST på en koordinat av formen { "latitude": 59.676035, "longitude": 10.604844 } <br />
+        /// Det er teknisk mulig å gjennomføre spillet uten å melde inn koordinater, men det vil bli gitt ekstrapoeng i form av en Achievement til lagene som melder dette inn. <br />
+        /// Under spillet vil deltakernes posisjoner vises på et Scoreboard.
+        /// </summary>
+        /// <remarks>POST api/PosisjonsService</remarks>
+        /// <response code="200">Ok</response>
+        /// <response code="400">Bad request</response>
+        /// <response code="403">Forbidden - Husk LagKode og DeltakerKode</response>
+        /// <response code="500">Internal Server Error</response>        
         [ResponseType(typeof(OkResult))]
         [Throttle]
         [RequireApiKey]
