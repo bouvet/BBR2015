@@ -35,17 +35,33 @@
             <th>Poeng</th>
           </thead>
           <tbody>
-            <tr ng-repeat="lag in lagliste | orderBy:ranking track by lag.lagNavn" >
+            <tr ng-repeat="lag in lagliste | orderBy:'ranking' track by lag.lagNavn" >
               <td>{{ lag.ranking }}</td>
               <td>
                 <img class="bildeicon" ng-if="lag.lagId.indexOf('JAVA') > -1" src="/images/java.svg" />
                 <img class="bildeicon" ng-if="lag.lagId.indexOf('MS') > -1" src="/images/ms.svg" /> 
               </td>
-              <td><span class="fargesirkel" ng-style="{'background-color': '#' + lag.lagFarge }"></span>{{lag.lagNavn }}</td>
+              <td class="leftalign"><span class="fargesirkel" ng-style="{'background-color': '#' + lag.lagFarge }"></span>{{lag.lagNavn }}</td>
               <td>{{ lag.antallRegistreringer }}</td>
               <td>{{ lag.score }}</td>
             </tr>
           </tbody>
+        </table>
+      </div>
+      <div class="javavsms">
+        <table>
+          <thead>
+            <th>Java</th>
+            <th>vs</th>
+            <th>Microsoft</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ javapoeng() }}</td>
+              <td></td>
+              <td>{{ microsoftpoeng() }}</td>
+            </tr>
+          </tbody>  
         </table>
       </div>
       <div class="mvpliste">
@@ -59,17 +75,17 @@
             <th>Deltaker<th>
           </thead>
           <tbody>
-            <tr ng-repeat="deltaker in deltakerliste | orderBy:mostValueablePlayerRanking track by deltaker.deltakerId">
+            <tr ng-repeat="deltaker in deltakerliste | orderBy:'mostValueablePlayerRanking' track by deltaker.deltakerId">
               <td>{{ deltaker.mostValueablePlayerRanking }}</td>
               <td>{{ deltaker.score }}</td>
               <td>
-                <img class="bildeicon" ng-if="deltaker.lagId.indexOf('BBR') > -1" src="/images/java.svg" />
+                <img class="bildeicon" ng-if="deltaker.lagId.indexOf('JAVA') > -1" src="/images/java.svg" />
                 <img class="bildeicon" ng-if="deltaker.lagId.indexOf('MS') > -1" src="/images/ms.svg" /> 
               </td>
-              <td>
-              <span class="fargesirkel" ng-style="{'background-color': '#' + deltaker.lagFarge }"></span>{{ deltaker.lagNavn }}
+              <td class="leftalign">
+                <span class="fargesirkel" ng-style="{'background-color': '#' + deltaker.lagFarge }"></span>{{ deltaker.lagNavn }}
               </td>
-              <td>{{ deltaker.navn }}</td>
+              <td class="leftalign">{{ deltaker.navn }}</td>
             </tr>
           </tbody>
         </table>
@@ -77,8 +93,20 @@
 
      
     </div>
-    <div class="right">
+    <div class="center">
       <div id="map"></div>
+    </div>
+    <div class="right">
+      <h3> Hendelser </h3>
+      <div id="meldinger">
+        <div class="melding" ng-repeat="event in eventmeldinger | orderBy:'sekvens':true">
+          <ul>
+            <li>
+              <p>{{ event.melding }}</p>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </body>

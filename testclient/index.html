@@ -8,15 +8,39 @@
   <style type="text/css">
   html, body { height: 100%; margin: 0; padding: 0; }
   #map-canvas { height: 100%; }
+
+  body {
+
+}
+
+#left {
+  height: 100%;
+  width: 20%;
+  float: left;
+  background-color: whitesmoke;
+}
+
+#meldingsboks {
+  margin-top: 50px;
+  overflow: scroll;
+  height: 50%;
+}
+
+#mapWrapper {
+  width: 80%;
+  height: 100%;
+  float: right;
+}
+
 </style>
   <body>
   <div id="left">
     <input type="checkbox" id="skalSendePosisjon">Automatisk pull/post</button>
     <div id="infoboks">
       <label for="lagId">LagKode:</label>
-      <input id="lagId" value="BBR1"/><br />
+      <input id="lagId" value="arrangoerlaget_maa_ha_den_aller_beste_koden"/><br />
       <label for="deltakerId">DeltakerKode:</label>
-      <input id="deltakerId" value="BBR1-1"/>
+      <input id="deltakerId" placeholder="deltakerId" value=""/>
       <br />
       <br />
       <label for="postId">Postkode:</label>
@@ -79,20 +103,14 @@
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
     // Try HTML5 geolocation
     if(navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(position) {
-      var pos = new google.maps.LatLng(position.coords.latitude,
-                                       position.coords.longitude);
-      var infowindow = new google.maps.InfoWindow({
-        map: map,
-        position: pos,
-      });
-      map.setCenter(pos);
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+          map.setCenter(pos);
       }, function() {
-      handleNoGeolocation(true);
-      },
-        {
-          enableHighAccuracy: true
-        }
+        handleNoGeolocation(true);
+      }, 
+        {maximumAge:600000, timeout:5000, enableHighAccuracy: true}
       );
     } else {
       // Browser doesn't support Geolocation
@@ -240,9 +258,10 @@
       });
     };
 
+    var currentLocation = null;
     var sendPosisjon = function() {
       console.log("Sender posisjoner");
-      navigator.geolocation.getCurrentPosition(success);
+      navigator.geolocation.getCurrentPosition(success, null, {maximumAge:0, timeout:5000, enableHighAccuracy: true});
       function success(position) {
          var lat = position.coords.latitude;
          var lon = position.coords.longitude;
@@ -250,6 +269,25 @@
             "latitude": lat, 
             "longitude": lon
           });
+
+
+          var myLatlng = new google.maps.LatLng(lat, lon);
+          // To add the marker to the map, use the 'map' property
+          
+
+          if (!currentLocation) {
+            var marker = new google.maps.Marker({
+              position: myLatlng,
+              map: map,
+              icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+            });
+            if(currentLocation !== null) {
+              currentLocation.setMap(map);
+            }
+          }
+          if (currentLocation !== null) {
+            currentLocation.setPosition(lat, lon);
+          }
        
         $.ajax({
           type: "POST",
