@@ -45,6 +45,7 @@ namespace RestApi.Controllers
         [Route("api/PosisjonsService/Alle")]
         [ResponseType(typeof(List<LagPosisjoner>))]
         [HttpGet]
+        [Obsolete]
         public IHttpActionResult GetAlle()
         {
             try

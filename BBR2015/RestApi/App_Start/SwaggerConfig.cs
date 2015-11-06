@@ -32,7 +32,7 @@ namespace RestApi
                         // hold additional metadata for an API. Version and title are required but you can also provide
                         // additional fields by chaining methods off SingleApiVersion.
                         //
-                        c.SingleApiVersion("v1", "RestApi");
+                        c.SingleApiVersion("v1", "Bouvet Battle Royal 2015");
 
                         // If your API has multiple versions, use "MultipleApiVersions" instead of "SingleApiVersion".
                         // In this case, you must provide a lambda that tells Swashbuckle which actions should be
@@ -57,10 +57,15 @@ namespace RestApi
                         //c.BasicAuth("basic")
                         //    .Description("Basic HTTP Authentication");
                         //
-                        //c.ApiKey("apiKey")
-                        //    .Description("API Key Authentication")
-                        //    .Name("apiKey")
-                        //    .In("header");
+                        c.ApiKey("LagKode")
+                            .Description("Hemmlig kode til laget")
+                            .Name("LagKode")
+                            .In("header");
+
+                        c.ApiKey("DeltakerKode")
+                            .Description("Hemmlig kode til deltaker")
+                            .Name("DeltakerKode")
+                            .In("header");
                         //
                         //c.OAuth2("oauth2")
                         //    .Description("OAuth2 Implicit Grant")
@@ -74,7 +79,7 @@ namespace RestApi
                         //    });
 
                         // Set this flag to omit descriptions for any actions decorated with the Obsolete attribute
-                        //c.IgnoreObsoleteActions();
+                        c.IgnoreObsoleteActions();
 
                         // Each operation be assigned one or more tags which are then used by consumers for various reasons.
                         // For example, the swagger-ui groups operations according to the first tag of each operation.
@@ -223,7 +228,7 @@ namespace RestApi
 
         private static string GetXmlCommentsPath()
         {
-            return string.Format(@"{0}\bin\RestApi.XML",
+            return string.Format(@"{0}\docs\RestApi.XML",
                 System.AppDomain.CurrentDomain.BaseDirectory);
         }
     }
