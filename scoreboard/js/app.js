@@ -35,14 +35,48 @@ angular.module('scoreboard').controller('scoreboardController', function($scope,
         }
       }   
       if (newPost) {
-        var awesomeMarker = L.AwesomeMarkers.icon({
-          icon: 'flag',
-          iconColor: 'blue'
-        });
-          var marker = L.marker([post.latitude, post.longitude], {icon: awesomeMarker}).addTo(map);
+          var awesomeMarker;
+          if (post.riggetMedVåpen !== null) {
+            awesomeMarker = L.AwesomeMarkers.icon({
+                  icon: 'flag',
+                  iconColor: 'red'
+                });
+          } else if (post.erSynlig) {
+            awesomeMarker = L.AwesomeMarkers.icon({
+                  icon: 'flag',
+                  iconColor: 'blue'
+                });
+          } else {
+            awesomeMarker = L.AwesomeMarkers.icon({
+                  icon: 'flag',
+                  iconColor: 'gray'
+                });
+          }
+          var marker = L.marker([post.latitude, post.longitude], {icon: awesomeMarker, title: 'Post: ' + post.navn }).addTo(map);
           $scope.kartposter.push({post: post, marker: marker});
         } else {
-          console.log("POST FINNES");
+          map.removeLayer(oldKartpost.marker);
+          var awesomeMarker;
+          console.log(oldKartpost.post);
+          if (post.riggetMedVåpen) {
+            awesomeMarker = L.AwesomeMarkers.icon({
+                  icon: 'flag',
+                  iconColor: 'red'
+                });
+          } else if (post.erSynlig) {
+            awesomeMarker = L.AwesomeMarkers.icon({
+                  icon: 'flag',
+                  iconColor: 'blue'
+                });
+          } else {
+            awesomeMarker = L.AwesomeMarkers.icon({
+                  icon: 'flag',
+                  iconColor: 'gray'
+                });
+          }
+          console.log(awesomeMarker);
+          var newMarker = L.marker([post.latitude, post.longitude], {icon: awesomeMarker, title: 'Post: ' + post.navn }).addTo(map);
+          oldKartpost.marker = newMarker;
         }
     });
   });
@@ -97,25 +131,26 @@ angular.module('scoreboard').controller('scoreboardController', function($scope,
           $scope.deltakerliste = response.data.deltakere;
           $scope.lagliste = response.data.lag;
           $scope.poster = response.data.poster;
+
+          $http.get(
+            $scope.hostname + "PosisjonsService/Alle",
+            {headers: {"ScoreboardSecret": "en_liten_hemmelighet"}}
+          ).then(
+            function(response) {
+              console.log(response);
+              $scope.deltakerposisjoner = response.data;
+            },
+            function() {
+              console.log("ERROR");
+            }
+          );
         }
       }, 
       function() {
-
       }
     );
 
-    $http.get(
-      $scope.hostname + "PosisjonsService/Alle",
-      {headers: {"ScoreboardSecret": "en_liten_hemmelighet"}}
-    ).then(
-      function(response) {
-        console.log(response);
-        $scope.deltakerposisjoner = response.data;
-      },
-      function() {
-        console.log("ERROR");
-      }
-    );
+    
 
 
 
