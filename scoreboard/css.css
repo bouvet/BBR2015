@@ -64,14 +64,6 @@ table td {
   margin-right: 5px;
 }
 
-.java-marker {
-  height: 10px;
-  width: 10px;
-  background-color: black;
-}
-
-.microsoft-marker {
-  height: 10px;
-  width: 10px;
-  background-color: black;
+.bildeicon {
+  height: 20px;
 }

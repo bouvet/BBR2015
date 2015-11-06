@@ -65,7 +65,7 @@
   var poster = [];
   var meldingsSekvens = 0;
 
-  var baseUrl = "https://bbr2015test.azurewebsites.net/api/";
+  var baseUrl = "https://bbr2015.azurewebsites.net/api/";
 
 
 
@@ -86,7 +86,11 @@
       map.setCenter(pos);
       }, function() {
       handleNoGeolocation(true);
-      });
+      },
+        {
+          enableHighAccuracy: true
+        }
+      );
     } else {
       // Browser doesn't support Geolocation
       handleNoGeolocation(false);

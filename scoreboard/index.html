@@ -5,18 +5,22 @@
   <meta charset="utf-8" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/bower_components/jquery/dist/jquery.js"></script>
   <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
   <script src="/bower_components/angular/angular.js"></script>
   <script src="/bower_components/leaflet/dist/leaflet.js"></script>
-  <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
-
+  <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="/lib/leaflet.awesome-markers.js"></script>
 
 
   <script src="/js/app.js"></script>
   <link rel="stylesheet" href="css.css" />
 </head>
 <body ng-app="scoreboard">
-  <script src="/bower_components/leaflet/dist/leaflet.css"></script>
+  <link rel="stylesheet" href="/bower_components/leaflet/dist/leaflet.css"></link>
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css"></link>
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css"></link>
+  <link rel="stylesheet" href="/css/leaflet.awesome-markers.css"></link>
 
   <div class="content" ng-controller="scoreboardController">
     <div class="left">
@@ -33,6 +37,10 @@
             <tr ng-repeat="deltaker in deltakerliste | orderBy:mostValueablePlayerRanking track by deltaker.deltakerId">
               <td>{{ deltaker.mostValueablePlayerRanking }}</td>
               <td>{{ deltaker.score }}</td>
+              <td>
+                <img class="bildeicon" ng-if="deltaker.lagId.indexOf('BBR') > -1" src="/images/java.svg" />
+                <img class="bildeicon" ng-if="deltaker.lagId.indexOf('MS') > -1" src="/images/ms.svg" /> 
+              </td>
               <td>
               <span class="fargesirkel" ng-style="{'background-color': '#' + deltaker.lagFarge }"></span>{{ deltaker.lagNavn }}
               </td>
@@ -54,6 +62,10 @@
           <tbody>
             <tr ng-repeat="lag in lagliste | orderBy:ranking track by lag.lagNavn" >
               <td>{{ lag.ranking }}</td>
+              <td>
+                <img class="bildeicon" ng-if="lag.lagId.indexOf('BBR') > -1" src="/images/java.svg" />
+                <img class="bildeicon" ng-if="lag.lagId.indexOf('MS') > -1" src="/images/ms.svg" /> 
+              </td>
               <td><span class="fargesirkel" ng-style="{'background-color': '#' + lag.lagFarge }"></span>{{lag.lagNavn }}</td>
               <td>{{ lag.antallRegistreringer }}</td>
               <td>{{ lag.score }}</td>

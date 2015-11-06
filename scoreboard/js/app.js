@@ -1,7 +1,7 @@
 angular.module('scoreboard', []);
 
 angular.module('scoreboard').controller('scoreboardController', function($scope, $http, $interval) {
-  $scope.hostname = "https://bbr2015test.azurewebsites.net/api/";
+  $scope.hostname = "https://bbr2015.azurewebsites.net/api/";
 
   $scope.deltakerliste = [];
   $scope.lagliste = [];
@@ -13,14 +13,14 @@ angular.module('scoreboard').controller('scoreboardController', function($scope,
 
 
   $scope.finnLagfarge = function(lagId) {
-    for(var i = 1; i < $scope.lagliste.length; i++) {
+    for(var i = 1; i < $scope.deltakerliste.length; i++) {
       var lag = $scope.deltakerliste[i];
       if (lag.lagId === lagId) {
         return lag.lagFarge;
       }
     }
     return "#FFFFFF";
-  }
+  };
 
   $scope.$watch('poster', function(newValue, oldValue) {
     var newPost = true;
@@ -35,7 +35,11 @@ angular.module('scoreboard').controller('scoreboardController', function($scope,
         }
       }   
       if (newPost) {
-          var marker = L.marker([post.latitude, post.longitude]).addTo(map);
+        var awesomeMarker = L.AwesomeMarkers.icon({
+          icon: 'flag',
+          iconColor: 'blue'
+        });
+          var marker = L.marker([post.latitude, post.longitude], {icon: awesomeMarker}).addTo(map);
           $scope.kartposter.push({post: post, marker: marker});
         } else {
         }
@@ -56,7 +60,13 @@ angular.module('scoreboard').controller('scoreboardController', function($scope,
           }
         }
         if (newPlayer) {
-          var myIcon = L.divIcon({className: 'java-marker'});
+          var html = "";
+          if (player.lagId.indexOf('JAVA') > -1) {
+            html = '<div style=\'background-color: ' + $scope.finnLagfarge(player.lagid) +  ';height: 4px; width: 4px; border: 1px solid #101010; border-radius: 4px;\'></div>'; 
+          } else {
+            html = '<div style=\'background-color: ' + $scope.finnLagfarge(player.lagid) +  ';height: 4px; width: 4px; border: 1px solid #101010\'></div>'; 
+          }
+          var myIcon = L.divIcon({className: 'java-marker', html: html});
 
           var marker = L.marker([player.latitude, player.longitude], 
                       {
@@ -112,5 +122,4 @@ angular.module('scoreboard').controller('scoreboardController', function($scope,
   L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map);
-
 });
