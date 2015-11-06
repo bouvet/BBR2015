@@ -28,7 +28,7 @@ namespace Repository
         {
             var matchId = _currentMatchProvider.GetMatchId();
 
-            using (With.ReadUncommitted()) 
+            //using (With.ReadUncommitted()) 
             using (var context = _dataContextFactory.Create())
             {
                 var sorterteLag =
@@ -222,8 +222,8 @@ namespace Repository
 
     public class MatchState
     {
-        private Dictionary<string, GameStateForLag> _gamestates = new Dictionary<string, GameStateForLag>();
-        private ScoreboardState _scoreboard = new ScoreboardState();
+        private readonly Dictionary<string, GameStateForLag> _gamestates;
+        private readonly ScoreboardState _scoreboard;
         private readonly DateTime _gyldigInntil;
 
         public Guid MatchId { get; set; }

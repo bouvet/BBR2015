@@ -160,7 +160,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Infrastructure\ServiceLocator.cs" />
     <Compile Include="Infrastructure\WindsorControllerActivator.cs" />
     <Compile Include="Infrastructure\DepencencyConventions.cs" />
     <Compile Include="Models\Koordinat.cs" />

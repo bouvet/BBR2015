@@ -62,6 +62,18 @@ namespace Database
             }
         }
 
+        public bool KjørReadUncommitted
+        {
+            get
+            {
+                bool readUncommitted;
+                if (Boolean.TryParse(Get("BBR_ReadUncommitted"), out readUncommitted))
+                    return readUncommitted;
+                return false;
+            }
+            set { _overrides["BBR_ReadUncommitted"] = value.ToString(); }
+        }
+
         private string Get(string settingsKey)
         {
             if (_overrides.ContainsKey(settingsKey))
@@ -70,5 +82,4 @@ namespace Database
             return ConfigurationManager.AppSettings[settingsKey];
         }
     }
-
 }

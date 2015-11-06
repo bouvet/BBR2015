@@ -64,26 +64,24 @@ namespace Repository
 
         protected virtual ConcurrentDictionary<string, DeltakerPosisjon> HentFraDatabasen()
         {
-            using (var noLock = NoLock.CreateScope())
+            //using (With.ReadUncommitted())
+            using (var context = _dataContextFactory.Create())
             {
-                using (var context = _dataContextFactory.Create())
+                var sistePosisjoner = from p in context.DeltakerPosisjoner
+                                      group p by p.DeltakerId
+                                          into g
+                                          select g.OrderByDescending(x => x.Tidspunkt).FirstOrDefault();
+
+                var dictionary = sistePosisjoner.ToDictionary(x => x.DeltakerId, siste => new DeltakerPosisjon
                 {
-                    var sistePosisjoner = from p in context.DeltakerPosisjoner
-                                          group p by p.DeltakerId
-                                              into g
-                                              select g.OrderByDescending(x => x.Tidspunkt).FirstOrDefault();
+                    DeltakerId = siste.DeltakerId,
+                    LagId = siste.LagId,
+                    Latitude = siste.Latitude,
+                    Longitude = siste.Longitude,
+                    Tidspunkt = siste.Tidspunkt
+                });
 
-                    var dictionary = sistePosisjoner.ToDictionary(x => x.DeltakerId, siste => new DeltakerPosisjon
-                    {
-                        DeltakerId = siste.DeltakerId,
-                        LagId = siste.LagId,
-                        Latitude = siste.Latitude,
-                        Longitude = siste.Longitude,
-                        Tidspunkt = siste.Tidspunkt
-                    });
-
-                    return new ConcurrentDictionary<string, DeltakerPosisjon>(dictionary);
-                }
+                return new ConcurrentDictionary<string, DeltakerPosisjon>(dictionary);
             }
         }
 

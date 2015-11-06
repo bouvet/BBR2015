@@ -5,6 +5,7 @@ using Castle.Windsor;
 using Repository;
 using RestApi.Controllers;
 using Database;
+using Database.Infrastructure;
 
 namespace RestApi.Infrastructure
 {
@@ -21,6 +22,7 @@ namespace RestApi.Infrastructure
             container.Register(Types.FromAssemblyContaining<BaseController>().BasedOn<ApiController>().WithServiceSelf().LifestylePerWebRequest());
             container.Register(Types.FromAssemblyContaining<DataContextFactory>().Pick().WithServiceSelf().LifestyleTransient());
 
+            ServiceLocator.Current = container; 
         }
     }
 }
