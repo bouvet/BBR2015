@@ -169,7 +169,7 @@ namespace Repository
             var lagNavn = _tilgangsKontroll.HentLagNavn(lagId);
             var deltakerNavn = _tilgangsKontroll.HentDeltakerNavn(deltakerId);
 
-            var melding = string.Format("{0} fikk {1} poeng for {2}", deltakerNavn, poeng, lagNavn);
+            var melding = string.Format("{0} ({1}) fikk {2} poeng", deltakerNavn, lagNavn, poeng);
 
             _meldingService.PostMeldingTilAlle(deltakerId, lagId, melding);
         }
@@ -192,7 +192,7 @@ namespace Repository
 
             var melding = string.Format("{0} ({1}) prøvde å registrere en post som laget allerede har registrert.", deltakerNavn, lagNavn);
 
-            _meldingService.PostMeldingTilAlle(deltakerId, lagId, melding);
+            _meldingService.PostMelding(deltakerId, lagId, melding);
         }
     }
 }

@@ -171,7 +171,7 @@ namespace RestApi.Tests.Admin
         {
             using (var context = _dataContextFactory.Create())
             {
-                if (context.Lag.Any(x => x.Navn.StartsWith("SUPPORT_")))
+                if (context.Lag.Any(x => x.LagId.StartsWith("SUPPORT_")))
                     return;
 
                 var lag = LagFactory.SettOppLagMedDeltakere(1, 10, "SUPPORT_");

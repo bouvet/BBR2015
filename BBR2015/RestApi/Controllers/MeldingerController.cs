@@ -33,20 +33,31 @@ namespace RestApi.Controllers
         {
             _meldingService = meldingService;
         }
-       
 
-        // GET: api/Meldinger
+        [HttpGet]
+        [ResponseType(typeof(IEnumerable<Object>))]
+        [Throttle]
+        [Route("api/Meldinger")]
+        public IHttpActionResult Get()
+        {
+            return HttpActionResult("0");
+        }
+
         [HttpGet]
         [ResponseType(typeof (IEnumerable<Object>))]
         [Throttle]
-        [Route("api/Meldinger/{id:long?}")]
-        public IHttpActionResult Get(long id = 0)
+        [Route("api/Meldinger/{sekvensNr}")]
+        public IHttpActionResult Get(string sekvensNr)
         {
-            return HttpActionResult(id);
+            return HttpActionResult(sekvensNr);
         }
 
-        private IHttpActionResult HttpActionResult(long sekvensIfra = 0, int maksAntall = int.MaxValue)
+        private IHttpActionResult HttpActionResult(string sekvensNr, int maksAntall = int.MaxValue)
         {
+            long sekvensIfra;
+            if (!long.TryParse(sekvensNr, out sekvensIfra))
+                sekvensIfra = 0;
+
             if (sekvensIfra == 0)
                 maksAntall = 10;            
 
@@ -55,7 +66,7 @@ namespace RestApi.Controllers
                 var rawData = _meldingService.HentMeldinger(LagId, sekvensIfra, maksAntall).ToList();
                 var meldinger = rawData.Select(m => new
                 {
-                    Sekvens = m.SekvensId,
+                    Sekvens = m.SekvensId.ToString(),
                     TidspunktUtc = m.Tidspunkt,
                     Deltaker = m.DeltakerId,
                     Melding = m.Tekst
@@ -127,5 +138,5 @@ namespace RestApi.Controllers
                 return InternalServerError(ex);
             }
         }
-    }
+    }    
 }
