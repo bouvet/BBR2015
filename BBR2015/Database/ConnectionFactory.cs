@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Database.Infrastructure;
 
 namespace Database
 {
@@ -13,7 +14,8 @@ namespace Database
     {
         public DbConnection CreateConnection(string nameOrConnectionString)
         {
-            var connectionString = new OverridableSettings().DatabaseConnectionString;
+            var settings = ServiceLocator.Current.Resolve<OverridableSettings>();
+            var connectionString = settings.DatabaseConnectionString;
 
             DbConnection connection = SqlClientFactory.Instance.CreateConnection();
             connection.ConnectionString = connectionString;

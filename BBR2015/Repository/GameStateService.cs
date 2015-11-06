@@ -62,7 +62,8 @@ namespace Repository
                                   Navn = p.Post.Navn,
                                   ErSynlig = p.SynligFraTid < TimeService.Now && TimeService.Now < p.SynligTilTid,
                                   SynligFra = p.SynligFraTid,
-                                  SynligTil = p.SynligTilTid
+                                  SynligTil = p.SynligTilTid,
+                                  RiggetMedVåpen = p.RiggetVåpen
                               }).ToList();
 
                 var postRegistreringer = (from l in context.LagIMatch
@@ -143,11 +144,14 @@ namespace Repository
                                          ErSynlig = p.ErSynlig,
                                          Navn = p.Navn,
                                          Verdi = PostIMatch.BeregnPoengForNesteRegistrering(p.PoengArray, p.CurrentPoengIndex),
-                                         AntallRegistreringer = postRegistreringer.Count(x => x.PostId == p.PostId)
+                                         AntallRegistreringer = postRegistreringer.Count(x => x.PostId == p.PostId),
+                                         SynligFra = p.SynligFra,
+                                         RiggetMedVåpen = p.RiggetMedVåpen
                                      }).OrderBy(x => x.Navn).ToList();
 
                 scoreboard.Lag = sorterteLag.Select(l => new ScoreboardLag
                 {
+                    LagId = l.Lag.LagId,
                     LagNavn = l.Lag.Navn,
                     LagFarge = l.Lag.Farge,
                     Score = l.PoengSum,
@@ -271,9 +275,10 @@ namespace Repository
         public double Longitude { get; set; }
 
         public int AntallRegistreringer { get; set; }
-
         public int Verdi { get; set; }
         public bool ErSynlig { get; set; }
+        public DateTime SynligFra { get; set; }
+        public string RiggetMedVåpen { get; set; }
     }
 
     public class ScoreboardDeltaker
@@ -313,6 +318,7 @@ namespace Repository
         public DateTime[] Tider { get { return new[] { SynligFra, SynligTil }; } }
         public DateTime SynligTil { get; set; }
         public DateTime SynligFra { get; set; }
+        public string RiggetMedVåpen { get; set; }
     }
 
     public class GameStateForLag

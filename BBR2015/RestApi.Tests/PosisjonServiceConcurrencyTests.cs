@@ -96,13 +96,13 @@ namespace RestApi.Tests
 
     class NoDbPosisjonsService : PosisjonsService
     {
-        public NoDbPosisjonsService(DataContextFactory dataContextFactory, OverridableSettings appSettings) : base(dataContextFactory, appSettings)
+        public NoDbPosisjonsService(DataContextFactory dataContextFactory, OverridableSettings appSettings) : base(dataContextFactory, appSettings, null)
         {
         }
 
-        protected override ConcurrentDictionary<string, DeltakerPosisjon> HentFraDatabasen()
+        protected override ConcurrentDictionary<string, EksternDeltakerPosisjon> HentFraDatabasen()
         {
-            return new ConcurrentDictionary<string, DeltakerPosisjon>();
+            return new ConcurrentDictionary<string, EksternDeltakerPosisjon>();
         }
 
         protected override void Lagre(DeltakerPosisjon posisjon)

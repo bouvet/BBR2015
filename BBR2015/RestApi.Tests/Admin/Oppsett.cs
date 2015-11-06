@@ -24,7 +24,7 @@ namespace RestApi.Tests.Admin
         private const string DB_North = "BBR_North";
         private const string DB_West = "BBR_West";
 
-        private const string EnvironmentSettingsConnectionKey = DB_North;
+        private const string EnvironmentSettingsConnectionKey = DB_West;
 
         [TestFixtureSetUp]
         public void EnsureDatabase()
@@ -57,6 +57,14 @@ namespace RestApi.Tests.Admin
 
         }
 
+        [Test, RequiresSTA]
+        public void Nullstill_Fredag()
+        {
+            Tøm_Databasen();
+            Opprett_spill_fredag();
+            LesDetaljerFraExcel();
+        }
+
         [Test]
         [Explicit("Bare hvis du virkelig vet hva du gjør!")]
         [Ignore("Må kjøres HELT separat")]
@@ -75,7 +83,7 @@ namespace RestApi.Tests.Admin
                 context.Lag.Clear();
                 context.Våpen.Clear();
                 context.Poster.Clear();
-
+                context.Achievements.Clear();
                 context.SaveChanges();
             }
         }
@@ -216,6 +224,7 @@ namespace RestApi.Tests.Admin
         public void Opprett_spill_fredag()
         {
             Opprett_Våpen();
+            Opprett_Demolag();
             Opprett_Arrangørlag();
             Opprett_LagForHelga();
 
@@ -226,13 +235,13 @@ namespace RestApi.Tests.Admin
                     MatchId = Guid.NewGuid(),
                     Navn = "Treningsrunde fredag",
                     StartTid = new DateTime(2015, 11, 06, 10, 00, 00),
-                    SluttTid = new DateTime(2015, 11, 07, 10, 00, 00)
+                    SluttTid = new DateTime(2015, 11, 07, 10, 30, 00)
                 };
 
                 if (context.Matcher.Any(x => x.Navn == match.Navn))
                     return;
 
-                var leggTilLag = context.Lag.Where(x => x.LagId.StartsWith("SUPPORT") || x.LagId.StartsWith("JAVA_") || x.LagId.StartsWith("MS_")).ToList();
+                var leggTilLag = context.Lag.Where(x => x.LagId.StartsWith("BBR") || x.LagId.StartsWith("SUPPORT") || x.LagId.StartsWith("JAVA_") || x.LagId.StartsWith("MS_")).ToList();
 
                 foreach (var lag in leggTilLag)
                 {
@@ -281,8 +290,8 @@ namespace RestApi.Tests.Admin
                 {
                     MatchId = Guid.NewGuid(),
                     Navn = "Bouvet Battle Royale 2015",
-                    StartTid = new DateTime(2015, 11, 07, 10, 00, 00),
-                    SluttTid = new DateTime(2015, 11, 07, 18, 00, 00)
+                    StartTid = new DateTime(2015, 11, 07, 10, 30, 00),
+                    SluttTid = new DateTime(2015, 11, 07, 15, 00, 00)
                 };
 
                 if (context.Matcher.Any(x => x.Navn == match.Navn))
@@ -304,6 +313,7 @@ namespace RestApi.Tests.Admin
 
                 foreach (var post in new PostFactory().Les(Constants.Område.Oscarsborg))
                 {
+                    
                     context.Poster.Add(post);
 
                     var postIMatch = new PostIMatch
@@ -314,6 +324,9 @@ namespace RestApi.Tests.Admin
                         SynligFraTid = match.StartTid,
                         SynligTilTid = match.SluttTid
                     };
+
+                    if (post.Latitude < 59.67700)
+                        postIMatch.SynligFraTid = match.SluttTid;
 
                     match.Poster.Add(postIMatch);
                 }

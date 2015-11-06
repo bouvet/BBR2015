@@ -20,8 +20,10 @@ namespace RestApi.Tests.Infrastructure
                 LagId = prefix + string.Format("{0}", lagIndex),
                 Navn = prefix + string.Format("Navn{0}", lagIndex),
                 Farge = prefix + string.Format("Farge{0}", lagIndex),
-                Ikon = prefix + string.Format("Ikon{0}.gif", lagIndex),
+                Ikon = prefix + string.Format("Ikon{0}.gif", lagIndex),                
             };
+
+            lag.HemmeligKode = lag.LagId;
 
             for (int i = 1; i <= antallDeltakere; i++)
             {

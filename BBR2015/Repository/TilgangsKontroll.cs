@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using Database;
 using Database.Entities;
@@ -9,7 +10,8 @@ namespace Repository
     {
         private readonly DataContextFactory _dataContextFactory;
         private List<Lag> _lagene;
-        private Dictionary<string, KontrollResultat> _kodeKombinasjoner;
+        private ConcurrentDictionary<string, KontrollResultat> _kodeKombinasjoner;
+        private ConcurrentDictionary<string, string> _deltakerNavn = new ConcurrentDictionary<string, string>();
 
         public TilgangsKontroll(DataContextFactory dataContextFactory)
         {
@@ -32,31 +34,33 @@ namespace Repository
             }
         }
 
-        private Dictionary<string, KontrollResultat> KodeKombinasjoner
+        private ConcurrentDictionary<string, KontrollResultat> KodeKombinasjoner
         {
             get
             {
                 if (_kodeKombinasjoner == null)
                 {
-                    _kodeKombinasjoner = (from l in Lagene
-                                          from d in l.Deltakere
-                                          select new KontrollResultat
-                                          {
-                                              KodeKombinasjon = LagKodeKombinasjon(l.HemmeligKode, d.Kode),
-                                              LagId = l.LagId,
-                                              DeltakerId = d.DeltakerId
-                                          }
+                    var kodeKombinasjoner = (from l in Lagene
+                                             from d in l.Deltakere
+                                             select new KontrollResultat
+                                             {
+                                                 KodeKombinasjon = LagKodeKombinasjon(l.HemmeligKode, d.Kode),
+                                                 LagId = l.LagId,
+                                                 DeltakerId = d.DeltakerId
+                                             }
                         ).ToDictionary(x => x.KodeKombinasjon, x => x);
+                    _kodeKombinasjoner = new ConcurrentDictionary<string, KontrollResultat>(kodeKombinasjoner);
                 }
 
                 return _kodeKombinasjoner;
             }
         }
-              
+
         public void Nullstill()
         {
             _lagene = null;
             _kodeKombinasjoner = null;
+            _deltakerNavn = new ConcurrentDictionary<string, string>();
         }
 
         public dynamic HentAlleHemmeligeKoder()
@@ -93,6 +97,20 @@ namespace Repository
         public List<string> HentAlleLagIder()
         {
             return Lagene.Select(x => x.LagId).ToList();
+        }
+
+        public string HentDeltakerNavn(string deltakerId)
+        {
+            if (!_deltakerNavn.ContainsKey(deltakerId))
+            {
+                var navn = (from l in Lagene
+                            from d in l.Deltakere
+                            where d.DeltakerId == deltakerId
+                            select d.Navn).SingleOrDefault();
+
+                _deltakerNavn[deltakerId] = navn;
+            }
+            return _deltakerNavn[deltakerId];
         }
     }
 
