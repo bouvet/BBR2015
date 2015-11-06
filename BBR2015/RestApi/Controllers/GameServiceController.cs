@@ -42,6 +42,11 @@ namespace RestApi.Controllers
                     return BadRequest("RegistrerNyPost cannot be null");
                 }
 
+                if (registrerNyPost.PostKode == null)
+                {
+                    return BadRequest("Feil format. Send inn på formen  { postKode: 'hemmelig'}, ev med våpen - ikke noe mer rundt. Også Content-Type: application/json");
+                }
+
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
