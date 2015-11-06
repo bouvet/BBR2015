@@ -96,6 +96,24 @@ namespace RestApi.Tests
         }
 
         [Test]
+        public void GittMatch_NårEttLagStemplerPåEnPost_SkalDeIkkeMisteVåpen()
+        {
+            var match = _gitt.EnMatchMedTreLagOgTrePoster();
+
+            var lag1 = match.DeltakendeLag.First();
+            var deltaker11 = lag1.Lag.Deltakere.First();
+
+            var gameservice = _container.Resolve<GameService>();
+            var gamestateservice = _container.Resolve<GameStateService>();
+
+            gameservice.RegistrerNyPost(deltaker11.DeltakerId, lag1.Lag.LagId, "HemmeligKode1", null);
+
+            var lag1State = gamestateservice.Get(lag1.Lag.LagId);
+
+            Assert.AreEqual(2, lag1State.Vaapen.Count, "Skal ikke miste våpen");
+        }
+
+        [Test]
         public void GittMatch_NårEttLagStemplerPåEnPostSomIkkeErAktiv_SkalDeIkkeFåPoengIFeed()
         {
             var match = _gitt.EnMatchMedTreLagOgTrePoster();
@@ -265,6 +283,7 @@ namespace RestApi.Tests
             Assert.AreEqual(100, lag1State.Score, "Skal ha fått poeng");
             Assert.AreEqual(2, lag1State.Poster.Count, "Skal bare se to poster (aktive)");
             Assert.AreEqual(0, lag1State.Vaapen.Count(x => x.VaapenId == Constants.Våpen.Bombe), "Skal ha brukt opp bomben");
+            Assert.AreEqual(1, lag1State.Vaapen.Count(x => x.VaapenId == Constants.Våpen.Felle), "Skal fremdeles ha fellen");
 
             gamestateservice.Calculate();
 
