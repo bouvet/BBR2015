@@ -4,7 +4,7 @@ html, body {
 }
 
 body {
-  padding: 32px 30px;
+  padding: 15px 14px;
   height: 100%;
   width: 100%;
   box-sizing: border-box;
@@ -17,12 +17,12 @@ body {
 
 .left {
   height: 100%;
-  width: 40%;
+  width: 30%;
   float: left;
 }
 
 .left .mvpliste {
-  height: 50%;
+  height: 60%;
   width: 100%;
   float: left;
 }
@@ -32,15 +32,32 @@ body {
   float: left;
 }
 
-.right {
+.center {
   height: 100%;
-  width: 60%;
+  width: 40%;
   float: left;
 }
 
-.right #map {
+.center #map {
   height: 100%;
   width: 100%;
+}
+
+.right {
+  height: 100%;
+  width: 30%;
+  float: left;
+}
+
+.melding {
+  margin-left: 5px;
+}
+
+.javavsms table {
+  font-size: 2em;
+  text-align: center;
+  margin-top: 20px;
+  float: left;
 }
 
 h3 {
@@ -58,6 +75,10 @@ table th {
 
 table td {
   text-align: center;
+}
+
+.leftalign {
+  text-align: left;
 }
 
 .fargesirkel {
