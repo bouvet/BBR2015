@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Readme\Elmah.txt" />
+    <EmbeddedResource Include="CustomContent\CustomApiKey.js" />
     <Content Include="Global.asax" />
     <Content Include="Index.html" />
     <Content Include="docs\RestApi.XML">
