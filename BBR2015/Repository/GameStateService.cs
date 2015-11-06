@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web.Script.Serialization;
 using Database;
@@ -27,6 +28,7 @@ namespace Repository
         {
             var matchId = _currentMatchProvider.GetMatchId();
 
+            using (With.ReadUncommitted()) 
             using (var context = _dataContextFactory.Create())
             {
                 var sorterteLag =
@@ -34,6 +36,19 @@ namespace Repository
                            .Where(x => x.Match.MatchId == matchId)
                            .OrderByDescending(x => x.PoengSum)
                            .ToList();
+
+                // Legg på poeng fra Achievements 
+                var achievementsPoeng = from a in context.Achievements
+                                        group a by a.LagId
+                                            into g
+                                            select new { LagId = g.Key, Poeng = g.Sum(x => x.Score), Achievements = g };
+
+                foreach (var lagPoeng in achievementsPoeng)
+                {
+                    var p = lagPoeng;
+                    var lag = sorterteLag.Single(x => x.Lag.LagId == p.LagId);
+                    lag.PoengSum += p.Poeng;
+                }
 
                 var poster = (from p in context.PosterIMatch.Include(x => x.Post)
                               where p.Match.MatchId == matchId
@@ -112,7 +127,8 @@ namespace Repository
                         Vaapen = lag.LagIMatch.VåpenBeholdning.Where(x => x.BruktIPostRegistrering == null).Select(x => new GameStateVaapen
                         {
                             VaapenId = x.VaapenId
-                        }).ToList()
+                        }).ToList(),
+                        Achievements = new List<GameStateAchievement>()//achievementsPoeng.Where(x => x.LagId == lag.Lag.LagId).Select(x => x.Achievements)
                     };
 
                     nyGameState.Add(state.LagId, state);
@@ -134,7 +150,6 @@ namespace Repository
                 {
                     LagNavn = l.Lag.Navn,
                     LagFarge = l.Lag.Farge,
-                    LagIkon = l.Lag.Ikon,
                     Score = l.PoengSum,
                     Ranking = sorterteLag.Count(x => x.PoengSum > l.PoengSum) + 1,
                     AntallRegistreringer = postRegistreringer.Count(x => x.LagIMatchId == l.Id)
@@ -173,6 +188,8 @@ namespace Repository
 
                 // swap current state
                 _matchStates[matchId] = new MatchState(matchId, nyGameState, scoreboard, førsteTidspunktEtterNå);
+
+                // IKKE SAVE CHANGES
             }
         }
 
@@ -274,9 +291,9 @@ namespace Repository
 
     public class ScoreboardLag
     {
+        public string LagId { get; set; }
         public string LagNavn { get; set; }
         public string LagFarge { get; set; }
-        public string LagIkon { get; set; }
         public int AntallRegistreringer { get; set; }
         public int Score { get; set; }
         public int Ranking { get; set; }
@@ -309,10 +326,16 @@ namespace Repository
 
         public int Score { get; set; }
         public List<GameStateVaapen> Vaapen { get; set; }
+        public List<GameStateAchievement> Achievements { get; set; }
         public GameStateRanking Ranking { get; set; }
         public string LagFarge { get; set; }
         public string LagIkon { get; set; }
         public string LagId { get; set; }
+    }
+
+    public class GameStateAchievement
+    {
+        public string Achievement { get; set; }
     }
 
     public class GameStateRanking

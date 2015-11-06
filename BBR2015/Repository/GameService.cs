@@ -61,10 +61,10 @@ namespace Repository
 
                             var poeng = post.HentPoengOgInkrementerIndex();
 
-                            if (post.VåpenImplClass == Constants.Våpen.Felle)
+                            if (post.RiggetVåpen == Constants.Våpen.Felle)
                             {
                                 poeng = -poeng;
-                                post.VåpenImplClass = null; // nullstill
+                                post.RiggetVåpen = null; // nullstill
                                 post.SynligFraTid = TimeService.Now.AddSeconds(Constants.Våpen.BombeSkjulerPostIAntallSekunder);
                                 bruktVåpen = null; // Skal ikke bruke eget våpen når fellen går av
                             }                            
@@ -101,7 +101,7 @@ namespace Repository
                                     }
                                     if (bruktVåpen == Constants.Våpen.Felle)
                                     {
-                                        post.VåpenImplClass = Constants.Våpen.Felle;
+                                        post.RiggetVåpen = Constants.Våpen.Felle;
                                     }
                                 }
                             }

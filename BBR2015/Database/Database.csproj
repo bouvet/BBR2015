@@ -58,6 +58,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConnectionFactory.cs" />
+    <Compile Include="Entities\Achievement.cs" />
+    <Compile Include="Migrations\201511052108523_Achievements.cs" />
+    <Compile Include="Migrations\201511052108523_Achievements.Designer.cs">
+      <DependentUpon>201511052108523_Achievements.cs</DependentUpon>
+    </Compile>
     <Compile Include="NoLock.cs" />
     <Compile Include="OverridableSettings.cs" />
     <Compile Include="Constants.cs" />
@@ -107,6 +112,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511031310045_Deltaker_Kode.resx">
       <DependentUpon>201511031310045_Deltaker_Kode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511052108523_Achievements.resx">
+      <DependentUpon>201511052108523_Achievements.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
     <None Include="Entities\ClassDiagram1.cd" />

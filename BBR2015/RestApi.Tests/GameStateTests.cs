@@ -336,7 +336,7 @@ namespace RestApi.Tests
                     where p.Post.HemmeligKode == "HemmeligKode1"
                     select p).Single();
 
-                Assert.IsNull(postIMatch.VåpenImplClass, "Våpenet som ble forsøkt brukt da fellen gikk av, skal ikke ha blitt satt opp");
+                Assert.IsNull(postIMatch.RiggetVåpen, "Våpenet som ble forsøkt brukt da fellen gikk av, skal ikke ha blitt satt opp");
             }
         }
     }
