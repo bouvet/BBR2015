@@ -74,6 +74,7 @@ namespace RestApi.Controllers
         [HttpPost]
         [ResponseType(typeof(OkResult))]
         [Throttle]
+        [Route("api/Meldinger")]
         public IHttpActionResult Post([FromBody] NyMelding nyMelding)
         {
             try
@@ -97,11 +98,12 @@ namespace RestApi.Controllers
                 return InternalServerError(ex);
             }
         }
-        /*
+      
         [HttpPost]
         [ResponseType(typeof(OkResult))]
         [RequireScoreboardSecret]
         [Obsolete]
+        [Route("api/Meldinger/PostTilAlle")]
         public IHttpActionResult PostTilAlle([FromBody] NyMelding nyMelding)
         {
             try
@@ -124,6 +126,6 @@ namespace RestApi.Controllers
             {
                 return InternalServerError(ex);
             }
-        }*/
+        }
     }
 }
