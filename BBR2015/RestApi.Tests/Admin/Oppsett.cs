@@ -281,9 +281,9 @@ namespace RestApi.Tests.Admin
         [Test]
         public void Opprett_spill_lørdag()
         {
-            Opprett_Våpen();
-            Opprett_Arrangørlag();
-            Opprett_LagForHelga();
+            //Opprett_Våpen();
+            //Opprett_Arrangørlag();
+            //Opprett_LagForHelga();
 
             using (var context = _dataContextFactory.Create())
             {
@@ -315,6 +315,63 @@ namespace RestApi.Tests.Admin
                 foreach (var post in new PostFactory().Les(Constants.Område.Oscarsborg))
                 {
                     
+                    context.Poster.Add(post);
+
+                    var postIMatch = new PostIMatch
+                    {
+                        Match = match,
+                        Post = post,
+                        PoengArray = post.DefaultPoengArray,
+                        SynligFraTid = match.StartTid,
+                        SynligTilTid = match.SluttTid
+                    };
+
+                    if (post.Latitude < 59.67700)
+                        postIMatch.SynligFraTid = match.SluttTid;
+
+                    match.Poster.Add(postIMatch);
+                }
+                context.SaveChanges();
+            }
+        }
+
+        [Test]
+        public void Opprett_spill_videre()
+        {
+            //Opprett_Våpen();
+            //Opprett_Arrangørlag();
+            //Opprett_LagForHelga();
+
+            using (var context = _dataContextFactory.Create())
+            {
+                var match = new Match()
+                {
+                    MatchId = Guid.NewGuid(),
+                    Navn = "Bouvet Battle Royale 2015 - nachpiel",
+                    StartTid = new DateTime(2015, 11, 07, 15, 00, 00),
+                    SluttTid = new DateTime(2045, 11, 07, 15, 00, 00)
+                };
+
+                if (context.Matcher.Any(x => x.Navn == match.Navn))
+                    return;
+
+                var leggTilLag = context.Lag.Where(x => x.LagId.StartsWith("SUPPORT") || x.LagId.StartsWith("JAVA_") || x.LagId.StartsWith("MS_")).ToList();
+
+                foreach (var lag in leggTilLag)
+                {
+                    var deltakelse = match.LeggTil(lag);
+
+                    var våpen = context.Våpen.ToList();
+
+                    deltakelse.LeggTilVåpen(våpen[0]);
+                    deltakelse.LeggTilVåpen(våpen[1]);
+                }
+
+                context.Matcher.Add(match);
+
+                foreach (var post in new PostFactory().Les(Constants.Område.Oscarsborg))
+                {
+
                     context.Poster.Add(post);
 
                     var postIMatch = new PostIMatch

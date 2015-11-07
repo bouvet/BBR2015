@@ -96,7 +96,9 @@ namespace Repository
                             {
                                 var brukt = (from v in context.VåpenBeholdning
                                              where v.VaapenId == bruktVåpen
-                                                   && v.LagIMatchId == lagIMatch.Id
+                                                   && v.LagIMatchId == lagIMatch.Id 
+                                                   // ubegrenset våpen feature:
+                                                   && v.BruktIPostRegistrering == null
                                              select v).FirstOrDefault();
 
                                 // Har prøvd å bruke noe laget ikke har
