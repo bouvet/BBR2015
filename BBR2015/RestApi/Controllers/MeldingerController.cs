@@ -128,6 +128,11 @@ namespace RestApi.Controllers
                     return BadRequest("Melding cannot be null");
                 }
 
+                if (nyMelding.Tekst == null)
+                {
+                    return BadRequest("Feil format. Send inn på formen  { tekst: 'Dette er en melding!'} - ikke noe mer rundt. Også Content-Type: application/json");
+                }
+
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);

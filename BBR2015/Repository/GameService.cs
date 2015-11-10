@@ -96,7 +96,9 @@ namespace Repository
                             {
                                 var brukt = (from v in context.VåpenBeholdning
                                              where v.VaapenId == bruktVåpen
-                                                   && v.LagIMatchId == lagIMatch.Id
+                                                   && v.LagIMatchId == lagIMatch.Id 
+                                                   // ubegrenset våpen feature:
+                                                   && v.BruktIPostRegistrering == null
                                              select v).FirstOrDefault();
 
                                 // Har prøvd å bruke noe laget ikke har
@@ -164,8 +166,8 @@ namespace Repository
                                        .Include(x => x.Match)
                                        .Single(x => x.Lag.LagId == lagId && x.Match.MatchId == matchId);
                 lagIMatch.PoengSum = 0;
-                context.VåpenBeholdning.RemoveRange(lagIMatch.VåpenBeholdning);
-                context.VåpenBeholdning.Clear();
+                
+                lagIMatch.VåpenBeholdning.ForEach(x => x.BruktIPostRegistrering = null);
 
                 var lagetsRegistreringerIMatch =
                     context.PostRegisteringer.Where(
@@ -174,13 +176,13 @@ namespace Repository
 
                 context.PostRegisteringer.RemoveRange(lagetsRegistreringerIMatch);
 
-                var alleVåpen = context.Våpen.ToList();
+                //var alleVåpen = context.Våpen.ToList();
 
-                var felle = alleVåpen.Single(x => x.VaapenId == Constants.Våpen.Felle);
-                var bombe = alleVåpen.Single(x => x.VaapenId == Constants.Våpen.Bombe);
+                //var felle = alleVåpen.Single(x => x.VaapenId == Constants.Våpen.Felle);
+                //var bombe = alleVåpen.Single(x => x.VaapenId == Constants.Våpen.Bombe);
 
-                lagIMatch.VåpenBeholdning.Add(new VaapenBeholdning { LagIMatch = lagIMatch, Våpen = felle });
-                lagIMatch.VåpenBeholdning.Add(new VaapenBeholdning { LagIMatch = lagIMatch, Våpen = bombe });
+                //lagIMatch.VåpenBeholdning.Add(new VaapenBeholdning { LagIMatch = lagIMatch, Våpen = felle });
+                //lagIMatch.VåpenBeholdning.Add(new VaapenBeholdning { LagIMatch = lagIMatch, Våpen = bombe });
 
                 context.SaveChanges();
             }

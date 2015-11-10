@@ -94,6 +94,11 @@ namespace RestApi.Controllers
                     return BadRequest("koordinat cannot be null");
                 }
 
+                if (koordinat.Longitude == 0.0 || koordinat.Latitude == 0.0)
+                {
+                    return BadRequest("Feil format. Send inn på formen { latitude: 59.676035, longitude: 10.604844 } - ikke noe mer rundt. Også Content-Type: application/json");
+                }
+
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
