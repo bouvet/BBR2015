@@ -208,7 +208,9 @@
     data.meldinger.forEach(function(melding) {
       console.log("legger til melding");
       console.log(melding);
-      meldingsSekvens = Math.max(meldingsSekvens, melding.sekvens);
+      if (meldingsSekvens < melding.sekvens) {
+        meldingsSekvens = melding.sekvens;
+      }
       $("#messages").prepend(
         "<li class='melding'>" +
         "<div class='sender'>" + melding.deltaker + "</div>" +
@@ -286,7 +288,7 @@
             }
           }
           if (currentLocation !== null) {
-            currentLocation.setPosition(lat, lon);
+            current1Location.setPosition(lat, lon);
           }
        
         $.ajax({

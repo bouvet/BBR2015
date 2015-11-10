@@ -104,7 +104,6 @@ angular.module('scoreboard').controller('scoreboardController', function($scope,
       team.posisjoner.forEach(function(player) {
         for(var i = 0; i < $scope.kartdeltakere.length; i++) {
           var deltakerpos = $scope.kartdeltakere[i];
-          console.log(deltakerpos.deltaker.deltakerId === player.deltakerId);
           if(deltakerpos.deltaker.deltakerId === player.deltakerId) {
             newPlayer = false;
             oldPlayer = deltakerpos;
@@ -112,7 +111,6 @@ angular.module('scoreboard').controller('scoreboardController', function($scope,
           }
         }
         if (newPlayer) {
-          console.log("NEW")
           var html = "";
           var lagFarge = $scope.finnLagfarge(player.lagId);
           if (player.lagId.indexOf('JAVA') > -1) {
@@ -122,7 +120,6 @@ angular.module('scoreboard').controller('scoreboardController', function($scope,
           }
           var myIcon = L.divIcon({className: 'java-marker', html: html});
           console.log(player.navn + ": " + lagFarge);
-          console.log(player);
           var marker = L.marker([player.latitude, player.longitude], 
                       {
                         icon: myIcon,
@@ -130,7 +127,6 @@ angular.module('scoreboard').controller('scoreboardController', function($scope,
                       }).addTo(map);
           $scope.kartdeltakere.push({deltaker: player, marker: marker});
         } else {
-          console.log("OLD")
           oldPlayer.marker.setLatLng([player.latitude, player.longitude]);
         }
 
@@ -138,7 +134,7 @@ angular.module('scoreboard').controller('scoreboardController', function($scope,
     });
   });
 
-  $scope.sekvensid = 0;
+  $scope.sekvensid = "635824873779444105";
 
   $interval(function() {
     // , "MatchId": "4914b7b3-fa73-4340-b09c-2e1195859cf2"
