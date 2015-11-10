@@ -42,6 +42,11 @@ namespace Repository
                 {
                     try
                     {
+                        if (string.IsNullOrEmpty(postkode))
+                            return;
+
+                        postkode = postkode.Trim();
+
                         var lagIMatch = (from lm in context.LagIMatch.Include(x => x.Lag)
                                          where lm.Lag.LagId == lagId && lm.Match.MatchId == matchId
                                          select lm).SingleOrDefault();
@@ -97,7 +102,6 @@ namespace Repository
                                 var brukt = (from v in context.VåpenBeholdning
                                              where v.VaapenId == bruktVåpen
                                                    && v.LagIMatchId == lagIMatch.Id 
-                                                   // ubegrenset våpen feature:
                                                    && v.BruktIPostRegistrering == null
                                              select v).FirstOrDefault();
 

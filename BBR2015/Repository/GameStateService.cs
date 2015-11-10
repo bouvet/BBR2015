@@ -122,7 +122,7 @@ namespace Repository
                                       Latitude = p.Latitude,
                                       Longitude = p.Longitude,
                                       PoengVerdi = reg != null ? reg.Poeng : PostIMatch.BeregnPoengForNesteRegistrering(p.PoengArray, p.CurrentPoengIndex),
-                                      HarRegistert = reg != null,
+                                      HarRegistrert = reg != null,
                                       Rekkefølge = random.Next(0, short.MaxValue) // order by random                                 
                                   }).OrderBy(x => x.Rekkefølge).ToList(),
                         Vaapen = lag.LagIMatch.VåpenBeholdning.Where(x => x.BruktIPostRegistrering == null).Select(x => new GameStateVaapen
@@ -361,7 +361,7 @@ namespace Repository
         // NB: IKKE gi ut postnr. Lagene må finne en egen måte å referere postene på. Gjerne miks rekkefølgen på dem i retur.
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-        public bool HarRegistert { get; set; }
+        public bool HarRegistrert { get; set; }
         public int PoengVerdi { get; set; }
 
         [JsonIgnore]
