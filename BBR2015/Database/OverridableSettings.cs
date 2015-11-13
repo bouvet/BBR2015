@@ -6,6 +6,10 @@ namespace Database
 {
     public class OverridableSettings
     {
+        public OverridableSettings()
+        {
+            
+        }
         private readonly Dictionary<string, string> _overrides = new Dictionary<string, string>();
 
         private const string ConnectionStringKey = "BBR_DatabaseConnectionString";
@@ -50,6 +54,16 @@ namespace Database
             }
         }
 
+        public int PostSkjulesISekunderEtterVåpen
+        {
+            get
+            {
+                int sekunder;
+                if (int.TryParse(Get("BBR_PostSkjulesISekunderEtterVåpen"), out sekunder))
+                    return sekunder;
+                return Constants.Våpen.BombeSkjulerPostIAntallSekunder;
+            }
+        }
 
         public int MinsteTidMellomRequestsIMs
         {
@@ -62,6 +76,18 @@ namespace Database
             }
         }
 
+        public bool KjørReadUncommitted
+        {
+            get
+            {
+                bool readUncommitted;
+                if (Boolean.TryParse(Get("BBR_ReadUncommitted"), out readUncommitted))
+                    return readUncommitted;
+                return false;
+            }
+            set { _overrides["BBR_ReadUncommitted"] = value.ToString(); }
+        }
+
         private string Get(string settingsKey)
         {
             if (_overrides.ContainsKey(settingsKey))
@@ -70,5 +96,4 @@ namespace Database
             return ConfigurationManager.AppSettings[settingsKey];
         }
     }
-
 }

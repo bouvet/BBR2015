@@ -5,11 +5,13 @@ namespace Database
 {
     public static class TimeService
     {
-        public static Func<DateTime> GetNow = () => DateTime.Now;
+        private static TimeZoneInfo cetZone = TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time");
+
+        public static Func<DateTime> GetNow = () => TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, cetZone);
 
         public static void ResetToRealTime()
         {
-            GetNow = () => DateTime.Now;
+            GetNow = () => TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, cetZone);
         }
 
         public static DateTime Now

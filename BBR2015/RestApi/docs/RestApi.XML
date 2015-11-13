@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RestApi</name>
+    </assembly>
+    <members>
+        <member name="M:RestApi.Controllers.GameServiceController.Post(RestApi.Models.RegistrerNyPost)">
+            <summary>
+            Her registrerer laget poster de finner i terrenget. En trenger bare sende inn den hemmelige koden som står på posten. <br />
+            Registreringen er designet asynkront, så det er ingen tilbakemelding på selve registrerings-requesten. <br />
+            Effekten ser en i endret GameState. <br />
+            Ved registrering kan en også velge å bruke et våpen. Et lag kan bare registrere samme post 1 gang.<br />
+            Eksempel uten bruk av våpen: POST  { "postKode": "superhemmelig" }<br />
+            Eksempel med bruk av våpen: POST  { "postKode": "superhemmelig", "våpen": "BOMBE" }
+            </summary>
+            <remarks>POST api/GameService/RegistrerNyPost</remarks>
+            <response code="200">Ok</response>
+            <response code="400">Bad request</response>
+            <response code="403">Forbidden - Husk LagKode og DeltakerKode</response>
+            <response code="500">Internal Server Error</response>
+        </member>
+        <member name="M:RestApi.Controllers.GameServiceController.RykkTilbakeTilStart">
+            <summary>
+            Sletter alle postregistreringer i runden og tilbakestiller våpenbeholdningen.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:RestApi.Controllers.GameStateFeedController.Get">
+            <summary>
+            Her henter laget ut sin gamestate med informasjon om poster med deres koordinater og poengverdi (og om laget har registrert den). <br />
+            Lagets ranking i spillet med egen poengsom og differanse til lagene foran og bak. Også våpenbeholdning.
+            </summary>
+            <remarks>GET api/GameStateFeed</remarks>
+            <response code="200">Ok</response>
+            <response code="400">Bad request</response>
+            <response code="403">Forbidden - Husk LagKode og DeltakerKode</response>
+            <response code="500">Internal Server Error</response>
+        </member>
+        <member name="M:RestApi.Controllers.PosisjonsServiceController.Get">
+            <summary>
+            Her melder hver av deltakerne inn sin posisjon fortløpende underveis i spillet ved å gjøre en POST på en koordinat av formen { "latitude": 59.676035, "longitude": 10.604844 } <br />
+            Det er teknisk mulig å gjennomføre spillet uten å melde inn koordinater, men det vil bli gitt ekstrapoeng i form av en Achievement til lagene som melder dette inn. <br />
+            Under spillet vil deltakernes posisjoner vises på et Scoreboard.
+            </summary>
+            <remarks>GET api/PosisjonsService</remarks>
+            <response code="200">Ok</response>
+            <response code="400">Bad request</response>
+            <response code="403">Forbidden - Husk LagKode og DeltakerKode</response>
+            <response code="500">Internal Server Error</response>
+        </member>
+        <member name="M:RestApi.Controllers.PosisjonsServiceController.Post(RestApi.Models.Koordinat)">
+            <summary>
+            Her melder hver av deltakerne inn sin posisjon fortløpende underveis i spillet ved å gjøre en POST på en koordinat av formen { "latitude": 59.676035, "longitude": 10.604844 } <br />
+            Det er teknisk mulig å gjennomføre spillet uten å melde inn koordinater, men det vil bli gitt ekstrapoeng i form av en Achievement til lagene som melder dette inn. <br />
+            Under spillet vil deltakernes posisjoner vises på et Scoreboard.
+            </summary>
+            <remarks>POST api/PosisjonsService</remarks>
+            <response code="200">Ok</response>
+            <response code="400">Bad request</response>
+            <response code="403">Forbidden - Husk LagKode og DeltakerKode</response>
+            <response code="500">Internal Server Error</response>        
+        </member>
+        <member name="M:RestApi.Controllers.MeldingerController.Get">
+            <summary>
+            Tjenesten tilbyr to funksjonaliteter: POST for å sende en ny melding på formen { "tekst": "Dette er en melding!" } eller GET for å hente lagets meldinger. <br />
+            Meldinger som hentes ut har et sekvensnummer som kan brukes ved neste GET api/Meldinger/{sekvensnummer}. Dette kan brukes til å bare hente nye meldinger siden siste uthenting. Hvis en ikke angir sekvensnummer, får en de ti nyeste meldingene. Laget kan kommunisere på valgfri måte (f.eks. går rundt sammen og kommunisere muntlig), men det gis ekstrapoeng i form av en Achievement for å bruke spillets meldingstjeneste. <br />
+            Spillets administrasjon vil bruke meldingstjenesten til å gi informasjon som kan gi fordeler i spillets gang. <br />
+            NB: En melding kan være maksimalt 256 tegn lang. Det gjøres ikke noe filtrering av innhold, men siden meldingene bare går til de andre på laget, vil forsøk på Cross-Side-Scripting bare ramme de andre på laget.
+            </summary>
+            <remarks>GET api/Meldinger</remarks>
+            <response code="200">Ok</response>
+            <response code="400">Bad request</response>
+            <response code="403">Forbidden - Husk LagKode og DeltakerKode</response>
+            <response code="500">Internal Server Error</response>
+        </member>
+        <member name="M:RestApi.Controllers.MeldingerController.Get(System.String)">
+            <summary>
+            Tjenesten tilbyr to funksjonaliteter: POST for å sende en ny melding på formen { "tekst": "Dette er en melding!" } eller GET for å hente lagets meldinger. <br />
+            Meldinger som hentes ut har et sekvensnummer som kan brukes ved neste GET api/Meldinger/{sekvensnummer}. Dette kan brukes til å bare hente nye meldinger siden siste uthenting. Hvis en ikke angir sekvensnummer, får en de ti nyeste meldingene. Laget kan kommunisere på valgfri måte (f.eks. går rundt sammen og kommunisere muntlig), men det gis ekstrapoeng i form av en Achievement for å bruke spillets meldingstjeneste. <br />
+            Spillets administrasjon vil bruke meldingstjenesten til å gi informasjon som kan gi fordeler i spillets gang. <br />
+            NB: En melding kan være maksimalt 256 tegn lang. Det gjøres ikke noe filtrering av innhold, men siden meldingene bare går til de andre på laget, vil forsøk på Cross-Side-Scripting bare ramme de andre på laget.
+            </summary>
+            <remarks>GET api/Meldinger/{sekvensNr}</remarks>
+            <response code="200">Ok</response>
+            <response code="400">Bad request</response>
+            <response code="403">Forbidden - Husk LagKode og DeltakerKode</response>
+            <response code="500">Internal Server Error</response>
+        </member>
+        <member name="M:RestApi.Controllers.MeldingerController.Post(RestApi.Controllers.NyMelding)">
+            <summary>
+            Tjenesten tilbyr to funksjonaliteter: POST for å sende en ny melding på formen { "tekst": "Dette er en melding!" } eller GET for å hente lagets meldinger. <br />
+            Meldinger som hentes ut har et sekvensnummer som kan brukes ved neste GET api/Meldinger/{sekvensnummer}. Dette kan brukes til å bare hente nye meldinger siden siste uthenting. Hvis en ikke angir sekvensnummer, får en de ti nyeste meldingene. Laget kan kommunisere på valgfri måte (f.eks. går rundt sammen og kommunisere muntlig), men det gis ekstrapoeng i form av en Achievement for å bruke spillets meldingstjeneste. <br />
+            Spillets administrasjon vil bruke meldingstjenesten til å gi informasjon som kan gi fordeler i spillets gang. <br />
+            NB: En melding kan være maksimalt 256 tegn lang. Det gjøres ikke noe filtrering av innhold, men siden meldingene bare går til de andre på laget, vil forsøk på Cross-Side-Scripting bare ramme de andre på laget.
+            </summary>
+            <remarks>POST api/Meldinger</remarks>
+            <response code="200">Ok</response>
+            <response code="400">Bad request</response>
+            <response code="403">Forbidden - Husk LagKode og DeltakerKode</response>
+            <response code="500">Internal Server Error</response>
+        </member>
+    </members>
+</doc>

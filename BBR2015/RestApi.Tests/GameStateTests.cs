@@ -24,6 +24,14 @@ namespace RestApi.Tests
             _gitt = new Gitt(_container);
             _dataContextFactory = _container.Resolve<DataContextFactory>();
             TimeService.ResetToRealTime();
+
+            // Slett alle meldinger (blir rullet tilbake i transaksjon uansett)
+            using (var context = _dataContextFactory.Create())
+            {
+                context.Achievements.Clear();
+                context.Meldinger.Clear();
+                context.SaveChanges();
+            }
         }
 
         [Test]
@@ -37,7 +45,7 @@ namespace RestApi.Tests
             var lag1State = gamestateservice.Get(lag1.Lag.LagId);
 
             Assert.AreEqual(0, lag1State.Score, "Skal ikke ha noen poeng");
-            Assert.AreEqual(false, lag1State.Poster.Any(x => x.HarRegistert), "Skal ikke ha noen registreringer");
+            Assert.AreEqual(false, lag1State.Poster.Any(x => x.HarRegistrert), "Skal ikke ha noen registreringer");
         }
 
         [Test]
@@ -65,7 +73,7 @@ namespace RestApi.Tests
             var lag1State = gamestateservice.Get(lag1.Lag.LagId);
 
             Assert.AreEqual(0, lag1State.Score, "Skal ikke ha noen poeng");
-            Assert.AreEqual(false, lag1State.Poster.Any(x => x.HarRegistert), "Skal ikke ha noen registreringer");
+            Assert.AreEqual(false, lag1State.Poster.Any(x => x.HarRegistrert), "Skal ikke ha noen registreringer");
         }
 
         [Test]
@@ -84,7 +92,63 @@ namespace RestApi.Tests
             var lag1State = gamestateservice.Get(lag1.Lag.LagId);
 
             Assert.AreEqual(100, lag1State.Score, "Skal ha poeng for 1 stempling");
-            Assert.AreEqual(1, lag1State.Poster.Count(x => x.HarRegistert), "Skal ha 1 registrering");
+            Assert.AreEqual(1, lag1State.Poster.Count(x => x.HarRegistrert), "Skal ha 1 registrering");
+        }
+
+        [Test]
+        public void GittMatch_NårEttLagStemplerPåEnPost_OgRoterMedCasing_SkalDeLikevelFåPoengIFeed()
+        {
+            var match = _gitt.EnMatchMedTreLagOgTrePoster();
+
+            var lag1 = match.DeltakendeLag.First();
+            var deltaker11 = lag1.Lag.Deltakere.First();
+
+            var gameservice = _container.Resolve<GameService>();
+            var gamestateservice = _container.Resolve<GameStateService>();
+
+            gameservice.RegistrerNyPost(deltaker11.DeltakerId, lag1.Lag.LagId, "HEMMELIGkode1", null);
+
+            var lag1State = gamestateservice.Get(lag1.Lag.LagId);
+
+            Assert.AreEqual(100, lag1State.Score, "Skal ha poeng for 1 stempling");
+            Assert.AreEqual(1, lag1State.Poster.Count(x => x.HarRegistrert), "Skal ha 1 registrering");
+        }
+
+        [Test]
+        public void GittMatch_NårEttLagStemplerPåEnPost_OgHarLuftFørOgEtterPostKoden_SkalDeLikevelFåPoengIFeed()
+        {
+            var match = _gitt.EnMatchMedTreLagOgTrePoster();
+
+            var lag1 = match.DeltakendeLag.First();
+            var deltaker11 = lag1.Lag.Deltakere.First();
+
+            var gameservice = _container.Resolve<GameService>();
+            var gamestateservice = _container.Resolve<GameStateService>();
+
+            gameservice.RegistrerNyPost(deltaker11.DeltakerId, lag1.Lag.LagId, " hemmeligkode1 ", null);
+
+            var lag1State = gamestateservice.Get(lag1.Lag.LagId);
+
+            Assert.AreEqual(100, lag1State.Score, "Skal ha poeng for 1 stempling");
+            Assert.AreEqual(1, lag1State.Poster.Count(x => x.HarRegistrert), "Skal ha 1 registrering");
+        }
+
+        [Test]
+        public void GittMatch_NårEttLagStemplerPåEnPost_SkalDeIkkeMisteVåpen()
+        {
+            var match = _gitt.EnMatchMedTreLagOgTrePoster();
+
+            var lag1 = match.DeltakendeLag.First();
+            var deltaker11 = lag1.Lag.Deltakere.First();
+
+            var gameservice = _container.Resolve<GameService>();
+            var gamestateservice = _container.Resolve<GameStateService>();
+
+            gameservice.RegistrerNyPost(deltaker11.DeltakerId, lag1.Lag.LagId, "HemmeligKode1", null);
+
+            var lag1State = gamestateservice.Get(lag1.Lag.LagId);
+
+            Assert.AreEqual(2, lag1State.Vaapen.Count, "Skal ikke miste våpen");
         }
 
         [Test]
@@ -107,7 +171,7 @@ namespace RestApi.Tests
             var lag1State = gamestateservice.Get(lag1.Lag.LagId);
 
             Assert.AreEqual(0, lag1State.Score, "Skal ha poeng for 1 stempling");
-            Assert.AreEqual(0, lag1State.Poster.Count(x => x.HarRegistert), "Skal ha 1 registrering");
+            Assert.AreEqual(0, lag1State.Poster.Count(x => x.HarRegistrert), "Skal ha 1 registrering");
         }
 
         private void DisablePostIMatch(PostIMatch førstePost)
@@ -160,7 +224,7 @@ namespace RestApi.Tests
             var lag1State = gamestateservice.Get(lag1.Lag.LagId);
 
             Assert.AreEqual(100, lag1State.Score, "Skal ha poeng for 1 stempling");
-            Assert.AreEqual(1, lag1State.Poster.Count(x => x.HarRegistert), "Skal ha 1 registrering");
+            Assert.AreEqual(1, lag1State.Poster.Count(x => x.HarRegistrert), "Skal ha 1 registrering");
         }
 
         [Test]
@@ -183,7 +247,7 @@ namespace RestApi.Tests
             var lag2State = gamestateservice.Get(lag2.Lag.LagId);
 
             Assert.AreEqual(80, lag2State.Score, "Skal ha poeng for 2. stempling");
-            Assert.AreEqual(1, lag2State.Poster.Count(x => x.HarRegistert), "Skal ha 1 registrering");
+            Assert.AreEqual(1, lag2State.Poster.Count(x => x.HarRegistrert), "Skal ha 1 registrering");
         }
 
         [Test]
@@ -257,6 +321,7 @@ namespace RestApi.Tests
             Assert.AreEqual(100, lag1State.Score, "Skal ha fått poeng");
             Assert.AreEqual(2, lag1State.Poster.Count, "Skal bare se to poster (aktive)");
             Assert.AreEqual(0, lag1State.Vaapen.Count(x => x.VaapenId == Constants.Våpen.Bombe), "Skal ha brukt opp bomben");
+            Assert.AreEqual(1, lag1State.Vaapen.Count(x => x.VaapenId == Constants.Våpen.Felle), "Skal fremdeles ha fellen");
 
             gamestateservice.Calculate();
 
@@ -265,6 +330,8 @@ namespace RestApi.Tests
             lag1State = gamestateservice.Get(lag1.Lag.LagId);
 
             Assert.AreEqual(3, lag1State.Poster.Count, "Post skal bli synlig igjen");
+
+           
         }
 
         [Test]
@@ -303,6 +370,10 @@ namespace RestApi.Tests
             lag1State = gamestateservice.Get(lag1.Lag.LagId);
 
             Assert.AreEqual(3, lag1State.Poster.Count, "Post skal bli synlig igjen");
+
+            var meldingService = _container.Resolve<MeldingService>();
+            Assert.AreEqual(3, meldingService.HentMeldinger(lag1.Lag.LagId).Count(), "Laget som rigget fellen skulle fått melding");
+            Assert.AreEqual(2, meldingService.HentMeldinger(lag2.Lag.LagId).Count(), "Laget gikk i fellen skulle fått melding");
         }
 
         [Test]
@@ -336,8 +407,66 @@ namespace RestApi.Tests
                     where p.Post.HemmeligKode == "HemmeligKode1"
                     select p).Single();
 
-                Assert.IsNull(postIMatch.VåpenImplClass, "Våpenet som ble forsøkt brukt da fellen gikk av, skal ikke ha blitt satt opp");
+                Assert.IsNull(postIMatch.RiggetVåpen, "Våpenet som ble forsøkt brukt da fellen gikk av, skal ikke ha blitt satt opp");
             }
+        }
+
+        [Test]
+        public void GittAktivPost_NårEtLagBrukerBombeOgNullstillerEtterPå_SkalLagetMistePoengOgFåTilbakeVåpen()
+        {
+            var match = _gitt.EnMatchMedTreLagOgTrePoster();
+
+            var lag1 = match.DeltakendeLag.First();
+            var deltaker11 = lag1.Lag.Deltakere.First();
+
+            var gameservice = _container.Resolve<GameService>();
+            var gamestateservice = _container.Resolve<GameStateService>();
+
+            var lag1State = gamestateservice.Get(lag1.Lag.LagId);
+            Assert.AreEqual(1, lag1State.Vaapen.Count(x => x.VaapenId == Constants.Våpen.Bombe), "Skal ha 1 bombe");
+
+            gameservice.RegistrerNyPost(deltaker11.DeltakerId, lag1.Lag.LagId, "HemmeligKode1", Constants.Våpen.Bombe);
+
+            gameservice.Nullstill(lag1.Lag.LagId);
+
+            lag1State = gamestateservice.Get(lag1.Lag.LagId);
+            Assert.AreEqual(0, lag1State.Score, "Nullstilt lagets poeng");
+            Assert.AreEqual(0, lag1State.Poster.Count(x => x.HarRegistrert), "Ingen poster registert");
+            Assert.AreEqual(1, lag1State.Vaapen.Count(x => x.VaapenId == Constants.Våpen.Bombe), "Skal ha fått våpen tilbake");
+        }
+
+        [Test, Description("Gjenskaper uendelig-våpen-bug")]
+        public void GittAktivPost_NårEtLagBrukerOppFellen_SkalDenIkkeKunneRiggesIgjen()            
+        {
+            var match = _gitt.EnMatchMedTreLagOgTrePoster();
+
+            var lag1 = match.DeltakendeLag.First();
+            var deltaker11 = lag1.Lag.Deltakere.First();
+
+            var gameservice = _container.Resolve<GameService>();
+            var gamestateservice = _container.Resolve<GameStateService>();
+
+            var lag1State = gamestateservice.Get(lag1.Lag.LagId);
+            Assert.AreEqual(1, lag1State.Vaapen.Count(x => x.VaapenId == Constants.Våpen.Felle), "Skal ha 1 felle");
+
+            // Bruker fellen
+            gameservice.RegistrerNyPost(deltaker11.DeltakerId, lag1.Lag.LagId, "HemmeligKode1", Constants.Våpen.Felle);
+         
+            var lag2 = match.DeltakendeLag[1];
+            var deltaker21 = lag2.Lag.Deltakere.First();
+
+            // Utløser fellen
+            gameservice.RegistrerNyPost(deltaker21.DeltakerId, lag2.Lag.LagId, "HemmeligKode1", null);
+            
+            // Prøver å bruke fellen på neste post
+            gameservice.RegistrerNyPost(deltaker11.DeltakerId, lag1.Lag.LagId, "HemmeligKode2", Constants.Våpen.Felle);
+
+            // Skal ikke utløse noen felle
+            var lag2StateFør = gamestateservice.Get(lag2.Lag.LagId);
+            gameservice.RegistrerNyPost(deltaker21.DeltakerId, lag2.Lag.LagId, "HemmeligKode2", null);
+            var lag2StateEtter = gamestateservice.Get(lag2.Lag.LagId);
+
+            Assert.Greater(lag2StateEtter.Score, lag2StateFør.Score, "Skal ikke ha mistet poeng ved stempling");
         }
     }
 }

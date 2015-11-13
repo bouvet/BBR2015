@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web.Script.Serialization;
 using Database;
@@ -27,6 +28,7 @@ namespace Repository
         {
             var matchId = _currentMatchProvider.GetMatchId();
 
+            //using (With.ReadUncommitted()) 
             using (var context = _dataContextFactory.Create())
             {
                 var sorterteLag =
@@ -34,6 +36,19 @@ namespace Repository
                            .Where(x => x.Match.MatchId == matchId)
                            .OrderByDescending(x => x.PoengSum)
                            .ToList();
+
+                // Legg på poeng fra Achievements 
+                var achievementsPoeng = from a in context.Achievements
+                                        group a by a.LagId
+                                            into g
+                                            select new { LagId = g.Key, Poeng = g.Sum(x => x.Score), Achievements = g };
+
+                foreach (var lagPoeng in achievementsPoeng)
+                {
+                    var p = lagPoeng;
+                    var lag = sorterteLag.Single(x => x.Lag.LagId == p.LagId);
+                    lag.PoengSum += p.Poeng;
+                }
 
                 var poster = (from p in context.PosterIMatch.Include(x => x.Post)
                               where p.Match.MatchId == matchId
@@ -47,7 +62,8 @@ namespace Repository
                                   Navn = p.Post.Navn,
                                   ErSynlig = p.SynligFraTid < TimeService.Now && TimeService.Now < p.SynligTilTid,
                                   SynligFra = p.SynligFraTid,
-                                  SynligTil = p.SynligTilTid
+                                  SynligTil = p.SynligTilTid,
+                                  RiggetMedVåpen = p.RiggetVåpen
                               }).ToList();
 
                 var postRegistreringer = (from l in context.LagIMatch
@@ -106,13 +122,14 @@ namespace Repository
                                       Latitude = p.Latitude,
                                       Longitude = p.Longitude,
                                       PoengVerdi = reg != null ? reg.Poeng : PostIMatch.BeregnPoengForNesteRegistrering(p.PoengArray, p.CurrentPoengIndex),
-                                      HarRegistert = reg != null,
+                                      HarRegistrert = reg != null,
                                       Rekkefølge = random.Next(0, short.MaxValue) // order by random                                 
                                   }).OrderBy(x => x.Rekkefølge).ToList(),
                         Vaapen = lag.LagIMatch.VåpenBeholdning.Where(x => x.BruktIPostRegistrering == null).Select(x => new GameStateVaapen
                         {
                             VaapenId = x.VaapenId
-                        }).ToList()
+                        }).ToList(),
+                        Achievements = new List<GameStateAchievement>()//achievementsPoeng.Where(x => x.LagId == lag.Lag.LagId).Select(x => x.Achievements)
                     };
 
                     nyGameState.Add(state.LagId, state);
@@ -127,14 +144,16 @@ namespace Repository
                                          ErSynlig = p.ErSynlig,
                                          Navn = p.Navn,
                                          Verdi = PostIMatch.BeregnPoengForNesteRegistrering(p.PoengArray, p.CurrentPoengIndex),
-                                         AntallRegistreringer = postRegistreringer.Count(x => x.PostId == p.PostId)
+                                         AntallRegistreringer = postRegistreringer.Count(x => x.PostId == p.PostId),
+                                         SynligFra = p.SynligFra,
+                                         RiggetMedVåpen = p.RiggetMedVåpen
                                      }).OrderBy(x => x.Navn).ToList();
 
                 scoreboard.Lag = sorterteLag.Select(l => new ScoreboardLag
                 {
+                    LagId = l.Lag.LagId,
                     LagNavn = l.Lag.Navn,
                     LagFarge = l.Lag.Farge,
-                    LagIkon = l.Lag.Ikon,
                     Score = l.PoengSum,
                     Ranking = sorterteLag.Count(x => x.PoengSum > l.PoengSum) + 1,
                     AntallRegistreringer = postRegistreringer.Count(x => x.LagIMatchId == l.Id)
@@ -164,7 +183,7 @@ namespace Repository
                                             LagIkon = l.Lag.Ikon,
                                             LagNavn = l.Lag.Navn,
                                             MostValueablePlayerRanking = deltakerPoeng.Count(x => x.Poengsum > p.Poengsum) + 1
-                                        }).ToList();
+                                        }).OrderByDescending(x => x.MostValueablePlayerRanking).ToList();
 
                 var førsteTidspunktEtterNå = (from p in poster
                                               from t in p.Tider
@@ -173,6 +192,8 @@ namespace Repository
 
                 // swap current state
                 _matchStates[matchId] = new MatchState(matchId, nyGameState, scoreboard, førsteTidspunktEtterNå);
+
+                // IKKE SAVE CHANGES
             }
         }
 
@@ -205,8 +226,8 @@ namespace Repository
 
     public class MatchState
     {
-        private Dictionary<string, GameStateForLag> _gamestates = new Dictionary<string, GameStateForLag>();
-        private ScoreboardState _scoreboard = new ScoreboardState();
+        private readonly Dictionary<string, GameStateForLag> _gamestates;
+        private readonly ScoreboardState _scoreboard;
         private readonly DateTime _gyldigInntil;
 
         public Guid MatchId { get; set; }
@@ -254,9 +275,10 @@ namespace Repository
         public double Longitude { get; set; }
 
         public int AntallRegistreringer { get; set; }
-
         public int Verdi { get; set; }
         public bool ErSynlig { get; set; }
+        public DateTime SynligFra { get; set; }
+        public string RiggetMedVåpen { get; set; }
     }
 
     public class ScoreboardDeltaker
@@ -274,9 +296,9 @@ namespace Repository
 
     public class ScoreboardLag
     {
+        public string LagId { get; set; }
         public string LagNavn { get; set; }
         public string LagFarge { get; set; }
-        public string LagIkon { get; set; }
         public int AntallRegistreringer { get; set; }
         public int Score { get; set; }
         public int Ranking { get; set; }
@@ -296,6 +318,7 @@ namespace Repository
         public DateTime[] Tider { get { return new[] { SynligFra, SynligTil }; } }
         public DateTime SynligTil { get; set; }
         public DateTime SynligFra { get; set; }
+        public string RiggetMedVåpen { get; set; }
     }
 
     public class GameStateForLag
@@ -309,10 +332,16 @@ namespace Repository
 
         public int Score { get; set; }
         public List<GameStateVaapen> Vaapen { get; set; }
+        public List<GameStateAchievement> Achievements { get; set; }
         public GameStateRanking Ranking { get; set; }
         public string LagFarge { get; set; }
         public string LagIkon { get; set; }
         public string LagId { get; set; }
+    }
+
+    public class GameStateAchievement
+    {
+        public string Achievement { get; set; }
     }
 
     public class GameStateRanking
@@ -332,7 +361,7 @@ namespace Repository
         // NB: IKKE gi ut postnr. Lagene må finne en egen måte å referere postene på. Gjerne miks rekkefølgen på dem i retur.
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-        public bool HarRegistert { get; set; }
+        public bool HarRegistrert { get; set; }
         public int PoengVerdi { get; set; }
 
         [JsonIgnore]

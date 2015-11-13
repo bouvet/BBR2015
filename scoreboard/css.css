@@ -4,7 +4,7 @@ html, body {
 }
 
 body {
-  padding: 32px 30px;
+  padding: 15px 14px;
   height: 100%;
   width: 100%;
   box-sizing: border-box;
@@ -22,24 +22,42 @@ body {
 }
 
 .left .mvpliste {
-  height: 50%;
+  height: 60%;
   width: 100%;
+  float: left;
 }
 
 .left .toppliste {
+  width: 100%;
+  float: left;
+}
+
+.center {
+  height: 100%;
+  width: 40%;
+  float: left;
+}
+
+.center #map {
   height: 100%;
   width: 100%;
 }
 
 .right {
   height: 100%;
-  width: 70%;
+  width: 30%;
   float: left;
 }
 
-.right #map {
-  height: 100%;
-  width: 100%;
+.melding {
+  margin-left: 5px;
+}
+
+.javavsms table {
+  font-size: 2em;
+  text-align: center;
+  margin-top: 20px;
+  float: left;
 }
 
 h3 {
@@ -51,6 +69,27 @@ table {
   width: 100%;
 }
 
+table th {
+  text-align: center;
+}
+
 table td {
   text-align: center;
+}
+
+.leftalign {
+  text-align: left;
+}
+
+.fargesirkel {
+  height: 16px;
+  width: 16px;
+  border: 1px solid #101010;
+  border-radius: 8px;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.bildeicon {
+  height: 20px;
 }

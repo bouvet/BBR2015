@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using Database;
+using Database.Infrastructure;
 
 namespace RestApi.Filters
 {
@@ -50,7 +51,7 @@ namespace RestApi.Filters
 
         public static void Reload()
         {
-            _minsteTidMellom = new OverridableSettings().MinsteTidMellomRequestsIMs;
+            _minsteTidMellom = ServiceLocator.Current.Resolve<OverridableSettings>().MinsteTidMellomRequestsIMs;
             _lastRequest = new ConcurrentDictionary<string, DateTime>();
         }
     }

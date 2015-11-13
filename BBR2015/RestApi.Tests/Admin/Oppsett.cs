@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
@@ -26,7 +24,7 @@ namespace RestApi.Tests.Admin
         private const string DB_North = "BBR_North";
         private const string DB_West = "BBR_West";
 
-        private const string EnvironmentSettingsConnectionKey = DB_North;
+        private const string EnvironmentSettingsConnectionKey = DB_West;
 
         [TestFixtureSetUp]
         public void EnsureDatabase()
@@ -59,6 +57,15 @@ namespace RestApi.Tests.Admin
 
         }
 
+        [Test, RequiresSTA]
+        [Explicit("Bare hvis du virkelig vet hva du gjør!")]
+        public void Nullstill_Fredag()
+        {
+            Tøm_Databasen();
+            Opprett_spill_fredag();
+            //LesDetaljerFraExcel();
+        }
+
         [Test]
         [Explicit("Bare hvis du virkelig vet hva du gjør!")]
         [Ignore("Må kjøres HELT separat")]
@@ -77,7 +84,7 @@ namespace RestApi.Tests.Admin
                 context.Lag.Clear();
                 context.Våpen.Clear();
                 context.Poster.Clear();
-
+                context.Achievements.Clear();
                 context.SaveChanges();
             }
         }
@@ -164,10 +171,10 @@ namespace RestApi.Tests.Admin
         {
             using (var context = _dataContextFactory.Create())
             {
-                if (context.Lag.Any(x => x.Navn.StartsWith("SUPPORT_")))
+                if (context.Lag.Any(x => x.LagId.StartsWith("SUPPORT_")))
                     return;
 
-                var lag = LagFactory.SettOppLagMedDeltakere(1, 10, "SUPPORT_");
+                var lag = LagFactory.SettOppLagMedDeltakere(1, 7, "SUPPORT_");
 
                 context.Lag.AddRange(lag);
                 context.SaveChanges();
@@ -192,8 +199,8 @@ namespace RestApi.Tests.Admin
         [Test]
         public void Opprett_LagForHelga()
         {
-            var java = LagFactory.SettOppLagMedDeltakere(6, 4, "JAVA_");
-            var ms = LagFactory.SettOppLagMedDeltakere(5, 4, "MS_");
+            var java = LagFactory.SettOppLagMedDeltakere(5, 4, "JAVA_");
+            var ms = LagFactory.SettOppLagMedDeltakere(3, 4, "MS_");
 
             var genererteLag = new List<Lag>();
             genererteLag.AddRange(java);
@@ -218,6 +225,7 @@ namespace RestApi.Tests.Admin
         public void Opprett_spill_fredag()
         {
             Opprett_Våpen();
+            //Opprett_Demolag();
             Opprett_Arrangørlag();
             Opprett_LagForHelga();
 
@@ -228,13 +236,13 @@ namespace RestApi.Tests.Admin
                     MatchId = Guid.NewGuid(),
                     Navn = "Treningsrunde fredag",
                     StartTid = new DateTime(2015, 11, 06, 10, 00, 00),
-                    SluttTid = new DateTime(2015, 11, 07, 10, 00, 00)
+                    SluttTid = new DateTime(2015, 11, 07, 10, 30, 00)
                 };
 
                 if (context.Matcher.Any(x => x.Navn == match.Navn))
                     return;
 
-                var leggTilLag = context.Lag.Where(x => x.LagId.StartsWith("SUPPORT") || x.LagId.StartsWith("JAVA_") || x.LagId.StartsWith("MS_")).ToList();
+                var leggTilLag = context.Lag.Where(x => x.LagId.StartsWith("BBR") || x.LagId.StartsWith("SUPPORT") || x.LagId.StartsWith("JAVA_") || x.LagId.StartsWith("MS_")).ToList();
 
                 foreach (var lag in leggTilLag)
                 {
@@ -273,9 +281,9 @@ namespace RestApi.Tests.Admin
         [Test]
         public void Opprett_spill_lørdag()
         {
-            Opprett_Våpen();
-            Opprett_Arrangørlag();
-            Opprett_LagForHelga();
+            //Opprett_Våpen();
+            //Opprett_Arrangørlag();
+            //Opprett_LagForHelga();
 
             using (var context = _dataContextFactory.Create())
             {
@@ -283,8 +291,8 @@ namespace RestApi.Tests.Admin
                 {
                     MatchId = Guid.NewGuid(),
                     Navn = "Bouvet Battle Royale 2015",
-                    StartTid = new DateTime(2015, 11, 07, 10, 00, 00),
-                    SluttTid = new DateTime(2015, 11, 07, 18, 00, 00)
+                    StartTid = new DateTime(2015, 11, 07, 10, 30, 00),
+                    SluttTid = new DateTime(2015, 11, 07, 15, 00, 00)
                 };
 
                 if (context.Matcher.Any(x => x.Navn == match.Navn))
@@ -306,6 +314,7 @@ namespace RestApi.Tests.Admin
 
                 foreach (var post in new PostFactory().Les(Constants.Område.Oscarsborg))
                 {
+                    
                     context.Poster.Add(post);
 
                     var postIMatch = new PostIMatch
@@ -316,6 +325,66 @@ namespace RestApi.Tests.Admin
                         SynligFraTid = match.StartTid,
                         SynligTilTid = match.SluttTid
                     };
+
+                    if (post.Latitude < 59.67700)
+                        postIMatch.SynligFraTid = match.SluttTid;
+
+                    match.Poster.Add(postIMatch);
+                }
+                context.SaveChanges();
+            }
+        }
+
+        [Test]
+        public void Opprett_spill_videre()
+        {
+            //Opprett_Våpen();
+            //Opprett_Arrangørlag();
+            //Opprett_LagForHelga();
+
+            using (var context = _dataContextFactory.Create())
+            {
+                var match = new Match()
+                {
+                    MatchId = Guid.NewGuid(),
+                    Navn = "Bouvet Battle Royale 2015 - nachpiel",
+                    StartTid = new DateTime(2015, 11, 07, 15, 00, 00),
+                    SluttTid = new DateTime(2045, 11, 07, 15, 00, 00)
+                };
+
+                if (context.Matcher.Any(x => x.Navn == match.Navn))
+                    return;
+
+                var leggTilLag = context.Lag.Where(x => x.LagId.StartsWith("SUPPORT") || x.LagId.StartsWith("JAVA_") || x.LagId.StartsWith("MS_")).ToList();
+
+                foreach (var lag in leggTilLag)
+                {
+                    var deltakelse = match.LeggTil(lag);
+
+                    var våpen = context.Våpen.ToList();
+
+                    deltakelse.LeggTilVåpen(våpen[0]);
+                    deltakelse.LeggTilVåpen(våpen[1]);
+                }
+
+                context.Matcher.Add(match);
+
+                foreach (var post in new PostFactory().Les(Constants.Område.Oscarsborg))
+                {
+
+                    context.Poster.Add(post);
+
+                    var postIMatch = new PostIMatch
+                    {
+                        Match = match,
+                        Post = post,
+                        PoengArray = post.DefaultPoengArray,
+                        SynligFraTid = match.StartTid,
+                        SynligTilTid = match.SluttTid
+                    };
+
+                    if (post.Latitude < 59.67700)
+                        postIMatch.SynligFraTid = match.SluttTid;
 
                     match.Poster.Add(postIMatch);
                 }

@@ -150,5 +150,24 @@ namespace RestApi.Tests
 
             Assert.AreEqual(antall, antallMeldingerFraPoll, "Skal alle meldinger hvis en spesifiserer sekvensnr");
         }
+
+        [Test]
+        public void NårDetErPostetMeldinger_NårEnSpørMedSisteSekvensNummer_SkalEnIkkeFåNoeTilbake()
+        {
+            var gittLag = _gitt.ToLagMedToDeltakere();
+
+            var lag1 = gittLag[0];
+            var deltaker1 = lag1.Deltakere[0];
+
+            var meldingsService = _container.Resolve<MeldingService>();
+
+            meldingsService.PostMelding(deltaker1.DeltakerId, lag1.LagId, "Testmelding1");
+
+            var sekvensNr = meldingsService.HentMeldinger(lag1.LagId).Select(x => x.SekvensId).Single();            
+
+            var antallMeldingerFraPoll = meldingsService.HentMeldinger(lag1.LagId, sekvensNr).Count();
+
+            Assert.AreEqual(0, antallMeldingerFraPoll, "Skal ikke få meldinger");
+        }
     }
 }

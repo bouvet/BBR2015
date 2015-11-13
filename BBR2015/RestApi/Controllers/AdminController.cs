@@ -15,16 +15,19 @@ namespace RestApi.Controllers
         private readonly GameStateService _gameStateService;
         private readonly OverridableSettings _appSettings;
         private readonly TilgangsKontroll _tilgangsKontroll;
+        private readonly PosisjonsService _posisjonsService;
 
-        public AdminController(GameStateService gameStateService, OverridableSettings appSettings, TilgangsKontroll tilgangsKontroll)
+        public AdminController(GameStateService gameStateService, OverridableSettings appSettings, TilgangsKontroll tilgangsKontroll, PosisjonsService posisjonsService)
         {
             _gameStateService = gameStateService;
             _appSettings = appSettings;
             _tilgangsKontroll = tilgangsKontroll;
+            _posisjonsService = posisjonsService;
         }
 
         [Route("api/Admin/RecalculateState")]
         [HttpPost]
+        [Obsolete]
         public IHttpActionResult RecalculateState()
         {
             _gameStateService.Calculate();
@@ -35,6 +38,7 @@ namespace RestApi.Controllers
         
         [Route("api/Admin/ThrowException")]
         [HttpPost]
+        [Obsolete]
         public IHttpActionResult ThrowException()
         {
             throw new ApplicationException("Initiert av brukeren");           
@@ -42,10 +46,12 @@ namespace RestApi.Controllers
 
         [Route("api/Admin/ClearCaching")]
         [HttpPost]
+        [Obsolete]
         public IHttpActionResult ClearCaching()
         {
             _gameStateService.Calculate();
             _tilgangsKontroll.Nullstill();
+            _posisjonsService.Nullstill();
             ThrottleAttribute.Reload();
             return Ok();
         }
@@ -53,6 +59,7 @@ namespace RestApi.Controllers
         // Post: api/Admin/RecalculateState
         [Route("api/Admin/ConnectionString")]
         [HttpGet]
+        [Obsolete]
         public IHttpActionResult ConnectionString()
         {
             return Ok(_appSettings.DatabaseConnectionString);
@@ -60,6 +67,7 @@ namespace RestApi.Controllers
 
         [Route("api/Admin/hemmeligekoder")]
         [HttpGet]
+        [Obsolete]
         public IHttpActionResult HemmeligeKoder()
         {
             return Ok(_tilgangsKontroll.HentAlleHemmeligeKoder());
@@ -67,6 +75,7 @@ namespace RestApi.Controllers
 
         [Route("api/Admin/DateTimeNow")]
         [HttpGet]
+        [Obsolete]
         public IHttpActionResult DateTimeNow()
         {
             return Ok(TimeService.Now);

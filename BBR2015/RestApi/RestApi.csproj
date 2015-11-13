@@ -29,6 +29,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>\docs\RestApi.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -134,8 +135,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Readme\Elmah.txt" />
+    <EmbeddedResource Include="CustomContent\CustomApiKey.js" />
     <Content Include="Global.asax" />
     <Content Include="Index.html" />
+    <Content Include="docs\RestApi.XML">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -150,14 +155,12 @@
     <Compile Include="Controllers\GameStateFeedController.cs" />
     <Compile Include="Controllers\PosisjonsServiceController.cs" />
     <Compile Include="Filters\RequireApiKeyAttribute.cs" />
-    <Compile Include="Controllers\DefaultController.cs" />
     <Compile Include="Controllers\MeldingerController.cs" />
     <Compile Include="Controllers\ScoreboardController.cs" />
     <Compile Include="Filters\ThrottleAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Infrastructure\ServiceLocator.cs" />
     <Compile Include="Infrastructure\WindsorControllerActivator.cs" />
     <Compile Include="Infrastructure\DepencencyConventions.cs" />
     <Compile Include="Models\Koordinat.cs" />
@@ -220,6 +223,9 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y "$(ProjectDir)bin\RestApi.XML" "$(ProjectDir)docs\RestApi.XML"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

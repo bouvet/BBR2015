@@ -3,6 +3,7 @@ using Database;
 using RestApi.Infrastructure;
 using System.Web.Http;
 using System.Web.Http.Dispatcher;
+using Database.Infrastructure;
 using Repository;
 
 namespace RestApi
@@ -23,10 +24,7 @@ namespace RestApi
         protected void Application_Start()
         {
             GlobalConfiguration.Configuration.Services.Replace(typeof(IHttpControllerActivator), new WindsorControllerActivator(_container));
-            GlobalConfiguration.Configure(WebApiConfig.Register);
-
-            //System.Data.Entity.Database.SetInitializer(new Initializer());
-            ServiceLocator.Current = _container;           
+            GlobalConfiguration.Configure(WebApiConfig.Register);            
         }
 
         public override void Dispose()

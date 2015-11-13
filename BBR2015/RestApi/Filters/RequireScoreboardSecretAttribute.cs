@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using Database;
+using Database.Infrastructure;
 using RestApi.Infrastructure;
 
 namespace RestApi.Filters

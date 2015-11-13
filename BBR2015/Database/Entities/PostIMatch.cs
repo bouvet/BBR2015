@@ -26,8 +26,8 @@ namespace Database.Entities
         public DateTime SynligFraTid { get; set; }
         public DateTime SynligTilTid { get; set; }
 
-        public string VåpenImplClass { get; set; }
-        public string VåpenParamJson { get; set; }
+        public string RiggetVåpen { get; set; }
+        public string RiggetVåpenParam { get; set; }
 
         public bool ErSynlig
         {

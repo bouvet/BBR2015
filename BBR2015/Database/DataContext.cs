@@ -43,6 +43,8 @@ namespace Database
 
         public DbSet<VaapenBeholdning> VåpenBeholdning { get; set; }
 
+        public DbSet<Achievement> Achievements { get; set; } 
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
