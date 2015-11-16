@@ -108,6 +108,7 @@
     <Compile Include="Infrastructure\BBR2015DatabaseTests.cs" />
     <Compile Include="Infrastructure\LagFactory.cs" />
     <Compile Include="Infrastructure\TestsInTransactionScope.cs" />
+    <Compile Include="KmlExportTests.cs" />
     <Compile Include="MeldingRepositoryTests.cs" />
     <Compile Include="PoengBeregningTests.cs" />
     <Compile Include="PosisjonServiceConcurrencyTests.cs" />
