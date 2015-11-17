@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,6 +33,7 @@ namespace RestApi.Tests
 
             var kml = service.GetKml();
 
+            File.WriteAllText(@"c:\temp\bbr2015.kml", kml);
             
             Assert.IsNotNullOrEmpty(kml);
         }
