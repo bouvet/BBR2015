@@ -58,6 +58,11 @@ namespace Repository
             {
                 var match = context.Matcher.Single(x => x.MatchId == matchId);
 
+                var maxLat = 59.680825;
+                var minLat = 59.672062;
+                var minLon = 10.603076;
+                var maxLon = 10.610055;
+
                 var poster = (from pim in context.PosterIMatch
                               where pim.Match.MatchId == matchId
                               select
@@ -131,10 +136,30 @@ namespace Repository
                            
                     var track = new Track();
 
+                    var forrigePosisjon = førstePosisjon;
                     foreach (var pos in posisjoner)
                     {
+                        // Utafor boksen
+                        if (pos.Latitude > maxLat || pos.Latitude < minLat || pos.Longitude > maxLon || pos.Longitude < minLon)
+                        {
+                            continue;
+                        }
+
+                        var meter = DistanseKalkulator.MeterMellom(forrigePosisjon.Latitude, forrigePosisjon.Longitude, pos.Latitude, pos.Longitude);
+                        var sekunder = pos.Tidspunkt.Subtract(forrigePosisjon.Tidspunkt).TotalSeconds;
+
+                        if (sekunder > 0)
+                        {
+                            var fart = meter/sekunder;
+                            if (fart > 8.333) // raskere enn 12 blank på 100m
+                            {
+                                continue;
+                            }
+                        }
+
                         track.AddWhen(pos.Tidspunkt);
-                        track.AddCoordinate(new Vector(pos.Latitude, pos.Longitude));                       
+                        track.AddCoordinate(new Vector(pos.Latitude, pos.Longitude));
+                        forrigePosisjon = pos;
                     }
 
                     placemark.Geometry = track;
