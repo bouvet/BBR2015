@@ -103,6 +103,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Admin\Oppsett.cs" />
+    <Compile Include="ExcelImport\DeltakerImportTests.cs" />
+    <Compile Include="ExcelImport\ExcelImportTestsBase.cs" />
+    <Compile Include="ExcelImport\ExcelWorksheetExtensionTests.cs" />
+    <Compile Include="ExcelImport\LagImportTests.cs" />
+    <Compile Include="ExcelImport\MatchImportTests.cs" />
+    <Compile Include="ExcelImport\PostImportTests.cs" />
     <Compile Include="GameStateTests.cs" />
     <Compile Include="Gitt.cs" />
     <Compile Include="Infrastructure\BBR2015DatabaseTests.cs" />
@@ -118,7 +124,9 @@
     <Compile Include="ScoreboardTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

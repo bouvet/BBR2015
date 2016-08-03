@@ -20,14 +20,15 @@ namespace RestApi.Tests.Infrastructure
                 LagId = prefix + string.Format("{0}", lagIndex),
                 Navn = prefix + string.Format("Navn{0}", lagIndex),
                 Farge = prefix + string.Format("Farge{0}", lagIndex),
+                HemmeligKode = prefix + string.Format("HemmeligKode{0}", lagIndex),
                 Ikon = prefix + string.Format("Ikon{0}.gif", lagIndex),                
             };
 
-            lag.HemmeligKode = lag.LagId;
+            //lag.HemmeligKode = lag.LagId;
 
             for (int i = 1; i <= antallDeltakere; i++)
             {
-                lag.LeggTilDeltaker(new Deltaker(string.Format("{0}-{1}", lag.LagId, i), string.Format("{0}-{1}Navn", lag.LagId, i)));
+                lag.LeggTilDeltaker(new Deltaker(string.Format("{0}-{1}", lag.LagId, i), string.Format("{0}-{1}Navn", lag.LagId, i)) { Kode = "Kode" + i });
             }
 
             return lag;

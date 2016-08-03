@@ -58,7 +58,7 @@ namespace RestApi.Tests
                     MatchId = Guid.NewGuid(),
                     Navn = "Unit Test Match",
                     StartTid = new DateTime(2015, 10, 01),
-                    SluttTid = new DateTime(2015, 12, 01)
+                    SluttTid = new DateTime(2020, 12, 01)
                 };
 
                 context.Matcher.Add(match);

@@ -26,6 +26,7 @@ namespace Repository
         {
             return string.Format("style_{0}", lagId);
         }
+
         public string GetKml()
         {
             var matchId = _currentMatchProvider.GetMatchId();

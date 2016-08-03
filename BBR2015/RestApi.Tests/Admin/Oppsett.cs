@@ -10,6 +10,7 @@ using Database.Entities;
 using NUnit.Framework;
 using OfficeOpenXml;
 using RestApi.Tests.Infrastructure;
+using System.Data.Entity;
 
 namespace RestApi.Tests.Admin
 {
@@ -71,22 +72,7 @@ namespace RestApi.Tests.Admin
         [Ignore("Må kjøres HELT separat")]
         public void Tøm_Databasen()
         {
-            using (var context = _dataContextFactory.Create())
-            {
-                context.VåpenBeholdning.Clear();
-                context.PostRegisteringer.Clear();
-                context.LagIMatch.Clear();
-                context.PosterIMatch.Clear();
-                context.Matcher.Clear();
-                context.DeltakerPosisjoner.Clear();
-                context.Meldinger.Clear();
-                context.Deltakere.Clear();
-                context.Lag.Clear();
-                context.Våpen.Clear();
-                context.Poster.Clear();
-                context.Achievements.Clear();
-                context.SaveChanges();
-            }
+           _dataContextFactory.DeleteAllData();
         }
 
         [Test]
@@ -423,7 +409,7 @@ namespace RestApi.Tests.Admin
                     var lag = alleLag.SingleOrDefault(x => x.LagId == lagId);
 
                     if (lag == null)
-                        continue;
+                        continue; // opprett lag
 
                     lag.Navn = GetValue(worksheet, row, "B");
                     lag.Farge = GetValue(worksheet, row, "C");

@@ -2,6 +2,7 @@
 using Database.Entities;
 using Database;
 using System.Linq;
+using System.Data.Entity;
 
 namespace Repository
 {

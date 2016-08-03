@@ -42,9 +42,14 @@ namespace Repository
         {
             using (var context = _dataContextFactory.Create())
             {
-                return (from m in context.Matcher
+                var currentMatch= (from m in context.Matcher
                     where m.StartTid < TimeService.Now && TimeService.Now < m.SluttTid
-                    select m.MatchId).Single();
+                    select m).SingleOrDefault();
+
+                if (currentMatch == null)
+                    return Guid.Empty;
+
+                return currentMatch.MatchId;
             }
         }
     }

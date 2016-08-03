@@ -153,6 +153,7 @@
     <Compile Include="Controllers\ForbiddenActionResult.cs" />
     <Compile Include="Controllers\GameServiceController.cs" />
     <Compile Include="Controllers\GameStateFeedController.cs" />
+    <Compile Include="Controllers\KmlController.cs" />
     <Compile Include="Controllers\PosisjonsServiceController.cs" />
     <Compile Include="Filters\RequireApiKeyAttribute.cs" />
     <Compile Include="Controllers\MeldingerController.cs" />

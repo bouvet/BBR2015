@@ -7,6 +7,7 @@ using System.Web.Script.Serialization;
 using Database;
 using Database.Entities;
 using Newtonsoft.Json;
+using System.Data.Entity;
 
 namespace Repository
 {

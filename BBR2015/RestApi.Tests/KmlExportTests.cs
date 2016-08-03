@@ -11,7 +11,7 @@ using Repository;
 
 namespace RestApi.Tests
 {
-    [TestFixture]
+    [TestFixture, Explicit]
     public class KmlExportTests
     {
         private IWindsorContainer _container;
@@ -23,6 +23,7 @@ namespace RestApi.Tests
 
             var hardcodedMatchProvider = new HardcodedMatchProvider(null);
             hardcodedMatchProvider.SetMatchId(new Guid("4A82121D-71A6-45AE-AFD8-41574086B55C"));
+
             _container.Register(
                 Component.For<CurrentMatchProvider>()
                     .Instance(hardcodedMatchProvider)

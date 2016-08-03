@@ -6,6 +6,7 @@ using Database.Entities;
 using NUnit.Framework;
 using Repository;
 using RestApi.Tests.Infrastructure;
+using System.Data.Entity;
 
 namespace RestApi.Tests
 {

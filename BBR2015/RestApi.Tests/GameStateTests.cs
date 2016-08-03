@@ -8,6 +8,7 @@ using NUnit.Framework;
 using Repository;
 using RestApi.Tests.Infrastructure;
 using Constants = Database.Constants;
+using System.Data.Entity;
 
 namespace RestApi.Tests
 {

@@ -44,5 +44,13 @@ namespace Database.Entities
 
             return lagIMatch;
         }
+
+        //public double Area_NW_Latitude { get; set; }
+        //public double Area_NW_Longitude { get; set; }
+
+        //public double Area_SE_Latitude { get; set; }
+        //public double Area_SE_Longitude { get; set; }
+
+
     }
 }
