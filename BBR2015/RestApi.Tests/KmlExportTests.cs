@@ -8,6 +8,7 @@ using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using NUnit.Framework;
 using Repository;
+using Repository.Kml;
 
 namespace RestApi.Tests
 {
@@ -30,7 +31,7 @@ namespace RestApi.Tests
                     .Named(Guid.NewGuid().ToString())
                     .IsDefault());
 
-            var service = _container.Resolve<KmlService>();
+            var service = _container.Resolve<KmlExport>();
 
             var kml = service.GetKml();
 

@@ -75,14 +75,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Import\DeltakerImport.cs" />
-    <Compile Include="Import\ExcelDownloader.cs" />
+    <Compile Include="Import\GoogleDriveDownloader.cs" />
     <Compile Include="Import\ExcelSheet.cs" />
     <Compile Include="Import\ExcelImport.cs" />
     <Compile Include="Import\ExcelWorkSheetExtensions.cs" />
+    <Compile Include="Import\ExcelWriter.cs" />
     <Compile Include="Import\LagImport.cs" />
     <Compile Include="Import\MatchImport.cs" />
     <Compile Include="Import\PostImport.cs" />
-    <Compile Include="KmlService.cs" />
+    <Compile Include="Kml\KmlToExcelPoster.cs" />
+    <Compile Include="Kml\KmlExport.cs" />
     <Compile Include="TilgangsKontroll.cs" />
     <Compile Include="CurrentMatchProvider.cs" />
     <Compile Include="DistanseKalkulator.cs" />

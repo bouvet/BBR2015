@@ -115,6 +115,7 @@
     <Compile Include="Infrastructure\LagFactory.cs" />
     <Compile Include="Infrastructure\TestsInTransactionScope.cs" />
     <Compile Include="KmlExportTests.cs" />
+    <Compile Include="KmlToExcelTests.cs" />
     <Compile Include="MeldingRepositoryTests.cs" />
     <Compile Include="PoengBeregningTests.cs" />
     <Compile Include="PosisjonServiceConcurrencyTests.cs" />
@@ -128,6 +129,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="TestFiles\GMap_poster.kml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Database\Database.csproj">

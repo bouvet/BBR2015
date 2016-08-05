@@ -2,17 +2,18 @@
 using System.Web.Http.Description;
 using System.Web.Http.Results;
 using Repository;
+using Repository.Kml;
 using RestApi.Models;
 
 namespace RestApi.Controllers
 {
     public class KmlController : ApiController
     {
-        private readonly KmlService _kmlService;
+        private readonly KmlExport _kmlExport;
 
-        public KmlController(KmlService kmlService)
+        public KmlController(KmlExport kmlExport)
         {
-            _kmlService = kmlService;
+            _kmlExport = kmlExport;
         }
 
         [HttpGet]
@@ -20,7 +21,7 @@ namespace RestApi.Controllers
         [Route("api/Kml/Export/{matchName}")]
         public IHttpActionResult Export(string matchName)
         {
-            var response = _kmlService.GetKml();
+            var response = _kmlExport.GetKml();
 
             return Ok(response);
         }

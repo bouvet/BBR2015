@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Database;
 using SharpKml.Base;
 using SharpKml.Dom;
 using SharpKml.Dom.GX;
 using TimeSpan = SharpKml.Dom.TimeSpan;
 
-namespace Repository
+namespace Repository.Kml
 {
-    public class KmlService
+    public class KmlExport
     {
         private readonly DataContextFactory _dataContextFactory;
         private readonly CurrentMatchProvider _currentMatchProvider;
 
-        public KmlService(DataContextFactory dataContextFactory, CurrentMatchProvider currentMatchProvider)
+        public KmlExport(DataContextFactory dataContextFactory, CurrentMatchProvider currentMatchProvider)
         {
             _dataContextFactory = dataContextFactory;
             _currentMatchProvider = currentMatchProvider;
@@ -31,7 +29,7 @@ namespace Repository
         {
             var matchId = _currentMatchProvider.GetMatchId();
 
-            Kml kml = new Kml();
+            SharpKml.Dom.Kml kml = new SharpKml.Dom.Kml();
 
             var document = new Document();
             kml.Feature = document;
