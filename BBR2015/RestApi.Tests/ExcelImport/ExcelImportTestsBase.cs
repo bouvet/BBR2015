@@ -26,9 +26,7 @@ namespace RestApi.Tests.ExcelImport
             _dataContextFactory.DeleteAllData();
 
             TimeService.ResetToRealTime();
-
             _excelWriter = new ExcelWriter();
-
         }
 
         [TearDown]
@@ -37,8 +35,9 @@ namespace RestApi.Tests.ExcelImport
             _excelWriter.Dispose();
         }
 
-        protected void Importer(Match match, List<Lag> lagListe = null, List<PostImport.ExcelPost> poster = null)
+        protected void Importer(MatchImport.ExcelMatch match, List<Lag> lagListe = null, List<PostImport.ExcelPost> poster = null)
         {
+            _excelWriter = new ExcelWriter();
             _excelWriter.SkrivTilExcel(match, lagListe, poster);
             Importer();
         }
@@ -52,19 +51,21 @@ namespace RestApi.Tests.ExcelImport
             // Excel-pakken blir lukket ved skriving til stream, så en må lage ny          
         }
 
-
-        
-
-       
-
-        protected static Match GetMatch()
+        protected static MatchImport.ExcelMatch GetMatch()
         {
-            var match = new Match
+            var match = new MatchImport.ExcelMatch
             {
                 MatchId = Guid.NewGuid(),
                 Navn = "Testing",
                 StartTid = DateTime.Today.AddDays(-1),
-                SluttTid = DateTime.Today.AddDays(1)
+                SluttTid = DateTime.Today.AddDays(1),
+                GeoboxNWLatitude = 51,
+                GeoboxNWLongitude = 11,
+                GeoboxSELatitude = 52,
+                GeoboxSELongitude = 12,
+                DefaultPoengFordeling = "100,90,80",
+                PrLagFelle = 1,
+                PrLagBombe = 2
             };
             return match;
         }

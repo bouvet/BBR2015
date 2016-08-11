@@ -72,6 +72,10 @@
     <Compile Include="Migrations\201511052108523_Achievements.Designer.cs">
       <DependentUpon>201511052108523_Achievements.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201608051858440_MatchGeobox.cs" />
+    <Compile Include="Migrations\201608051858440_MatchGeobox.Designer.cs">
+      <DependentUpon>201608051858440_MatchGeobox.cs</DependentUpon>
+    </Compile>
     <Compile Include="With.cs" />
     <Compile Include="OverridableSettings.cs" />
     <Compile Include="Constants.cs" />
@@ -125,7 +129,12 @@
     <EmbeddedResource Include="Migrations\201511052108523_Achievements.resx">
       <DependentUpon>201511052108523_Achievements.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="App.config" />
+    <EmbeddedResource Include="Migrations\201608051858440_MatchGeobox.resx">
+      <DependentUpon>201608051858440_MatchGeobox.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Entities\ClassDiagram1.cd" />
     <None Include="ImportData\Myrens\koder.json" />
     <None Include="ImportData\Myrens\lagPoster.json" />

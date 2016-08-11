@@ -9,15 +9,16 @@ namespace Database.Entities
     public class Match
     {
         public Guid MatchId { get; set; }
-
         public string Navn { get; set; }
-
         public DateTime StartTid { get; set; }
-
         public DateTime SluttTid { get; set; }
 
-        public virtual List<LagIMatch> DeltakendeLag { get; set; }
+        public double? GeoboxNWLatitude { get; set; }
+        public double? GeoboxNWLongitude { get; set; }
+        public double? GeoboxSELatitude { get; set; }
+        public double? GeoboxSELongitude { get; set; }
 
+        public virtual List<LagIMatch> DeltakendeLag { get; set; }
         public virtual List<PostIMatch> Poster { get; set; }
 
         public Match()

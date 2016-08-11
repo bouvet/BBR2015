@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Common;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
@@ -14,8 +15,17 @@ namespace Database
     {
         public DbConnection CreateConnection(string nameOrConnectionString)
         {
-            var settings = ServiceLocator.Current.Resolve<OverridableSettings>();
-            var connectionString = settings.DatabaseConnectionString;
+            string connectionString;
+
+            if (ServiceLocator.Current != null)
+            {
+                var settings = ServiceLocator.Current.Resolve<OverridableSettings>();
+                connectionString = settings.DatabaseConnectionString;
+            }
+            else
+            {
+                connectionString = ConfigurationManager.ConnectionStrings[0].ConnectionString;
+            }
 
             DbConnection connection = SqlClientFactory.Instance.CreateConnection();
             connection.ConnectionString = connectionString;

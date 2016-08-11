@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using RestApi.Tests.Infrastructure;
 using System.Data.Entity;
+using Database;
 
 namespace RestApi.Tests.ExcelImport
 {
@@ -97,6 +98,72 @@ namespace RestApi.Tests.ExcelImport
                 var m = context.Matcher.Include(x => x.DeltakendeLag).Single();
 
                 Assert.AreEqual(1, m.DeltakendeLag.Count(), "Antall lag koblet til match skal fremdeles være 1");
+            }
+        }
+
+        [Test]
+        public void LagSkalFåVåpenFraMatchConfig()
+        {
+            var match = GetMatch();
+
+            match.PrLagFelle = 99;
+            match.PrLagBombe = 88;
+
+            var lag = LagFactory.SettOppLagMedDeltakere(1, 0, "LAG_");
+
+            Importer(match, lag);
+
+            using (var context = _dataContextFactory.Create())
+            {
+                var m = context.Matcher.Include(x => x.DeltakendeLag.Select(y => y.VåpenBeholdning)).Single();
+                var l = m.DeltakendeLag.Single();
+
+                Assert.AreEqual(99, l.VåpenBeholdning.Count(x => x.VaapenId == Constants.Våpen.Felle ), "Feller");
+                Assert.AreEqual(88, l.VåpenBeholdning.Count(x => x.VaapenId == Constants.Våpen.Bombe ), "Bomber");
+            }
+        }
+
+        [Test]
+        public void LagSkalIkkeFåVåpenHvisMatchConfigErTom()
+        {
+            var match = GetMatch();
+
+            match.PrLagFelle = null;
+            match.PrLagBombe = null;
+
+            var lag = LagFactory.SettOppLagMedDeltakere(1, 0, "LAG_");
+
+            Importer(match, lag);
+
+            using (var context = _dataContextFactory.Create())
+            {
+                var m = context.Matcher.Include(x => x.DeltakendeLag.Select(y => y.VåpenBeholdning)).Single();
+                var l = m.DeltakendeLag.Single();
+
+                Assert.AreEqual(0, l.VåpenBeholdning.Count(x => x.VaapenId == Constants.Våpen.Felle), "Feller");
+                Assert.AreEqual(0, l.VåpenBeholdning.Count(x => x.VaapenId == Constants.Våpen.Bombe), "Bomber");
+            }
+        }
+
+        [Test]
+        public void LagSkalIkkeFåVåpenHvisMatchConfigErTalletNull()
+        {
+            var match = GetMatch();
+
+            match.PrLagFelle = 0;
+            match.PrLagBombe = 0;
+
+            var lag = LagFactory.SettOppLagMedDeltakere(1, 0, "LAG_");
+
+            Importer(match, lag);
+
+            using (var context = _dataContextFactory.Create())
+            {
+                var m = context.Matcher.Include(x => x.DeltakendeLag.Select(y => y.VåpenBeholdning)).Single();
+                var l = m.DeltakendeLag.Single();
+
+                Assert.AreEqual(0, l.VåpenBeholdning.Count(x => x.VaapenId == Constants.Våpen.Felle), "Feller");
+                Assert.AreEqual(0, l.VåpenBeholdning.Count(x => x.VaapenId == Constants.Våpen.Bombe), "Bomber");
             }
         }
 

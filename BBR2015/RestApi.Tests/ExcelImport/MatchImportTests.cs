@@ -43,6 +43,33 @@ namespace RestApi.Tests.ExcelImport
                 Assert.AreEqual(match.Navn, ny.Navn, "Navn");
                 Assert.AreEqual(match.StartTid, ny.StartTid, "Starttid");
                 Assert.AreEqual(match.SluttTid, ny.SluttTid, "Sluttid");
+                Assert.AreEqual(match.GeoboxNWLatitude, ny.GeoboxNWLatitude, "GeoboxNWLatitude");
+                Assert.AreEqual(match.GeoboxNWLongitude, ny.GeoboxNWLongitude, "GeoboxNWLongitude");
+                Assert.AreEqual(match.GeoboxSELatitude, ny.GeoboxSELatitude, "GeoboxSELatitude");
+                Assert.AreEqual(match.GeoboxSELongitude, ny.GeoboxSELongitude, "GeoboxSELongitude");
+            }
+        }
+
+        [Test]
+        public void Match_tomme_verdier_på_valgfrie_kolonner()
+        {
+            var match = GetMatch();
+
+            match.GeoboxNWLatitude = null;
+            match.GeoboxNWLongitude = null;
+            match.GeoboxSELatitude = null;
+            match.GeoboxSELongitude = null;
+
+            Importer(match);
+
+            using (var context = _dataContextFactory.Create())
+            {
+                var ny = context.Matcher.Single(x => x.MatchId == match.MatchId);
+
+                Assert.AreEqual(null, ny.GeoboxNWLatitude, "GeoboxNWLatitude");
+                Assert.AreEqual(null, ny.GeoboxNWLongitude, "GeoboxNWLongitude");
+                Assert.AreEqual(null, ny.GeoboxSELatitude, "GeoboxSELatitude");
+                Assert.AreEqual(null, ny.GeoboxSELongitude, "GeoboxSELongitude");
             }
         }
 

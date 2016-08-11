@@ -53,18 +53,31 @@ namespace Repository.Import
                     Altitude = double.Parse(sheet.GetValue<string>(ExcelSheet.Poster.Altitude, row)),
                     Image = sheet.GetValue<string>(ExcelSheet.Poster.BildeUrl, row),
                     DefaultPoengArray = sheet.GetValue<string>(ExcelSheet.Poster.PoengFordeling, row),
-                    SynligFra = DateTime.Parse(sheet.GetValue<string>(ExcelSheet.Poster.SynligFra, row)),
-                    SynligTil = DateTime.Parse(sheet.GetValue<string>(ExcelSheet.Poster.SynligTil, row)),
                 };
 
-                // Siste rad gjelder hvis duplikater
-                if (poster.ContainsKey(post.Navn))
-                    poster.Remove(post.Navn);
+                var synligFra = sheet.GetValue<string>(ExcelSheet.Poster.SynligFra, row);
+                var synligTil = sheet.GetValue<string>(ExcelSheet.Poster.SynligTil, row);
 
-                poster.Add(post.Navn, post);
+                if (!string.IsNullOrEmpty(synligFra))
+                    post.SynligFra = DateTime.Parse(synligFra);
+
+                if (!string.IsNullOrEmpty(synligTil))
+                    post.SynligTil = DateTime.Parse(synligTil);
+
+                // Siste rad gjelder hvis duplikater
+                var nøkkel = LagNøkkel(post);
+                if (poster.ContainsKey(nøkkel))
+                    poster.Remove(nøkkel);
+
+                poster.Add(nøkkel, post);
             }
 
             return poster.Values.ToList();
+        }
+
+        private string LagNøkkel(ExcelPost post)
+        {
+            return string.Join("@#¤", post.Navn, post.Omraade);
         }
 
         private void AddOrUpdate(List<ExcelPost> excelPoster, Match match, DataContext context)
@@ -97,30 +110,31 @@ namespace Repository.Import
                     {
                         Post = existing ?? post,
                         PoengArray = excelPost.DefaultPoengArray,
-                        SynligFraTid = excelPost.SynligFra,
-                        SynligTilTid = excelPost.SynligTil
+                        SynligFraTid = excelPost.SynligFra ?? match.StartTid,
+                        SynligTilTid = excelPost.SynligTil ?? match.SluttTid
                     });
                 }
                 else
                 {
                     postIMatch.PoengArray = excelPost.DefaultPoengArray;
-                    postIMatch.SynligFraTid = excelPost.SynligFra;
-                    postIMatch.SynligTilTid = excelPost.SynligTil;
+                    postIMatch.SynligFraTid = excelPost.SynligFra ?? match.StartTid;
+                    postIMatch.SynligTilTid = excelPost.SynligTil ?? match.SluttTid;
                 }
             }
 
             // TODO: Slette poster som ikke lenger er i bruk?
-           
+
         }
 
         public class ExcelPost : Post
         {
-            public DateTime SynligFra { get; set; }
-            public DateTime SynligTil { get; set; }
+            public DateTime? SynligFra { get; set; }
+            public DateTime? SynligTil { get; set; }
 
             public Post GetPost()
             {
                 var post = new Post();
+                post.PostId = PostId;
                 post.Navn = Navn;
                 post.Omraade = Omraade;
 

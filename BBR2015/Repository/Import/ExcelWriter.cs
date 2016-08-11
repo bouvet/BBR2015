@@ -34,7 +34,7 @@ namespace Repository.Import
             _excel.Dispose();
         }
 
-        public void SkrivTilExcel(Match match, List<Lag> lagListe = null, List<PostImport.ExcelPost> poster = null)
+        public void SkrivTilExcel(MatchImport.ExcelMatch match, List<Lag> lagListe = null, List<PostImport.ExcelPost> poster = null)
         {
             SkrivMatch(match);
             SkrivLag(lagListe);
@@ -68,8 +68,12 @@ namespace Repository.Import
                 sheet.Set(row, ExcelSheet.Poster.HemmeligKode, post.HemmeligKode);
                 sheet.Set(row, ExcelSheet.Poster.PoengFordeling, post.DefaultPoengArray);
                 sheet.Set(row, ExcelSheet.Poster.BildeUrl, post.Image);
-                sheet.Set(row, ExcelSheet.Poster.SynligFra, post.SynligFra.ToString());
-                sheet.Set(row, ExcelSheet.Poster.SynligTil, post.SynligTil.ToString());
+
+                if(post.SynligFra.HasValue)
+                    sheet.Set(row, ExcelSheet.Poster.SynligFra, post.SynligFra.ToString());
+
+                if(post.SynligTil.HasValue)
+                    sheet.Set(row, ExcelSheet.Poster.SynligTil, post.SynligTil.ToString());
 
                 row++;
             }
@@ -133,7 +137,7 @@ namespace Repository.Import
             }
         }
 
-        private void SkrivMatch(Match match)
+        private void SkrivMatch(MatchImport.ExcelMatch match)
         {
             var sheet = _excel.Workbook.Worksheets["Match"];
             var row = 2;
@@ -148,8 +152,13 @@ namespace Repository.Import
             sheet.Set(2, ExcelSheet.Match.Navn, match.Navn);
             sheet.Set(2, ExcelSheet.Match.Starttid, match.StartTid.ToString());
             sheet.Set(2, ExcelSheet.Match.Sluttid, match.SluttTid.ToString());
+            sheet.Set(2, ExcelSheet.Match.DefaultPostPoengfordeling, match.DefaultPoengFordeling);
+            sheet.Set(2, ExcelSheet.Match.GeoBox_NW_latitude, match.GeoboxNWLatitude.ToString());
+            sheet.Set(2, ExcelSheet.Match.GeoBox_NW_longitude, match.GeoboxNWLongitude.ToString());
+            sheet.Set(2, ExcelSheet.Match.GeoBox_SE_latitude, match.GeoboxSELatitude.ToString());
+            sheet.Set(2, ExcelSheet.Match.GeoBox_SE_longitude, match.GeoboxSELongitude.ToString());
+            sheet.Set(2, ExcelSheet.Match.Pr_lag_FELLE, match.PrLagFelle.ToString());
+            sheet.Set(2, ExcelSheet.Match.Pr_lag_BOMBE, match.PrLagBombe.ToString());
         }
-
-
     }
 }
