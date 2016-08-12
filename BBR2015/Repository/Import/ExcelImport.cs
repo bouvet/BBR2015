@@ -20,7 +20,7 @@ namespace Repository.Import
             _postImport = postImport;
         }
 
-        public void LesInn(Guid matchId, byte[] excelBytes)
+        public void LesInn(byte[] excelBytes)
         {
             using (var stream = new MemoryStream(excelBytes))
             {
@@ -29,10 +29,12 @@ namespace Repository.Import
                 {
                     var excel = excelFile.Workbook;
 
-                    Les(excel, "Match", x => matchId = _matchImport.Les(x, matchId));
-                    Les(excel, "Poster", x => _postImport.Les(x, matchId));
-                    Les(excel, "Lag", x => _lagImport.Les(x, matchId));
-                    Les(excel, "Deltakere", x => _deltakerImport.Les(x, matchId));
+                    var excelMatch = new MatchImport.ExcelMatch();
+
+                    Les(excel, "Match", x => excelMatch = _matchImport.Les(x));
+                    Les(excel, "Poster", x => _postImport.Les(x, excelMatch));
+                    Les(excel, "Lag", x => _lagImport.Les(x, excelMatch));
+                    Les(excel, "Deltakere", x => _deltakerImport.Les(x, excelMatch));
                 }
             }
         }

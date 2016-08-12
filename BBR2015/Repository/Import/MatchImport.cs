@@ -16,7 +16,7 @@ namespace Repository.Import
             _dataContextFactory = dataContextFactory;
         }
 
-        public Guid Les(ExcelWorksheet sheet, Guid matchId)
+        public ExcelMatch Les(ExcelWorksheet sheet)
         {
             var row = 2;
             var match = new ExcelMatch
@@ -25,13 +25,34 @@ namespace Repository.Import
                 Navn = sheet.GetValue(ExcelSheet.Match.Navn, row),
                 StartTid = DateTime.Parse(sheet.GetValue(ExcelSheet.Match.Starttid, row)),
                 SluttTid = DateTime.Parse(sheet.GetValue(ExcelSheet.Match.Sluttid, row)),
-                DefaultPoengFordeling = sheet.GetValue(ExcelSheet.Match.DefaultPostPoengfordeling, row),
-
-                
-                PrLagFelle = int.Parse(sheet.GetValue(ExcelSheet.Match.Pr_lag_FELLE, row)),
-                PrLagBombe = int.Parse(sheet.GetValue(ExcelSheet.Match.Pr_lag_BOMBE, row))
+                DefaultPoengFordeling = sheet.GetValue(ExcelSheet.Match.DefaultPostPoengfordeling, row)                              
             };
 
+            LesGeobox(sheet, row, match);
+            LesVåpenOppsett(sheet, row, match);
+
+            AddOrUpdate(match);
+
+            LeggInnVåpen();
+
+            return match;
+        }
+
+        private void LesVåpenOppsett(ExcelWorksheet sheet, int row, ExcelMatch match)
+        {
+            var våpen = sheet.GetValue(ExcelSheet.Match.Pr_lag_FELLE, row);
+
+            if (!string.IsNullOrEmpty(våpen))
+                match.PrLagFelle = int.Parse(våpen);
+
+            våpen = sheet.GetValue(ExcelSheet.Match.Pr_lag_BOMBE, row);
+
+            if (!string.IsNullOrEmpty(våpen))
+                match.PrLagBombe = int.Parse(våpen);
+        }
+
+        private static void LesGeobox(ExcelWorksheet sheet, int row, ExcelMatch match)
+        {
             var point = sheet.GetValue(ExcelSheet.Match.GeoBox_NW_latitude, row);
 
             if (!string.IsNullOrEmpty(point))
@@ -50,13 +71,7 @@ namespace Repository.Import
             point = sheet.GetValue(ExcelSheet.Match.GeoBox_SE_longitude, row);
 
             if (!string.IsNullOrEmpty(point))
-                match.GeoboxSELongitude = double.Parse(point);           
-
-            AddOrUpdate(match);
-
-            LeggInnVåpen();
-
-            return match.MatchId;
+                match.GeoboxSELongitude = double.Parse(point);
         }
 
         private void LeggInnVåpen()
@@ -120,6 +135,22 @@ namespace Repository.Import
                 match.GeoboxNWLongitude = GeoboxNWLongitude;
                 match.GeoboxSELatitude = GeoboxSELatitude;
                 match.GeoboxSELongitude = GeoboxSELongitude;
+            }
+
+            public static ExcelMatch FromMatch(Match match)
+            {
+                var excelMatch = new ExcelMatch();
+                excelMatch.MatchId = match.MatchId;
+                excelMatch.Navn = match.Navn;
+                excelMatch.StartTid = match.StartTid;
+                excelMatch.SluttTid = match.SluttTid;
+                excelMatch.GeoboxNWLatitude = match.GeoboxNWLatitude;
+                excelMatch.GeoboxNWLongitude = match.GeoboxNWLongitude;
+                excelMatch.GeoboxSELatitude = match.GeoboxSELatitude;
+                excelMatch.GeoboxSELongitude = match.GeoboxSELongitude;
+
+                return excelMatch;
+
             }
         }
     }

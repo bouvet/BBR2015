@@ -57,10 +57,10 @@ namespace Repository.Kml
             {
                 var match = context.Matcher.Single(x => x.MatchId == matchId);
 
-                var maxLat = 59.680825;
-                var minLat = 59.672062;
-                var minLon = 10.603076;
-                var maxLon = 10.610055;
+                var maxLat = match.GeoboxNWLatitude.GetValueOrDefault();
+                var minLat = match.GeoboxSELatitude.GetValueOrDefault();
+                var minLon = match.GeoboxNWLongitude.GetValueOrDefault();
+                var maxLon = match.GeoboxSELongitude.GetValueOrDefault();
 
                 var poster = (from pim in context.PosterIMatch
                               where pim.Match.MatchId == matchId

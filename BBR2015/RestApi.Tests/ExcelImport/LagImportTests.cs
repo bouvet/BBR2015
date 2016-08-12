@@ -124,6 +124,29 @@ namespace RestApi.Tests.ExcelImport
         }
 
         [Test]
+        public void LagSkalIkkeFåFlereVåpenFraMatchConfigVedEtterfølgendeImporter()
+        {
+            var match = GetMatch();
+
+            match.PrLagFelle = 99;
+            match.PrLagBombe = 88;
+
+            var lag = LagFactory.SettOppLagMedDeltakere(1, 0, "LAG_");
+
+            Importer(match, lag);
+            Importer(match, lag);
+
+            using (var context = _dataContextFactory.Create())
+            {
+                var m = context.Matcher.Include(x => x.DeltakendeLag.Select(y => y.VåpenBeholdning)).Single();
+                var l = m.DeltakendeLag.Single();
+
+                Assert.AreEqual(99, l.VåpenBeholdning.Count(x => x.VaapenId == Constants.Våpen.Felle), "Feller");
+                Assert.AreEqual(88, l.VåpenBeholdning.Count(x => x.VaapenId == Constants.Våpen.Bombe), "Bomber");
+            }
+        }
+
+        [Test]
         public void LagSkalIkkeFåVåpenHvisMatchConfigErTom()
         {
             var match = GetMatch();

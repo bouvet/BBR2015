@@ -17,8 +17,9 @@ namespace Repository.Import
             _dataContextFactory = dataContextFactory;
         }
 
-        public void Les(ExcelWorksheet excelWorksheet, Guid matchId)
+        public void Les(ExcelWorksheet excelWorksheet, MatchImport.ExcelMatch excelMatch)
         {
+            var matchId = excelMatch.MatchId;
             var deltakere = LesFra(excelWorksheet);
 
             using (var context = _dataContextFactory.Create())

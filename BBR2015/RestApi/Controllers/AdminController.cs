@@ -27,8 +27,9 @@ namespace RestApi.Controllers
         private readonly ExcelImport _excelImport;
         private readonly KmlToExcelPoster _kmlToExcelPoster;
         private readonly ExcelWriter _excelWriter;
+        private readonly ExcelExport _excelExport;
 
-        public AdminController(GameStateService gameStateService, OverridableSettings appSettings, TilgangsKontroll tilgangsKontroll, PosisjonsService posisjonsService, ExcelImport excelImport, KmlToExcelPoster kmlToExcelPoster, ExcelWriter excelWriter)
+        public AdminController(GameStateService gameStateService, OverridableSettings appSettings, TilgangsKontroll tilgangsKontroll, PosisjonsService posisjonsService, ExcelImport excelImport, KmlToExcelPoster kmlToExcelPoster, ExcelWriter excelWriter, ExcelExport excelExport)
         {
             _gameStateService = gameStateService;
             _appSettings = appSettings;
@@ -37,6 +38,7 @@ namespace RestApi.Controllers
             _excelImport = excelImport;
             _kmlToExcelPoster = kmlToExcelPoster;
             _excelWriter = excelWriter;
+            _excelExport = excelExport;
         }
 
         [Route("api/Admin/RecalculateState")]
@@ -103,7 +105,7 @@ namespace RestApi.Controllers
             var downloader = new GoogleDriveDownloader();
 
             var content = await downloader.LastNedSpreadsheetFraGoogleDrive(documentId);
-            _excelImport.LesInn(Guid.Empty, content);
+            _excelImport.LesInn(content);
 
             return Ok();
         }
@@ -131,16 +133,38 @@ namespace RestApi.Controllers
             return result;
         }
 
-        [Route("api/Admin/Configure/{matchId}")]
+        [Route("api/Admin/ExportToExcel/{matchId}")]
         [HttpPost]
         [Obsolete]
-        public async Task<IHttpActionResult> Configure(string matchId)
+        public async Task<HttpResponseMessage> ExportToExcel(string matchId)
         {
-            Guid matchIdGuid;
+            if (string.IsNullOrEmpty(matchId))
+                throw new ArgumentException("matchId");
 
-            if (!Guid.TryParse(matchId, out matchIdGuid))
-                return BadRequest("Parameter 'matchId' må være en gyldig GUID. Hvis det er ny match, må du likevel oppgi en gyldig - og ny - GUID.");
+            Guid matchGuid;
+            if (!Guid.TryParse(matchId, out matchGuid))
+                throw new ArgumentException("matchId");
 
+            var bytes = _excelExport.ToByteArray(matchGuid);
+
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(new MemoryStream(bytes))
+            };
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.ms-excel");
+
+            var filename = string.Format("oppsett_{0:N}_{1:yyyyMMdd}_{1:HHmmss}.xlsx", matchId, DateTime.Now);
+
+            result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment") { FileName = filename };
+
+            return result;
+        }
+
+        [Route("api/Admin/Configure")]
+        [HttpPost]
+        [Obsolete]
+        public async Task<IHttpActionResult> Configure()
+        {           
             if (!Request.Content.IsMimeMultipartContent())
                 return BadRequest("Du må poste en fil til denne metoden.");
 
@@ -153,7 +177,7 @@ namespace RestApi.Controllers
             var file = provider.Contents.First();
             var excelBytes = await file.ReadAsByteArrayAsync();
 
-            _excelImport.LesInn(matchIdGuid, excelBytes);
+            _excelImport.LesInn(excelBytes);
 
             return Ok("Takk for nytt oppsett!");
         }

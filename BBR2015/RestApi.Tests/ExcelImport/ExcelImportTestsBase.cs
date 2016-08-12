@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Castle.Windsor;
 using Database;
 using Database.Entities;
@@ -11,7 +12,7 @@ namespace RestApi.Tests.ExcelImport
 {
     public class ExcelImportTestsBase : BBR2015DatabaseTests
     {
-        private IWindsorContainer _container;
+        protected IWindsorContainer _container;
         protected DataContextFactory _dataContextFactory;
 
         private ExcelWriter _excelWriter;
@@ -46,7 +47,7 @@ namespace RestApi.Tests.ExcelImport
         {
             var excelImport = _container.Resolve<Repository.Import.ExcelImport>();
             var bytes = _excelWriter.GetAsByteArray();
-            excelImport.LesInn(Guid.Empty, bytes);
+            excelImport.LesInn(bytes);
 
             // Excel-pakken blir lukket ved skriving til stream, så en må lage ny          
         }
@@ -68,6 +69,29 @@ namespace RestApi.Tests.ExcelImport
                 PrLagBombe = 2
             };
             return match;
+        }
+
+        protected List<PostImport.ExcelPost> GenererPoster(int antall)
+        {
+            var p = (from i in Enumerable.Range(1, antall)
+                     select new PostImport.ExcelPost
+                     {
+                         PostId = Guid.NewGuid(),
+                         Navn = "Post" + i,
+                         Beskrivelse = "Beskrivelse" + i,
+                         Omraade = "Område",
+                         Altitude = i,
+                         DefaultPoengArray = "100,80," + i,
+                         Image = "http://url/" + i,
+                         HemmeligKode = "PostKode" + i,
+                         Latitude = 50 + i,
+                         Longitude = 10 + i,
+                         SynligFra = new DateTime(2012, 10, i),
+                         SynligTil = new DateTime(2012, 11, i),
+                     }).ToList();
+
+            return p;
+
         }
     }
 }

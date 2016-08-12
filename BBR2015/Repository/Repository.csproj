@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Import\DeltakerImport.cs" />
+    <Compile Include="Import\ExcelExport.cs" />
     <Compile Include="Import\GoogleDriveDownloader.cs" />
     <Compile Include="Import\ExcelSheet.cs" />
     <Compile Include="Import\ExcelImport.cs" />

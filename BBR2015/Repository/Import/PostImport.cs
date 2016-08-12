@@ -17,9 +17,11 @@ namespace Repository.Import
             _dataContextFactory = dataContextFactory;
         }
 
-        public void Les(ExcelWorksheet excelWorksheet, Guid matchId)
+        public void Les(ExcelWorksheet excelWorksheet, MatchImport.ExcelMatch excelMatch)
         {
-            var import = LesFra(excelWorksheet);
+            var matchId = excelMatch.MatchId;
+
+            var import = LesFra(excelWorksheet, excelMatch);
 
             using (var context = _dataContextFactory.Create())
             {
@@ -33,7 +35,7 @@ namespace Repository.Import
             }
         }
 
-        private List<ExcelPost> LesFra(ExcelWorksheet excelWorksheet)
+        private List<ExcelPost> LesFra(ExcelWorksheet excelWorksheet, MatchImport.ExcelMatch excelMatch)
         {
             var poster = new Dictionary<string, ExcelPost>();
 
@@ -54,6 +56,9 @@ namespace Repository.Import
                     Image = sheet.GetValue<string>(ExcelSheet.Poster.BildeUrl, row),
                     DefaultPoengArray = sheet.GetValue<string>(ExcelSheet.Poster.PoengFordeling, row),
                 };
+
+                if (string.IsNullOrEmpty(post.DefaultPoengArray) && !string.IsNullOrEmpty(excelMatch.DefaultPoengFordeling))
+                    post.DefaultPoengArray = excelMatch.DefaultPoengFordeling;
 
                 var synligFra = sheet.GetValue<string>(ExcelSheet.Poster.SynligFra, row);
                 var synligTil = sheet.GetValue<string>(ExcelSheet.Poster.SynligTil, row);
@@ -154,6 +159,32 @@ namespace Repository.Import
                 existing.Image = Image;
                 existing.HemmeligKode = HemmeligKode;
 
+            }
+
+            public static ExcelPost Create(PostIMatch postIMatch)
+            {
+                if(postIMatch.Post == null)
+                    throw new InvalidOperationException("Kan ikke eksportere uten at postIMatch.Post er satt. Bruk Include(...)");
+
+                var post = postIMatch.Post;
+
+                var excelPost = new ExcelPost
+                {
+                    PostId = post.PostId,
+                    Navn = post.Navn,
+                    Omraade = post.Omraade,
+                    Beskrivelse = post.Beskrivelse,
+                    Image = post.Image,
+                    Latitude = post.Latitude,
+                    Longitude = post.Longitude,
+                    Altitude = post.Altitude,
+                    DefaultPoengArray = post.DefaultPoengArray,
+                    HemmeligKode = post.HemmeligKode,
+                    SynligFra = postIMatch.SynligFraTid,
+                    SynligTil = postIMatch.SynligTilTid
+                };
+
+                return excelPost;
             }
         }
     }

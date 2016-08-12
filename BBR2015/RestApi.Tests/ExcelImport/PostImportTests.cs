@@ -205,27 +205,6 @@ namespace RestApi.Tests.ExcelImport
             }
         }
 
-        private List<PostImport.ExcelPost> GenererPoster(int antall)
-        {
-            var p = (from i in Enumerable.Range(1, antall)
-                     select new PostImport.ExcelPost
-                     {
-                         PostId = Guid.NewGuid(),
-                         Navn = "Post" + i,
-                         Beskrivelse = "Beskrivelse" + i,
-                         Omraade = "Område",
-                         Altitude = i,
-                         DefaultPoengArray = "100,80," + i,
-                         Image = "http://url/" + i,
-                         HemmeligKode = "PostKode" + i,
-                         Latitude = 50 + i,
-                         Longitude = 10 + i,
-                         SynligFra = new DateTime(2012, 10, i),
-                         SynligTil = new DateTime(2012, 11, i),
-                     }).ToList();
-
-            return p;
-
-        }
+        
     }
 }
