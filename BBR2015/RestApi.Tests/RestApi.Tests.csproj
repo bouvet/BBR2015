@@ -105,6 +105,7 @@
     <Compile Include="Admin\Oppsett.cs" />
     <Compile Include="ExcelImport\DeltakerImportTests.cs" />
     <Compile Include="ExcelImport\ExcelExportTests.cs" />
+    <Compile Include="ExcelImport\ExcelImporterTests.cs" />
     <Compile Include="ExcelImport\ExcelImportTestsBase.cs" />
     <Compile Include="ExcelImport\ExcelWorksheetExtensionTests.cs" />
     <Compile Include="ExcelImport\LagImportTests.cs" />

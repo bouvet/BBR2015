@@ -8,7 +8,8 @@ using Database.Migrations;
 
 namespace Database
 {
-    public class Initializer : System.Data.Entity.MigrateDatabaseToLatestVersion<DataContext, Configuration>
+    //public class Initializer : System.Data.Entity.MigrateDatabaseToLatestVersion<DataContext, Configuration>
+    public class Initializer : System.Data.Entity.NullDatabaseInitializer<DataContext>
     {
         public Initializer()
         {

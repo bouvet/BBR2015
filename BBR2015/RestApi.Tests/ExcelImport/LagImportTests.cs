@@ -6,6 +6,7 @@ using Database;
 
 namespace RestApi.Tests.ExcelImport
 {
+    [TestFixture]
     public class LagImportTests : ExcelImportTestsBase
     {
         [Test]
@@ -27,6 +28,7 @@ namespace RestApi.Tests.ExcelImport
                 Assert.AreEqual("LAG_Navn1", l.Navn, "Navn");
                 Assert.AreEqual("LAG_Farge1", l.Farge, "Farge");
                 Assert.AreEqual("LAG_HemmeligKode1", l.HemmeligKode, "HemmeligKode");               
+                Assert.AreEqual("LAG_Ikon1.gif", l.Ikon, "Ikon");               
             }
         }
 

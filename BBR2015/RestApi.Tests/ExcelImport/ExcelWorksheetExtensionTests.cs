@@ -60,5 +60,7 @@ namespace RestApi.Tests.ExcelImport
             var navn = sheet.GetValue("Does not exist", 2);
             Assert.AreEqual(null, navn);
         }
+
+
     }
 }

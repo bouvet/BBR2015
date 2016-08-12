@@ -8,7 +8,7 @@ using NUnit.Framework;
 
 namespace RestApi.Tests.Infrastructure
 {
-    [TestFixture]
+    
     public abstract class TestWithTransactionScope
     {
         protected TransactionScope TransactionScope;

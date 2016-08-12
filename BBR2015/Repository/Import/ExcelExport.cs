@@ -22,9 +22,22 @@ namespace Repository.Import
             {
                 var match = context.Matcher.SingleOrDefault(x => x.MatchId == matchId);
 
-                var lag = (from lim in context.LagIMatch.Include(x => x.Lag)asdfadf.Include(x => x.Lag.Deltakere)
-                           where lim.Match.MatchId == matchId
-                           select lim.Lag).ToList();
+
+                //var l1 = context.Lag.Include(x => x.Deltakere).ToList();
+
+                //var lag = (from l in context.Lag.Include(x => x.Deltakere)
+                //           join lim in context.LagIMatch on l.LagId equals lim.Lag.LagId 
+                //           where lim.Match.MatchId == matchId
+                //           select l).ToList();
+
+
+                var lag = context.LagIMatch.Include(x => x.Lag.Deltakere)
+                                 .Where(x => x.Match.MatchId == matchId)
+                                 .ToList() // strange - needed to have deltakere included
+                                 .Select(x => x.Lag)
+                                 .ToList();
+
+
 
                 var posterIMatch = context.PosterIMatch.Include(x => x.Post).Where(x => x.Match.MatchId == matchId).ToList();
 

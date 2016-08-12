@@ -5,6 +5,7 @@ using System.Data.Entity;
 
 namespace RestApi.Tests.ExcelImport
 {
+    [TestFixture]
     public class DeltakerImportTests : ExcelImportTestsBase
     {
         [Test]

@@ -34,8 +34,9 @@ namespace Repository.Import
             public const string Navn = "Navn";
             public const string HemmeligKode = "HemmeligKode";
             public const string Farge = "Farge";
+            public const string Ikon = "Ikon";
 
-            public static string[] Kolonner = { LagId, Navn, HemmeligKode, Farge };
+            public static string[] Kolonner = { LagId, Navn, HemmeligKode, Farge, Ikon };
         }
 
         public class Deltakere
@@ -45,7 +46,7 @@ namespace Repository.Import
             public const string Tidsmerke = "Tidsmerke";
 
             public const string Navn = "Navn";
-            public const string Kode = "Hemmelig lagkode (som utdelt)";
+            public const string Kode = "Mobil";
             public const string Lag = "Lag";
 
             public static string[] Kolonner = { Tidsmerke, Navn, Kode, Lag };

@@ -73,9 +73,9 @@ namespace Repository.Import
             {
                 var deltaker = new ExcelDeltaker
                 {
-                    LagId = sheet.GetValue(ExcelSheet.Deltakere.Lag, row).ToString(),
-                    Navn = sheet.GetValue(ExcelSheet.Deltakere.Navn, row).ToString(),
-                    Kode = sheet.GetValue(ExcelSheet.Deltakere.Kode,row).ToString(),
+                    LagId = sheet.GetValue(ExcelSheet.Deltakere.Lag, row),
+                    Navn = sheet.GetValue(ExcelSheet.Deltakere.Navn, row),
+                    Kode = sheet.GetValue(ExcelSheet.Deltakere.Kode,row),
                 };
 
                 // Siste endring gjelder

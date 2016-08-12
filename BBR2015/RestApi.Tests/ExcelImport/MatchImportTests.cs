@@ -7,6 +7,7 @@ using Repository.Import;
 
 namespace RestApi.Tests.ExcelImport
 {
+    [TestFixture]
     public class MatchImportTests : ExcelImportTestsBase
     {
         /// - Match: Ny

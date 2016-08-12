@@ -32,16 +32,28 @@ namespace RestApi.Tests.Admin
         {
             _container = RestApiApplication.CreateContainer();
 
-            if (!string.IsNullOrEmpty(EnvironmentSettingsConnectionKey))
-            {
-                var settings = new OverridableSettings { DatabaseConnectionString = Environment.GetEnvironmentVariable(EnvironmentSettingsConnectionKey, EnvironmentVariableTarget.User) };
-
-                _container.Register(Component.For<OverridableSettings>().Instance(settings).IsDefault().Named(Guid.NewGuid().ToString()));
-            }
+            SetConnectionStringFromEnvironmentVariable();
 
             using (var context = _container.Resolve<DataContextFactory>().Create())
             {
                 var triggerCreateDatabase = context.Lag.Any();
+            }
+        }
+
+        private void SetConnectionStringFromEnvironmentVariable()
+        {
+            if (!string.IsNullOrEmpty(EnvironmentSettingsConnectionKey))
+            {
+                var environmentVariable = Environment.GetEnvironmentVariable(EnvironmentSettingsConnectionKey,
+                    EnvironmentVariableTarget.User);
+
+                if (!string.IsNullOrEmpty(environmentVariable))
+                {
+                    var settings = new OverridableSettings {DatabaseConnectionString = environmentVariable};
+
+                    _container.Register(
+                        Component.For<OverridableSettings>().Instance(settings).IsDefault().Named(Guid.NewGuid().ToString()));
+                }
             }
         }
 

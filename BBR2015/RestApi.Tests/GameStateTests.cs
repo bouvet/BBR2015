@@ -12,6 +12,7 @@ using System.Data.Entity;
 
 namespace RestApi.Tests
 {
+    [TestFixture]
     public class GameStateTests : BBR2015DatabaseTests
     {
         private IWindsorContainer _container;

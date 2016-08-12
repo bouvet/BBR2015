@@ -132,6 +132,7 @@ namespace Repository.Import
                 sheet.Set(row, ExcelSheet.Lag.Navn, lag.Navn);
                 sheet.Set(row, ExcelSheet.Lag.HemmeligKode, lag.HemmeligKode);
                 sheet.Set(row, ExcelSheet.Lag.Farge, lag.Farge);
+                sheet.Set(row, ExcelSheet.Lag.Ikon, lag.Ikon);
 
                 row++;
             }

@@ -51,11 +51,15 @@ namespace Repository.Import
                     HemmeligKode = sheet.GetValue(ExcelSheet.Poster.HemmeligKode, row),
                     Omraade = sheet.GetValue(ExcelSheet.Poster.Område, row),
                     Latitude = double.Parse(sheet.GetValue<string>(ExcelSheet.Poster.Latitude, row)),
-                    Longitude = double.Parse(sheet.GetValue<string>(ExcelSheet.Poster.Longitude, row)),
-                    Altitude = double.Parse(sheet.GetValue<string>(ExcelSheet.Poster.Altitude, row)),
+                    Longitude = double.Parse(sheet.GetValue<string>(ExcelSheet.Poster.Longitude, row)),                    
                     Image = sheet.GetValue<string>(ExcelSheet.Poster.BildeUrl, row),
                     DefaultPoengArray = sheet.GetValue<string>(ExcelSheet.Poster.PoengFordeling, row),
                 };
+
+                var altitude = sheet.GetValue<string>(ExcelSheet.Poster.Altitude, row);
+
+                if (!string.IsNullOrEmpty(altitude))
+                    post.Altitude = double.Parse(altitude);
 
                 if (string.IsNullOrEmpty(post.DefaultPoengArray) && !string.IsNullOrEmpty(excelMatch.DefaultPoengFordeling))
                     post.DefaultPoengArray = excelMatch.DefaultPoengFordeling;

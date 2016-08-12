@@ -49,10 +49,11 @@ namespace Repository.Import
             {
                 var lag = new Lag
                 {
-                    LagId = sheet.GetValue(row, 1).ToString(),
-                    Navn = sheet.GetValue(row, 2).ToString(),
-                    HemmeligKode = sheet.GetValue(row, 3).ToString(),
-                    Farge = sheet.GetValue(row, 4).ToString(),
+                    LagId = sheet.GetValue(ExcelSheet.Lag.LagId, row),
+                    Navn = sheet.GetValue(ExcelSheet.Lag.Navn, row),
+                    HemmeligKode = sheet.GetValue(ExcelSheet.Lag.HemmeligKode, row),
+                    Farge = sheet.GetValue(ExcelSheet.Lag.Farge, row),
+                    Ikon = sheet.GetValue(ExcelSheet.Lag.Ikon, row),
                 };
 
                 // Siste endring gjelder

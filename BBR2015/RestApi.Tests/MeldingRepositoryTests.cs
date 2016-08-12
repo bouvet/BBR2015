@@ -12,6 +12,7 @@ using RestApi.Tests.Infrastructure;
 
 namespace RestApi.Tests
 {
+    [TestFixture]
     public class MeldingRepositoryTests : BBR2015DatabaseTests
     {
         private IWindsorContainer _container;

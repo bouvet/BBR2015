@@ -7,6 +7,7 @@ using NUnit.Framework;
 
 namespace RestApi.Tests.Infrastructure
 {
+    [Category("Database")]
     public class BBR2015DatabaseTests   : TestWithTransactionScope
     {
         [TestFixtureSetUp]
