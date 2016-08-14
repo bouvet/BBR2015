@@ -1,0 +1,16 @@
+{
+  "name": "scoreboard",
+  "version": "0.0.0",
+  "homepage": "https://github.com/bouvet/BBR2015",
+  "authors": [
+    "Amund Johnsen <amund.johnsen@bouvet.no>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
