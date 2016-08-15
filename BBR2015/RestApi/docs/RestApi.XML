@@ -4,6 +4,69 @@
         <name>RestApi</name>
     </assembly>
     <members>
+        <member name="M:RestApi.Controllers.AdminController.RecalculateState">
+            <summary>
+            Tvinger en rekalkulering av gamestate. Kan brukes hvis en går rett i databasen for å fikse på ting, og vil ha endringer ut til spillere.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:RestApi.Controllers.AdminController.ThrowException">
+            <summary>
+            Støttemetode for å teste logging. Gjør at applikasjonen går i lufta...
+            </summary>
+        </member>
+        <member name="M:RestApi.Controllers.AdminController.ClearCaching">
+            <summary>
+            Støttemetode i tilfelle en fikk problemer, eller ville fikse ting rett i databasen. Ved å kjøre denne metoden pusher en ut oppdateringer som i utgangspunktet ville blitt cachet til f.eks. neste postregistrering.
+            </summary>
+        </member>
+        <member name="M:RestApi.Controllers.AdminController.ConnectionString">
+            <summary>
+            Henter ut applikasjonens ConnectionString for å dobbeltsjekke oppsettet uten å måtte gå inn på serveren.
+            </summary>
+            <returns>ConnectionString</returns>
+        </member>
+        <member name="M:RestApi.Controllers.AdminController.HemmeligeKoder">
+            <summary>
+            Henter ut alle hemmelige koder for alle spillere og lag. For testing.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:RestApi.Controllers.AdminController.DateTimeNow">
+            <summary>
+            Hjelpemetode for å dobbeltsjekke at serveren har samme tidssone som du forventer.
+            </summary>
+            <returns>DateTime.Now</returns>
+        </member>
+        <member name="M:RestApi.Controllers.AdminController.ConfigureFromGoogleDrive(System.String)">
+            <summary>
+            Leser inn et Google Regneark på importformatet og oppretter eller oppdaterer en match ut fra det.
+            </summary>
+            <param name="documentId">Id til regneark på Google Drive. Se argument i Googles-url.</param>
+            <returns></returns>
+        </member>
+        <member name="M:RestApi.Controllers.AdminController.ConvertMapToExcel(System.String)">
+            <summary>
+            Konverterer et kart på Google Drive til poster. 
+            Triks: Poengfordeling settes i beskrivelse i klammeparenteser: [100,80,60].
+            Hemmelig kode settes i beskrivelse i krøllparenteser: {xdUFF43}
+            Ev. bilde som er koblet opp, blir lagt på posten.
+            Kartet må være satt opp med linkdeling og lesetilgang for alle med linken.
+            </summary>
+            <param name="documentId">Id til kart på Google Drive. Se argument 'mid' i url.</param>
+        </member>
+        <member name="M:RestApi.Controllers.AdminController.ExportToExcel(System.String)">
+            <summary>
+            Eksporterer oppsettet for en match på Excel-format. Bruker samme format som kreves for import. Dvs. at en kan sende inn matchId=hvasomhelst for å få ut en mal-fil.
+            </summary>
+            <param name="matchId"></param>
+            <returns>Byte stream av Excel-fil.</returns>
+        </member>
+        <member name="M:RestApi.Controllers.AdminController.Configure">
+            <summary>
+            Tilbyr å opprette eller oppdatere en match ved å gjøre HTTP POST av en Excel-fil med oppsett av match, lag, deltakere og poster.
+            </summary>
+        </member>
         <member name="M:RestApi.Controllers.GameServiceController.Post(RestApi.Models.RegistrerNyPost)">
             <summary>
             Her registrerer laget poster de finner i terrenget. En trenger bare sende inn den hemmelige koden som står på posten. <br />
@@ -36,6 +99,13 @@
             <response code="403">Forbidden - Husk LagKode og DeltakerKode</response>
             <response code="500">Internal Server Error</response>
         </member>
+        <member name="M:RestApi.Controllers.KmlController.Export(System.String)">
+            <summary>
+            Eksporterer replay av matchen som KML-format. Kan vises i Google Earth.
+            </summary>
+            <param name="matchName"></param>
+            <returns></returns>
+        </member>
         <member name="M:RestApi.Controllers.PosisjonsServiceController.Get">
             <summary>
             Her melder hver av deltakerne inn sin posisjon fortløpende underveis i spillet ved å gjøre en POST på en koordinat av formen { "latitude": 59.676035, "longitude": 10.604844 } <br />
@@ -47,6 +117,12 @@
             <response code="400">Bad request</response>
             <response code="403">Forbidden - Husk LagKode og DeltakerKode</response>
             <response code="500">Internal Server Error</response>
+        </member>
+        <member name="M:RestApi.Controllers.PosisjonsServiceController.GetAlle">
+            <summary>
+            Henter ut posisjoner for alle spillere. Krever ekstra tilgangsnivå.
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:RestApi.Controllers.PosisjonsServiceController.Post(RestApi.Models.Koordinat)">
             <summary>
@@ -98,6 +174,19 @@
             <response code="400">Bad request</response>
             <response code="403">Forbidden - Husk LagKode og DeltakerKode</response>
             <response code="500">Internal Server Error</response>
+        </member>
+        <member name="M:RestApi.Controllers.MeldingerController.PostTilAlle(RestApi.Controllers.NyMelding)">
+            <summary>
+            Poster en melding til alle lag. Dette er kun tilgjengelig for admin med hemmelig http header.
+            </summary>
+            <param name="nyMelding"></param>
+            <returns></returns>
+        </member>
+        <member name="M:RestApi.Controllers.ScoreboardController.Get">
+            <summary>
+            Henter feed for Scoreboard med kampens totale resultater (lag og MVP) + alle poster med status.
+            Krever ekstra tilgangskontroll.
+            </summary>
         </member>
     </members>
 </doc>

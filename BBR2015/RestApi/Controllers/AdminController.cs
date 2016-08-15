@@ -41,9 +41,12 @@ namespace RestApi.Controllers
             _excelExport = excelExport;
         }
 
+        /// <summary>
+        /// Tvinger en rekalkulering av gamestate. Kan brukes hvis en går rett i databasen for å fikse på ting, og vil ha endringer ut til spillere.
+        /// </summary>
+        /// <returns></returns>
         [Route("api/Admin/RecalculateState")]
         [HttpPost]
-        [Obsolete]
         public IHttpActionResult RecalculateState()
         {
             _gameStateService.Calculate();
@@ -52,17 +55,21 @@ namespace RestApi.Controllers
         }
 
         
+        /// <summary>
+        /// Støttemetode for å teste logging. Gjør at applikasjonen går i lufta...
+        /// </summary>
         [Route("api/Admin/ThrowException")]
         [HttpPost]
-        [Obsolete]
         public IHttpActionResult ThrowException()
         {
             throw new ApplicationException("Initiert av brukeren");           
         }
 
+        /// <summary>
+        /// Støttemetode i tilfelle en fikk problemer, eller ville fikse ting rett i databasen. Ved å kjøre denne metoden pusher en ut oppdateringer som i utgangspunktet ville blitt cachet til f.eks. neste postregistrering.
+        /// </summary>
         [Route("api/Admin/ClearCaching")]
         [HttpPost]
-        [Obsolete]
         public IHttpActionResult ClearCaching()
         {
             _gameStateService.Calculate();
@@ -72,34 +79,46 @@ namespace RestApi.Controllers
             return Ok();
         }
 
-        // Post: api/Admin/RecalculateState
+        /// <summary>
+        /// Henter ut applikasjonens ConnectionString for å dobbeltsjekke oppsettet uten å måtte gå inn på serveren.
+        /// </summary>
+        /// <returns>ConnectionString</returns>
         [Route("api/Admin/ConnectionString")]
         [HttpGet]
-        [Obsolete]
         public IHttpActionResult ConnectionString()
         {
             return Ok(_appSettings.DatabaseConnectionString);
         }
 
+        /// <summary>
+        /// Henter ut alle hemmelige koder for alle spillere og lag. For testing.
+        /// </summary>
+        /// <returns></returns>
         [Route("api/Admin/hemmeligekoder")]
         [HttpGet]
-        [Obsolete]
         public IHttpActionResult HemmeligeKoder()
         {
             return Ok(_tilgangsKontroll.HentAlleHemmeligeKoder());
         }
 
+        /// <summary>
+        /// Hjelpemetode for å dobbeltsjekke at serveren har samme tidssone som du forventer.
+        /// </summary>
+        /// <returns>DateTime.Now</returns>
         [Route("api/Admin/DateTimeNow")]
         [HttpGet]
-        [Obsolete]
         public IHttpActionResult DateTimeNow()
         {
             return Ok(TimeService.Now);
         }
 
+        /// <summary>
+        /// Leser inn et Google Regneark på importformatet og oppretter eller oppdaterer en match ut fra det.
+        /// </summary>
+        /// <param name="documentId">Id til regneark på Google Drive. Se argument i Googles-url.</param>
+        /// <returns></returns>
         [Route("api/Admin/ConfigureFromGoogleDrive/{documentId}")]
         [HttpPost]
-        [Obsolete]
         public async Task<IHttpActionResult> ConfigureFromGoogleDrive(string documentId)
         {
             var downloader = new GoogleDriveDownloader();
@@ -110,9 +129,16 @@ namespace RestApi.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Konverterer et kart på Google Drive til poster. 
+        /// Triks: Poengfordeling settes i beskrivelse i klammeparenteser: [100,80,60].
+        /// Hemmelig kode settes i beskrivelse i krøllparenteser: {xdUFF43}
+        /// Ev. bilde som er koblet opp, blir lagt på posten.
+        /// Kartet må være satt opp med linkdeling og lesetilgang for alle med linken.
+        /// </summary>
+        /// <param name="documentId">Id til kart på Google Drive. Se argument 'mid' i url.</param>
         [Route("api/Admin/ConvertMapToExcel/{documentId}")]
         [HttpPost]
-        [Obsolete]
         public async Task<HttpResponseMessage> ConvertMapToExcel(string documentId)
         {
             var downloader = new GoogleDriveDownloader();
@@ -133,17 +159,21 @@ namespace RestApi.Controllers
             return result;
         }
 
+        /// <summary>
+        /// Eksporterer oppsettet for en match på Excel-format. Bruker samme format som kreves for import. Dvs. at en kan sende inn matchId=hvasomhelst for å få ut en mal-fil.
+        /// </summary>
+        /// <param name="matchId"></param>
+        /// <returns>Byte stream av Excel-fil.</returns>
         [Route("api/Admin/ExportToExcel/{matchId}")]
         [HttpPost]
-        [Obsolete]
         public async Task<HttpResponseMessage> ExportToExcel(string matchId)
         {
-            if (string.IsNullOrEmpty(matchId))
-                throw new ArgumentException("matchId");
+            //if (string.IsNullOrEmpty(matchId))
+            //    throw new ArgumentException("matchId");
 
             Guid matchGuid;
             if (!Guid.TryParse(matchId, out matchGuid))
-                throw new ArgumentException("matchId");
+                matchGuid = Guid.Empty;
 
             var bytes = _excelExport.ToByteArray(matchGuid);
 
@@ -160,9 +190,11 @@ namespace RestApi.Controllers
             return result;
         }
 
+        /// <summary>
+        /// Tilbyr å opprette eller oppdatere en match ved å gjøre HTTP POST av en Excel-fil med oppsett av match, lag, deltakere og poster.
+        /// </summary>
         [Route("api/Admin/Configure")]
         [HttpPost]
-        [Obsolete]
         public async Task<IHttpActionResult> Configure()
         {           
             if (!Request.Content.IsMimeMultipartContent())

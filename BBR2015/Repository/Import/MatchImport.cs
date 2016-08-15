@@ -140,6 +140,10 @@ namespace Repository.Import
             public static ExcelMatch FromMatch(Match match)
             {
                 var excelMatch = new ExcelMatch();
+
+                if (match == null)
+                    return excelMatch;
+
                 excelMatch.MatchId = match.MatchId;
                 excelMatch.Navn = match.Navn;
                 excelMatch.StartTid = match.StartTid;

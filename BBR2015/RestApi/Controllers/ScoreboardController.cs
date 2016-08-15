@@ -16,8 +16,11 @@ namespace RestApi.Controllers
             _gameStateService = gameStateService;
         }
 
-        // GET: api/Scoreboard/
-        [Obsolete]
+        // GET: api/Scoreboard
+        /// <summary>
+        /// Henter feed for Scoreboard med kampens totale resultater (lag og MVP) + alle poster med status.
+        /// Krever ekstra tilgangskontroll.
+        /// </summary>
         public ScoreboardState Get()
         {
             return _gameStateService.GetScoreboard();

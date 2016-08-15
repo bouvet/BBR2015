@@ -148,10 +148,14 @@ namespace RestApi.Controllers
             }
         }
       
+        /// <summary>
+        /// Poster en melding til alle lag. Dette er kun tilgjengelig for admin med hemmelig http header.
+        /// </summary>
+        /// <param name="nyMelding"></param>
+        /// <returns></returns>
         [HttpPost]
         [ResponseType(typeof(OkResult))]
         [RequireScoreboardSecret]
-        [Obsolete]
         [Route("api/Meldinger/PostTilAlle")]
         public IHttpActionResult PostTilAlle([FromBody] NyMelding nyMelding)
         {

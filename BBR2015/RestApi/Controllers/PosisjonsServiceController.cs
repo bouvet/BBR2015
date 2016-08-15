@@ -37,7 +37,6 @@ namespace RestApi.Controllers
         [Throttle]
         [ResponseType(typeof (DeltakerPosisjon))]
         [HttpGet]
-
         public IHttpActionResult Get()
         {
             try
@@ -50,11 +49,14 @@ namespace RestApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Henter ut posisjoner for alle spillere. Krever ekstra tilgangsnivå.
+        /// </summary>
+        /// <returns></returns>
         [RequireScoreboardSecret]
         [Route("api/PosisjonsService/Alle")]
         [ResponseType(typeof(List<LagPosisjoner>))]
         [HttpGet]
-        [Obsolete]
         public IHttpActionResult GetAlle()
         {
             try

@@ -191,11 +191,34 @@ namespace Repository
                                               where t > TimeService.Now
                                               select t).Union(new[] { DateTime.MaxValue }).Min();
 
+                scoreboard.Match = LagScoreboardMatchInfo(context, matchId);
+
                 // swap current state
                 _matchStates[matchId] = new MatchState(matchId, nyGameState, scoreboard, førsteTidspunktEtterNå);
 
                 // IKKE SAVE CHANGES
             }
+        }
+
+        private ScoreboardMatch LagScoreboardMatchInfo(DataContext context, Guid matchId)
+        {
+            var match = context.Matcher.Single(x => x.MatchId == matchId);
+
+            var scoreboardMatch = new ScoreboardMatch
+            {
+                Navn = match.Navn,
+                Geobox = new ScoreboardGeobox
+                {
+                    MaxLatitude = match.GeoboxNWLatitude.GetValueOrDefault(),
+                    MaxLongitude = match.GeoboxSELongitude.GetValueOrDefault(),
+                    MinLatitude = match.GeoboxSELatitude.GetValueOrDefault(),
+                    MinLongitude = match.GeoboxNWLatitude.GetValueOrDefault()
+                }
+            };
+
+            scoreboardMatch.Geobox.CalculateCenter();
+
+            return scoreboardMatch;
         }
 
         public GameStateForLag Get(string lagId)
@@ -262,10 +285,37 @@ namespace Repository
             Poster = new List<ScoreboardPost>();
             Deltakere = new List<ScoreboardDeltaker>();
             Lag = new List<ScoreboardLag>();
+            Match = new ScoreboardMatch();
         }
         public List<ScoreboardPost> Poster { get; set; }
         public List<ScoreboardDeltaker> Deltakere { get; set; }
         public List<ScoreboardLag> Lag { get; set; }
+        public ScoreboardMatch Match { get; set; }
+
+    }
+
+    public class ScoreboardMatch
+    {
+        public string Navn { get; set; }
+        public ScoreboardGeobox Geobox  { get; set; } = new ScoreboardGeobox();
+    }
+
+    public class ScoreboardGeobox
+    {
+        public double MaxLatitude { get; set; }
+        public double MaxLongitude { get; set; }
+
+        public double MinLatitude { get; set; }        
+        public double MinLongitude { get; set; }
+
+        public double CenterLatitude { get; set; }
+        public double CenterLongitude { get; set; }
+
+        public void CalculateCenter()
+        {
+            CenterLatitude = Math.Round((MinLatitude + MaxLatitude)/2, 5);
+            CenterLongitude = Math.Round((MinLongitude + MaxLongitude)/2, 5);
+        }
     }
 
     public class ScoreboardPost
