@@ -126,6 +126,8 @@ namespace RestApi.Controllers
             var content = await downloader.LastNedSpreadsheetFraGoogleDrive(documentId);
             _excelImport.LesInn(content);
 
+            ClearCaching();
+
             return Ok();
         }
 
@@ -210,6 +212,8 @@ namespace RestApi.Controllers
             var excelBytes = await file.ReadAsByteArrayAsync();
 
             _excelImport.LesInn(excelBytes);
+
+            ClearCaching();
 
             return Ok("Takk for nytt oppsett!");
         }

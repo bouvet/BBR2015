@@ -281,6 +281,10 @@
     <Content Include="scoreboard\images\java.svg" />
     <Content Include="scoreboard\images\ms.svg" />
     <Content Include="scoreboard\index.html" />
+    <Content Include="scoreboard\jqueryui\jquery-ui.min.css" />
+    <Content Include="scoreboard\jqueryui\jquery-ui.min.js" />
+    <Content Include="scoreboard\jqueryui\jquery-ui.structure.min.css" />
+    <Content Include="scoreboard\jqueryui\jquery-ui.theme.min.css" />
     <Content Include="scoreboard\js\app.js" />
     <Content Include="scoreboard\lib\leaflet.awesome-markers.js" />
     <Content Include="testclient\css\css.css" />
