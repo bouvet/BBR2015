@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using RestApi.Tests.Infrastructure;
 using System.Data.Entity;
+using Database.Entities;
 
 namespace RestApi.Tests.ExcelImport
 {
@@ -24,9 +26,8 @@ namespace RestApi.Tests.ExcelImport
 
                 var d = deltakere.First();
 
-                Assert.AreEqual("LAG_1-1", d.DeltakerId, "DeltakerId");
                 Assert.AreEqual("LAG_1-1Navn", d.Navn, "Navn");
-                Assert.AreEqual("Kode1", d.Kode, "Kode");
+                Assert.AreEqual("Kode1_1", d.Kode, "Kode");
                 Assert.AreEqual("LAG_1", d.Lag.LagId, "LagId");
             }
         }
@@ -44,6 +45,28 @@ namespace RestApi.Tests.ExcelImport
                 var lagFraDb = context.Lag.Include(x => x.Deltakere).Single();
 
                 Assert.AreEqual(2, lagFraDb.Deltakere.Count, "Riktig antall");
+            }
+        }
+
+        [Test]
+        public void Deltaker_BytteLag()
+        {
+            var match = GetMatch();
+            var lag = LagFactory.SettOppLagMedDeltakere(2, 1, "LAG_");
+
+            Importer(match, lag);
+
+            var deltaker1 = lag[0].Deltakere[0];
+            lag[0].Deltakere.Clear();
+            lag[1].Deltakere.Add(deltaker1);
+
+            Importer(match, lag);
+
+            using (var context = _dataContextFactory.Create())
+            {
+                Assert.AreEqual(2, context.Deltakere.Count(), "Deltakere");
+                Assert.AreEqual(0, context.Lag.Include(x => x.Deltakere).Single(x => x.LagId =="LAG_1").Deltakere.Count(), "Deltakere LAG_1");
+                Assert.AreEqual(2, context.Lag.Include(x => x.Deltakere).Single(x => x.LagId =="LAG_2").Deltakere.Count(), "Deltakere LAG_2");
             }
         }
 
@@ -66,9 +89,9 @@ namespace RestApi.Tests.ExcelImport
 
                 var d = deltakere.First();
 
-                Assert.AreEqual("LAG_1-1", d.DeltakerId, "DeltakerId");
+                //Assert.AreEqual("LAG_1-1", d.DeltakerId, "DeltakerId");
                 Assert.AreEqual("Samme navn", d.Navn, "Navn");
-                Assert.AreEqual("Kode2", d.Kode, "Kode");
+                Assert.AreEqual("Kode1_2", d.Kode, "Kode");
                 Assert.AreEqual("LAG_1", d.Lag.LagId, "LagId");
             }
         }

@@ -42,7 +42,7 @@ namespace Repository
                 var achievementsPoeng = from a in context.Achievements
                                         group a by a.LagId
                                             into g
-                                            select new { LagId = g.Key, Poeng = g.Sum(x => x.Score), Achievements = g };
+                                        select new { LagId = g.Key, Poeng = g.Sum(x => x.Score), Achievements = g };
 
                 foreach (var lagPoeng in achievementsPoeng)
                 {
@@ -202,21 +202,24 @@ namespace Repository
 
         private ScoreboardMatch LagScoreboardMatchInfo(DataContext context, Guid matchId)
         {
-            var match = context.Matcher.Single(x => x.MatchId == matchId);
+            var match = context.Matcher.SingleOrDefault(x => x.MatchId == matchId);
+
+            if (match == null)
+                return new ScoreboardMatch();
+
+            var MaxLatitude = match.GeoboxNWLatitude.GetValueOrDefault();
+            var MaxLongitude = match.GeoboxSELongitude.GetValueOrDefault();
+            var MinLatitude = match.GeoboxSELatitude.GetValueOrDefault();
+            var MinLongitude = match.GeoboxNWLongitude.GetValueOrDefault();
+
+            var CenterLatitude = Math.Round((MinLatitude + MaxLatitude) / 2, 5);
+            var CenterLongitude = Math.Round((MinLongitude + MaxLongitude) / 2, 5);
 
             var scoreboardMatch = new ScoreboardMatch
             {
                 Navn = match.Navn,
-                Geobox = new ScoreboardGeobox
-                {
-                    MaxLatitude = match.GeoboxNWLatitude.GetValueOrDefault(),
-                    MaxLongitude = match.GeoboxSELongitude.GetValueOrDefault(),
-                    MinLatitude = match.GeoboxSELatitude.GetValueOrDefault(),
-                    MinLongitude = match.GeoboxNWLatitude.GetValueOrDefault()
-                }
+                CenterMap = new List<double> { CenterLatitude, CenterLongitude }
             };
-
-            scoreboardMatch.Geobox.CalculateCenter();
 
             return scoreboardMatch;
         }
@@ -297,7 +300,7 @@ namespace Repository
     public class ScoreboardMatch
     {
         public string Navn { get; set; }
-        public ScoreboardGeobox Geobox  { get; set; } = new ScoreboardGeobox();
+        public List<double> CenterMap { get; set; } = new List<double>();
     }
 
     public class ScoreboardGeobox
@@ -305,7 +308,7 @@ namespace Repository
         public double MaxLatitude { get; set; }
         public double MaxLongitude { get; set; }
 
-        public double MinLatitude { get; set; }        
+        public double MinLatitude { get; set; }
         public double MinLongitude { get; set; }
 
         public double CenterLatitude { get; set; }
@@ -313,8 +316,8 @@ namespace Repository
 
         public void CalculateCenter()
         {
-            CenterLatitude = Math.Round((MinLatitude + MaxLatitude)/2, 5);
-            CenterLongitude = Math.Round((MinLongitude + MaxLongitude)/2, 5);
+            CenterLatitude = Math.Round((MinLatitude + MaxLatitude) / 2, 5);
+            CenterLongitude = Math.Round((MinLongitude + MaxLongitude) / 2, 5);
         }
     }
 

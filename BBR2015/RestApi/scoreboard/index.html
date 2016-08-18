@@ -1,152 +1,166 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-  <title>Bouvet Battle Royale Dashboard</title>
-  <meta charset="utf-8" />
+    <title>Bouvet Battle Royale Dashboard</title>
+    <meta charset="utf-8" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="./bower_components/jquery/dist/jquery.js"></script>
-  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
-  <script src="./bower_components/angular/angular.js"></script>
-  <script src="./bower_components/leaflet/dist/leaflet.js"></script>
-  <script src="./bower_components/bootstrap/dist/js/bootstrap.js"></script>
-  <script src="./lib/leaflet.awesome-markers.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./bower_components/jquery/dist/jquery.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
+    <script src="./bower_components/angular/angular.js"></script>
+    <script src="./bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="./bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="./lib/leaflet.awesome-markers.js"></script>
     <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 
-  <script src="./js/app.js"></script>
-  <link rel="stylesheet" href="css.css" />
+    <script src="./js/app.js"></script>
+    <link rel="stylesheet" href="css.css" />
 </head>
 <body ng-app="scoreboard">
-  <link rel="stylesheet" href="./bower_components/leaflet/dist/leaflet.css"></link>
-  <link rel="stylesheet" href="./bower_components/bootstrap/dist/css/bootstrap.css"></link>
-<link rel="stylesheet" href="./css/leaflet.awesome-markers.css"></link>
+    <link rel="stylesheet" href="./bower_components/leaflet/dist/leaflet.css"></link>
+    <link rel="stylesheet" href="./bower_components/bootstrap/dist/css/bootstrap.css"></link>
+    <link rel="stylesheet" href="./css/leaflet.awesome-markers.css"></link>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
 
-<div class="content" ng-controller="scoreboardController">
-    <div class="left">
-        <div class="toppliste">
-            <h3>Resultater</h3>
-            <table>
-                <thead>
-                <th>#</th>
-                <th>&nbsp;</th>
-                <th>Lag</th>
-                <th>Antall poster</th>
-                <th>Poeng</th>
-                </thead>
-                <tbody>
-                <tr ng-repeat="lag in lagliste | orderBy:'ranking' track by lag.lagNavn">
-                    <td>{{ lag.ranking }}</td>
-                    <td>
-                        <img class="bildeicon" ng-if="lag.lagId.indexOf('JAVA') > -1" src="/images/java.svg"/>
-                        <img class="bildeicon" ng-if="lag.lagId.indexOf('MS') > -1" src="/images/ms.svg"/>
-                    </td>
-                    <td class="leftalign"><span class="fargesirkel" ng-style="{'background-color': '#' + lag.lagFarge }"></span>{{lag.lagNavn }}</td>
-                    <td>{{ lag.antallRegistreringer }}</td>
-                    <td>{{ lag.score }}</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="javavsms">
-            <table>
-                <thead>
-                <th>Java</th>
-                <th>vs</th>
-                <th>Microsoft</th>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>{{ javapoeng() }}</td>
-                    <td></td>
-                    <td>{{ microsoftpoeng() }}</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="mvpliste">
-            <h3>MVP</h3>
-            <table>
-                <thead>
-                <th>#</th>
-                <th>Poeng</th>
-                <th>&nbsp;</th>
-                <th>Lag</th>
-                <th>Deltaker<th>
-                </thead>
-                <tbody>
-                <tr ng-repeat="deltaker in deltakerliste | orderBy:'mostValueablePlayerRanking' track by deltaker.deltakerId">
-                    <td>{{ deltaker.mostValueablePlayerRanking }}</td>
-                    <td>{{ deltaker.score }}</td>
-                    <td>
-                        <img class="bildeicon" ng-if="deltaker.lagId.indexOf('JAVA') > -1" src="/images/java.svg"/>
-                        <img class="bildeicon" ng-if="deltaker.lagId.indexOf('MS') > -1" src="/images/ms.svg"/>
-                    </td>
-                    <td class="leftalign">
-                        <span class="fargesirkel" ng-style="{'background-color': '#' + deltaker.lagFarge }"></span>{{ deltaker.lagNavn }}
-                    </td>
-                    <td class="leftalign">{{ deltaker.navn }}</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+    <div class="content" ng-controller="scoreboardController">
+        <div class="left">
+            <div class="toppliste">
+                <h3>Resultater</h3>
+                <table>
+                    <thead>
+                    <th>#</th>
+                    <th>&nbsp;</th>
+                    <th>Lag</th>
+                    <th>Antall poster</th>
+                    <th>Poeng</th>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="lag in lagliste | orderBy:'ranking' track by lag.lagNavn">
+                            <td>{{ lag.ranking }}</td>
+                            <td>
+                                <img class="bildeicon" ng-if="lag.lagId.indexOf('JAVA') > -1" src="/images/java.svg" />
+                                <img class="bildeicon" ng-if="lag.lagId.indexOf('MS') > -1" src="/images/ms.svg" />
+                            </td>
+                            <td class="leftalign"><span class="fargesirkel" ng-style="{'background-color': '#' + lag.lagFarge }"></span>{{lag.lagNavn }}</td>
+                            <td>{{ lag.antallRegistreringer }}</td>
+                            <td>{{ lag.score }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="javavsms">
+                <table>
+                    <thead>
+                    <th>Java</th>
+                    <th>vs</th>
+                    <th>Microsoft</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ javapoeng() }}</td>
+                            <td></td>
+                            <td>{{ microsoftpoeng() }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mvpliste">
+                <h3>MVP</h3>
+                <table>
+                    <thead>
+                    <th>#</th>
+                    <th>Poeng</th>
+                    <th>&nbsp;</th>
+                    <th>Lag</th>
+                    <th>Deltaker
+                    <th>
+                        </thead>
+                    <tbody>
+                        <tr ng-repeat="deltaker in deltakerliste | orderBy:'mostValueablePlayerRanking' track by deltaker.deltakerId">
+                            <td>{{ deltaker.mostValueablePlayerRanking }}</td>
+                            <td>{{ deltaker.score }}</td>
+                            <td>
+                                <img class="bildeicon" ng-if="deltaker.lagId.indexOf('JAVA') > -1" src="/images/java.svg" />
+                                <img class="bildeicon" ng-if="deltaker.lagId.indexOf('MS') > -1" src="/images/ms.svg" />
+                            </td>
+                            <td class="leftalign">
+                                <span class="fargesirkel" ng-style="{'background-color': '#' + deltaker.lagFarge }"></span>{{ deltaker.lagNavn }}
+                            </td>
+                            <td class="leftalign">{{ deltaker.navn }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
 
-    </div>
-    <div class="center">
-        <div id="map"></div>
-    </div>
-    <div class="right">
-        <h3> Hendelser </h3>
-        <div id="meldinger">
-            <div class="melding" ng-repeat="event in eventmeldinger | orderBy:'sekvens':true">
-                <ul>
-                    <li>
-                        <p>{{ event.melding }}</p>
-                    </li>
-                </ul>
+        </div>
+        <div class="center">
+            <div id="map"></div>
+        </div>
+        <div class="right">
+            <h3> Hendelser </h3>
+            <div id="meldinger">
+                <div class="melding" ng-repeat="event in eventmeldinger | orderBy:'sekvens':true">
+                    <ul>
+                        <li>
+                            <p>{{ event.melding }}</p>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
+        <div id="settingsDialog">
+            <table>
+                <tr><td>API Url</td><td><input type="text" id="serviceUrl" /></td></tr>
+                <tr><td>Scoreboard Secret</td><td><input type="text" id="scoreboardsecret" /></td></tr>
+                <tr><td>LagKode</td><td><input type="text" id="lagKode" /></td></tr>
+                <tr><td>DeltakerKode</td><td><input type="text" id="deltakerKode" /></td></tr>
+                <tr><td>Java vs Microsoft</td><td><input type="checkbox" id="showJavaVsMs" /></td></tr>
+                <tr><td>Google DocId</td><td><input type="text" id="googleDriveDocId" /></td></tr>
+            </table>
+            <button id="btnSaveSettings">Save</button><button ng-click="downloadGoogleDrive()">Google Sync</button>
+        </div>
     </div>
-</div>
-<div id="settingsDialog">
-    <table>
-        <tr>
-            <td>API Url</td>
-            <td><input type="text" id="serviceUrl" /></td>
-        </tr>
-        <tr>   <td>Scoreboard Secret</td><td><input type="text" id="scoreboardsecret" /></td></tr>
-        <tr>   <td>LagKode</td><td><input type="text" id="lagKode" /></td></tr>
-        <tr>   <td>DeltakerKode</td><td><input type="text" id="deltakerKode" /></td></tr>
-        
-    </table>
-    <button id="btnSaveSettings">Save</button>
-</div>
-<script language="javascript">
-    
-    $("#btnSaveSettings").click(function () {
-        localStorage.serviceUrl = $('#serviceUrl').val();
-        localStorage.scoreboardSecret = $('#scoreboardsecret').val();
-        localStorage.lagKode = $('#lagKode').val();
-        localStorage.deltakerKode = $('#deltakerKode').val();
+ 
+    <script language="javascript">
 
-        $("#settingsDialog").dialog("close");
-    });
+        var toogleJavaMs = function () {
+            if (localStorage.showJavaVsMs === 'true')
+                $(".javavsms").show();
+            else
+                $(".javavsms").hide();
+        }
 
-    $("#meldinger").dblclick(function () {
-        $("#settingsDialog").dialog("open");
+        $("#btnSaveSettings").click(function () {
+            localStorage.serviceUrl = $('#serviceUrl').val();
+            localStorage.scoreboardSecret = $('#scoreboardsecret').val();
+            localStorage.lagKode = $('#lagKode').val();
+            localStorage.deltakerKode = $('#deltakerKode').val();
+            localStorage.googleDriveDocId = $('#googleDriveDocId').val();
+            localStorage.showJavaVsMs = $('#showJavaVsMs').is(':checked');
+
+            toogleJavaMs();
+
+            $("#settingsDialog").dialog("close");
         });
 
-    $(document).ready(function () {
+        $(".right").dblclick(function () {
+            $("#settingsDialog").dialog("open");
+        });
 
-        $('#serviceUrl').val(localStorage.serviceUrl);
-        $('#scoreboardsecret').val(localStorage.scoreboardSecret);
-        $('#lagKode').val(localStorage.lagKode);
-        $('#deltakerKode').val(localStorage.deltakerKode);
+        $(document).ready(function () {
+            $('#serviceUrl').val(localStorage.serviceUrl);
+            $('#scoreboardsecret').val(localStorage.scoreboardSecret);
+            $('#lagKode').val(localStorage.lagKode);
+            $('#deltakerKode').val(localStorage.deltakerKode);
+            $('#googleDriveDocId').val(localStorage.googleDriveDocId);
+            $('#showJavaVsMs').attr('checked', localStorage.showJavaVsMs);
 
-        $("#settingsDialog").dialog({ autoOpen: false, modal: true, show: "blind", hide: "blind" });        
-    });
+            toogleJavaMs();
 
-</script>
+            $("#settingsDialog").dialog({ autoOpen: false, modal: true, show: "blind", hide: "blind" });
+        });
+
+    </script>
 </body>
 </html>

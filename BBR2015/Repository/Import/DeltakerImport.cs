@@ -24,43 +24,68 @@ namespace Repository.Import
 
             using (var context = _dataContextFactory.Create())
             {
-                var match = (from m in context.Matcher.Include(x => x.DeltakendeLag.Select(y => y.Lag).Select(z => z.Deltakere))
-                             where m.MatchId == matchId
-                             select m).FirstOrDefault();
+                //var match = (from m in context.Matcher.Include(x => x.DeltakendeLag.Select(y => y.Lag).Select(z => z.Deltakere))
+                //             where m.MatchId == matchId
+                //             select m).FirstOrDefault();
 
-                AddOrUpdate(deltakere, match, context);
+                AddOrUpdate(deltakere,  context);
 
                 context.SaveChanges();
             }
         }
 
-        private void AddOrUpdate(List<ExcelDeltaker> deltakere, Match match, DataContext context)
+        private void AddOrUpdate(List<ExcelDeltaker> deltakere, DataContext context)
         {
-            foreach (var lagIMatch in match.DeltakendeLag)
+            var alleLag = context.Lag.ToList();
+
+            foreach (var excelDeltaker in deltakere)
             {
-                var lag = lagIMatch.Lag;
+                var deltaker = context.Deltakere.SingleOrDefault(x => x.Kode == excelDeltaker.Kode);
 
-                var deltakereForLag = deltakere.Where(x => x.LagId == lag.LagId);
+                var lag = alleLag.SingleOrDefault(x => x.LagId == excelDeltaker.LagId);
 
-                foreach (var excelDeltaker in deltakereForLag)
+                if (deltaker == null)
                 {
-                    var eksisterende = lag.Deltakere.FirstOrDefault(x => x.Kode == excelDeltaker.Kode);
-
-                    if (eksisterende != null)
+                    context.Deltakere.Add(new Deltaker
                     {
-                        eksisterende.Navn = excelDeltaker.Navn;
-                    }
-                    else
-                    {
-                        lag.LeggTilDeltaker(new Deltaker
-                        {
-                            DeltakerId = lag.LagId + "-" + (lag.Deltakere.Count + 1),
-                            Navn = excelDeltaker.Navn,
-                            Kode = excelDeltaker.Kode // i praksis umulig å endre siden vi slår opp på denne...
-                        });
-                    }
+                        DeltakerId = Guid.NewGuid().ToString(),
+                        Navn = excelDeltaker.Navn,
+                        Kode = excelDeltaker.Kode,
+                        Lag = lag
+                    });
+                }
+                else
+                {
+                    deltaker.Navn = excelDeltaker.Navn;
+                    deltaker.Lag = lag;
                 }
             }
+
+            //foreach (var lagIMatch in match.DeltakendeLag)
+            //{
+            //    var lag = lagIMatch.Lag;
+
+            //    var deltakereForLag = deltakere.Where(x => x.LagId == lag.LagId);
+
+            //    foreach (var excelDeltaker in deltakereForLag)
+            //    {
+            //        var eksisterende = lag.Deltakere.FirstOrDefault(x => x.Kode == excelDeltaker.Kode);
+
+            //        if (eksisterende != null)
+            //        {
+            //            eksisterende.Navn = excelDeltaker.Navn;
+            //        }
+            //        else
+            //        {
+            //            lag.LeggTilDeltaker(new Deltaker
+            //            {
+            //                DeltakerId = lag.LagId + "-" + (lag.Deltakere.Count + 1),
+            //                Navn = excelDeltaker.Navn,
+            //                Kode = excelDeltaker.Kode // i praksis umulig å endre siden vi slår opp på denne...
+            //            });
+            //        }
+            //    }
+            //}
         }
 
         private List<ExcelDeltaker> LesFra(ExcelWorksheet excelWorksheet)
@@ -75,7 +100,7 @@ namespace Repository.Import
                 {
                     LagId = sheet.GetValue(ExcelSheet.Deltakere.Lag, row),
                     Navn = sheet.GetValue(ExcelSheet.Deltakere.Navn, row),
-                    Kode = sheet.GetValue(ExcelSheet.Deltakere.Kode,row),
+                    Kode = sheet.GetValue(ExcelSheet.Deltakere.Kode, row),
                 };
 
                 // Siste endring gjelder

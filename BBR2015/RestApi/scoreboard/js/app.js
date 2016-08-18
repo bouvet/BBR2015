@@ -1,6 +1,9 @@
 angular.module('scoreboard', []);
 
 angular.module('scoreboard').controller('scoreboardController', function ($scope, $http, $interval) {
+
+    $scope.kartsentrumsatt = false;
+
     $scope.hostname = localStorage.serviceUrl; // updated in timer below
 
     $scope.deltakerliste = [];
@@ -11,6 +14,7 @@ angular.module('scoreboard').controller('scoreboardController', function ($scope
     $scope.kartdeltakere = [];
     $scope.eventmeldinger = [];
 
+    $scope.kartsentrum = [];
 
     $scope.finnLagfarge = function (lagId) {
         for (var i = 0; i < $scope.lagliste.length; i++) {
@@ -97,6 +101,15 @@ angular.module('scoreboard').controller('scoreboardController', function ($scope
         });
     });
 
+    $scope.$watch('kartsentrum', function (newValue, oldValue) {
+        if ($scope.kartsentrumsatt)
+            return;
+
+        map.setView(newValue, 16);
+
+        $scope.kartsentrumsatt = true;
+    });
+
     $scope.$watch('deltakerposisjoner', function (newValue, oldValue) {
         var newPlayer = true;
         var oldPlayer;
@@ -147,7 +160,9 @@ angular.module('scoreboard').controller('scoreboardController', function ($scope
               if (response.status === 200) {
                   $scope.deltakerliste = response.data.deltakere;
                   $scope.lagliste = response.data.lag;
-                  $scope.poster = response.data.poster;
+                  $scope.poster = response.data.poster;                  
+                  $scope.kartsentrum = response.data.match.centerMap;
+                  $scope.matchNavn = response.data.match.navn;
 
                   $http.get(
                     $scope.hostname + "PosisjonsService/Alle",
@@ -190,4 +205,16 @@ angular.module('scoreboard').controller('scoreboardController', function ($scope
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
+
+    $scope.downloadGoogleDrive = function() {
+        var docId = localStorage.googleDriveDocId;
+
+        if (docId && docId.length > 5) {
+            $http.post($scope.hostname + "Admin/ConfigureFromGoogleDrive/" + docId,
+            {},
+                {
+                    headers: { "ScoreboardSecret": localStorage.scoreboardSecret }
+                }).then(function() {alert('Google Drive sync completed')});
+        }
+    };
 });
