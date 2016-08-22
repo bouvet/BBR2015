@@ -88,6 +88,30 @@ namespace Database
             set { _overrides["BBR_ReadUncommitted"] = value.ToString(); }
         }
 
+        public bool TillatOpprettNyttLag
+        {
+            get
+            {
+                bool value;
+                if (Boolean.TryParse(Get("BBR_TillatOpprettNyttLag"), out value))
+                    return value;
+                return false;
+            }
+            set { _overrides["BBR_TillatOpprettNyttLag"] = value.ToString(); }
+        }
+
+        public bool TillatOpprettNySpiller
+        {
+            get
+            {
+                bool value;
+                if (Boolean.TryParse(Get("BBR_TillatOpprettNySpiller"), out value))
+                    return value;
+                return false;
+            }
+            set { _overrides["BBR_TillatOpprettNySpiller"] = value.ToString(); }
+        }
+
         private string Get(string settingsKey)
         {
             if (_overrides.ContainsKey(settingsKey))

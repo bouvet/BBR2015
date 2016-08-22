@@ -1,5 +1,6 @@
 ﻿using Castle.MicroKernel.Registration;
 using System.Web.Http;
+using System.Web.Mvc;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using Repository;
@@ -20,6 +21,7 @@ namespace RestApi.Infrastructure
 
             container.Register(Types.FromAssemblyContaining<TilgangsKontroll>().Pick().WithServiceSelf().LifestyleTransient());
             container.Register(Types.FromAssemblyContaining<BaseController>().BasedOn<ApiController>().WithServiceSelf().LifestylePerWebRequest());
+            container.Register(Types.FromAssemblyContaining<BaseController>().BasedOn<Controller>().WithServiceSelf().LifestylePerWebRequest());
             container.Register(Types.FromAssemblyContaining<DataContextFactory>().Pick().WithServiceSelf().LifestyleTransient());
 
             ServiceLocator.Current = container; 
