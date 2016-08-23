@@ -340,6 +340,11 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="testclient\css\css.css" />
     <Content Include="testclient\Gruntfile.js" />
+    <Content Include="testclient\css\myStyle.css" />
+    <Content Include="testclient\js\myJs.js" />
+    <Content Include="testclient_old\css\css.css" />
+    <Content Include="testclient_old\Gruntfile.js" />
+    <Content Include="testclient_old\index.html" />
     <Content Include="testclient\index.html" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -391,7 +396,7 @@
     <None Include="Properties\PublishProfiles\bbr2015test - Web Deploy %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\bbr2015test - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\bbr2015test.pubxml" />
-    <Content Include="testclient\package.json" />
+    <Content Include="testclient_old\package.json" />
     <Content Include="scoreboard\bower.json" />
     <Content Include="scoreboard\bower_components\angular\.bower.json" />
     <Content Include="scoreboard\bower_components\angular\angular.min.js.gzip" />
@@ -523,6 +528,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="testclient\lib\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Database\Database.csproj">
