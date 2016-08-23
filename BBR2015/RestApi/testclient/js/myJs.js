@@ -30,7 +30,44 @@ function switchMapAndMessages() {
     updateAndDisplayMapOrMessage(map_isVisible);
 }
 
-function displayMessages (data) {
+function displayNumberOfWeapons(bombs, traps) {
+    bombs = 0;
+    document.getElementById("bomb_label_modal").innerHTML = "x" + bombs;
+    document.getElementById("trap_label_modal").innerHTML = "x" + traps;
+
+    document.getElementById("bomb_label_main").innerHTML = "x" + bombs;
+    document.getElementById("trap_label_main").innerHTML = "x" + traps;
+ 
+    if (bombs === 0) {
+        document.getElementById("bomb_btn_main").disabled = true;
+        document.getElementById("bomb_btn_modal").disabled = true;
+    } else {
+        document.getElementById("bomb_btn_main").disabled = false;
+        document.getElementById("bomb_btn_modal").disabled = false;
+    }
+
+    if (traps === 0) {
+        document.getElementById("trap_btn_main").disabled = true;
+        document.getElementById("trap_btn_modal").disabled = true;
+    } else {
+        document.getElementById("trap_btn_main").disabled = false;
+        document.getElementById("trap_btn_modal").disabled = false;
+    }
+}
+
+// ----------------------------------------------
+// ---   Recive data to server (post/messages)  ---
+// ----------------------------------------------
+
+function updateMessages() {
+    $.ajax({
+        type: "GET",
+        url: baseUrl + 'Meldinger/' + meldingsSekvens,
+        headers: createHeader()
+    }).done(displayMessages);
+}
+
+function displayMessages(data) {
     data.meldinger.reverse();
     data.meldinger.forEach(function (melding) {
         if (meldingsSekvens < melding.sekvens) {
@@ -45,16 +82,33 @@ function displayMessages (data) {
     });
 };
 
-// ----------------------------------------------
-// ---   Recive data to server (post/messages)  ---
-// ----------------------------------------------
-
-function updateMessages() {
+function getGameState() {
     $.ajax({
-        type: "GET",
-        url: baseUrl + 'Meldinger/' + meldingsSekvens,
+        type: 'GET',
+        url: baseUrl + 'GameStateFeed',
         headers: createHeader()
-    }).done(displayMessages);
+    }).success(processGameState);
+};
+
+function processGameState(gameState) {
+    weaponsAviable(gameState.vaapen)
+    //weaponsAviable();
+}
+
+function weaponsAviable(weapons) {
+    var n_bombs = 0;
+    var n_traps = 0;
+    weapons.forEach(function (weapon) { 
+        switch(weapon.vaapenId){
+            case "BOMBE":
+                n_bombs++;
+                break;
+            case "FELLE":
+                n_traps++;
+                break;
+        }
+    });
+    displayNumberOfWeapons(n_bombs, n_traps);
 }
 
 // ----------------------------------------------
@@ -70,7 +124,6 @@ function updateMessages() {
         "LagKode": lag_kode,
         "DeltakerKode": deltaker_kode
     };
-    console.log(headers);
     return headers;
 };
 
@@ -137,7 +190,7 @@ setInterval(function () {
     var auto_update = localStorage.getItem("auto_update_setting");
     if (auto_update === "true") {
         //sendPosisjon();
-        //hentGameState();
+        getGameState();
         updateMessages();
         //hentLagposisjoner();
     }
@@ -162,7 +215,7 @@ window.onload = function () {
     }
 
     updateMessages();
-    
+    getGameState();
 
     var map = L.map('map').setView([59.935, 10.7585], 15);
 
