@@ -32,6 +32,7 @@ function switchMapAndMessages() {
 
 function displayNumberOfWeapons(bombs, traps) {
     bombs = 0;
+    traps = 0;
     document.getElementById("bomb_label_modal").innerHTML = "x" + bombs;
     document.getElementById("trap_label_modal").innerHTML = "x" + traps;
 
@@ -39,20 +40,21 @@ function displayNumberOfWeapons(bombs, traps) {
     document.getElementById("trap_label_main").innerHTML = "x" + traps;
  
     if (bombs === 0) {
-        document.getElementById("bomb_btn_main").disabled = true;
-        document.getElementById("bomb_btn_modal").disabled = true;
+        document.getElementById("bomb_btn_main").classList.add("disabled");
+        document.getElementById("bomb_btn_modal").classList.add("disabled");
     } else {
-        document.getElementById("bomb_btn_main").disabled = false;
-        document.getElementById("bomb_btn_modal").disabled = false;
+        document.getElementById("bomb_btn_main").classList.remove("disabled");
+        document.getElementById("bomb_btn_modal").classList.remove("disabled");
     }
 
     if (traps === 0) {
-        document.getElementById("trap_btn_main").disabled = true;
-        document.getElementById("trap_btn_modal").disabled = true;
+        document.getElementById("trap_btn_main").classList.add("disabled");
+        document.getElementById("trap_btn_modal").classList.add("disabled");
     } else {
-        document.getElementById("trap_btn_main").disabled = false;
-        document.getElementById("trap_btn_modal").disabled = false;
+        document.getElementById("trap_btn_main").classList.remove("disabled");
+        document.getElementById("trap_btn_modal").classList.remove("disabled");
     }
+    //autoSelectNoWeapon();
 }
 
 // ----------------------------------------------
@@ -92,7 +94,6 @@ function getGameState() {
 
 function processGameState(gameState) {
     weaponsAviable(gameState.vaapen)
-    //weaponsAviable();
 }
 
 function weaponsAviable(weapons) {
@@ -225,6 +226,19 @@ window.onload = function () {
 
     var marker = L.marker([59.935, 10.7585]).addTo(map);
     map.removeLayer(marker);
+
+    document.getElementById("bomb_btn_main").onclick = function () {
+        if (document.getElementById("bomb_btn_main").classList.contains("disabled")) setTimeout(autoSelectNoWeapon, 2);
+    }
+    document.getElementById("trap_btn_main").onclick = function () {
+        if (document.getElementById("trap_btn_main").classList.contains("disabled")) setTimeout(autoSelectNoWeapon, 2);
+    }
+    document.getElementById("bomb_btn_modal").onclick = function () {
+        if (document.getElementById("bomb_btn_modal").classList.contains("disabled")) setTimeout(autoSelectNoWeapon, 2);
+    }
+    document.getElementById("trap_btn_modal").onclick = function () {
+        if (document.getElementById("trap_btn_modal").classList.contains("disabled")) setTimeout(autoSelectNoWeapon, 2);
+    }
 }
 
 //Event that triggers when the screen changes size
@@ -324,4 +338,18 @@ function findBootstrapEnvironment() {
             return env;
         }
     }
+}
+
+function autoSelectNoWeapon() {
+    document.getElementById("no_weapon_radio_main").checked = "true";
+    document.getElementById("no_weapon_btn_main").classList.add("active");
+    document.getElementById("no_weapon_btn_main").focus();
+    document.getElementById("bomb_btn_main").classList.remove("active");
+    document.getElementById("trap_btn_main").classList.remove("active");
+
+    document.getElementById("no_weapon_radio_modal").checked = "true";
+    document.getElementById("no_weapon_btn_modal").classList.add("active");
+    document.getElementById("no_weapon_btn_modal").focus();
+    document.getElementById("bomb_btn_modal").classList.remove("active");
+    document.getElementById("trap_btn_modal").classList.remove("active");
 }
