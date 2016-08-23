@@ -111,6 +111,12 @@ function weaponsAviable(weapons) {
     displayNumberOfWeapons(n_bombs, n_traps);
 }
 
+function updatePlayersOnMap() {
+    if (!(map === null)) {
+
+    }
+}
+
 // ----------------------------------------------
 // ---   Send data to server (post/messages)  ---
 // ----------------------------------------------
@@ -167,26 +173,23 @@ function registerPost(input) {
 };
 
 var currentLocation = null;
-var player_position = [0, 0];
-var player_position_old = [0, 0];
-
+var player_position = {"lat":0, "lon":0};
 var circle = null;
-
 function sendPosition() {
     navigator.geolocation.getCurrentPosition(success, null, { maximumAge: 0, timeout: 5000, enableHighAccuracy: true });
     function success(position) {
-        player_position[0] = position.coords.latitude;
-        player_position[1] = position.coords.longitude;
+        player_position.lat = position.coords.latitude;
+        player_position.lon = position.coords.longitude;
         var data = JSON.stringify({
-            "latitude": player_position[0],
-            "longitude": player_position[1]
+            "latitude": player_position.lat,
+            "longitude": player_position.lon
         });
 
         if (!(map === null)) {
             if (!(circle === null)) {
                 map.removeLayer(circle);
             }
-            circle = L.circle([player_position[0], player_position[1]], 10, {
+            circle = L.circle([player_position.lat, player_position.lon], 10, {
                 color: 'red',
                 fillColor: '#f03',
                 fillOpacity: 0.8
@@ -199,9 +202,6 @@ function sendPosition() {
             headers: createHeader(),
             data: data
         }).success(console.log("Posisjon sendt"));
-
-        player_position_old[0] = player_position[0];
-        player_position_old[1] = player_position[1];
     }
 };
 
