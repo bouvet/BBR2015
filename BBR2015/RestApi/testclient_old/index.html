@@ -82,7 +82,6 @@
         $("#hentPosisjoner").click(function () {
             hentLagposisjoner();
         });
-
         $("#sendPostkode").click(function () {
             sendPostkode();
         });
@@ -94,10 +93,7 @@
         var spillerMarkers = new Map();
         var poster = [];
         var meldingsSekvens = 0;
-
         var baseUrl = "../api/";
-
-
 
         var initMap = function () {
             var mapOptions = {
@@ -121,8 +117,6 @@
             }
         };
 
-
-
         var handleNoGeolocation = function (errorFlag) {
             var content;
             if (errorFlag) {
@@ -139,7 +133,6 @@
             map.setCenter(options.position);
         };
 
-
         $("#sendMelding").click(function () {
             var text = $("#melding").val();
             console.log(text);
@@ -149,7 +142,6 @@
         $("#hentMeldinger").click(function () {
             hentMeldinger();
         });
-
 
         var createHeader = function () {
             var lagId = $('#lagId').val();
@@ -303,7 +295,6 @@
             }
         };
 
-
         var hentGameState = function () {
             console.log("Henter gamestate");
             $.ajax({
@@ -312,7 +303,6 @@
                 headers: createHeader()
             }).success(prosesserGameState);
         };
-
 
         var prosesserGameState = function (gameState) {
             tegnPunkter(gameState.poster);
@@ -357,7 +347,6 @@
                 hentLagposisjoner();
             }
         }, 3000);
-
 
         google.maps.event.addDomListener(window, 'load', initMap);
     </script>
