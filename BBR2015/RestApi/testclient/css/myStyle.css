@@ -24,13 +24,11 @@ body{
 
 .list-striped:nth-child(odd){
     background-color:rgb(255, 249, 204);
-    padding-bottom:5px;
-    padding-top:5px;
+    padding:5px 5px 5px 5px;
 }
 
 .list-striped:nth-child(even){
-    padding-bottom:5px;
-    padding-top:5px;
+    padding:5px 5px 5px 5px;
 }
 
 /* The snackbar - position it at the bottom and in the middle of the screen */
