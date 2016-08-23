@@ -234,12 +234,18 @@
 
                         <div class="col-lg-12 col-sx-12 col-sm-12 col-md-12">
                             <div class="btn-group btn-group-lg btn-no-padding" role="group" aria-label="..." data-toggle="buttons">
-                                <button type="button" class="btn btn-default active">
-                                    <span class="glyphicon glyphicon-ban-circle"> </span> </button>
-                                <button type="button" class="btn btn-default" id="bomb_btn_main">
-                                    Bombe <span id="bomb_label_main"></span> </button>
-                                <button type="button" class="btn btn-default" id="trap_btn_main">
-                                    Felle <span id="trap_label_main"></span> </button>
+                                <label class="btn btn-default active" id="no_weapon_btn_main">
+                                    <input type="radio" autocomplete="off" id="no_weapon_radio_main">
+                                    <span class="glyphicon glyphicon-ban-circle"> </span>
+                                </label>
+                                <label class="btn btn-default" id="bomb_btn_main">
+                                    <input type="radio" autocomplete="off" id="bomb_radio_main">
+                                    Bombe <span id="bomb_label_main"> </span> 
+                                </label>
+                                <label class="btn btn-default" id="trap_btn_main">
+                                    <input type="radio" autocomplete="off">
+                                    Felle <span id="trap_label_main"></span>
+                                </label>
                             </div>
                         </div>
                     </form>
@@ -304,15 +310,18 @@
 
                         <div class="col-lg-12 col-sx-12 col-sm-12 col-md-12">
                             <div class="btn-group btn-group-lg btn-no-padding" role="group" aria-label="..." data-toggle="buttons">
-                                <button type="button" class="btn btn-default">
+                                <label class="btn btn-default active" id="no_weapon_btn_modal">
+                                    <input type="radio" autocomplete="off" id="no_weapon_radio_modal">
                                     <span class="glyphicon glyphicon-ban-circle"> </span>
-                                </button>
-                                <button type="button" class="btn btn-default" id="bomb_btn_modal">
-                                    Bombe <span id="bomb_label_modal"></span>
-                                </button>
-                                <button type="button" class="btn btn-default" id="trap_btn_modal">
+                                </label>
+                                <label class="btn btn-default" id="bomb_btn_modal">
+                                    <input type="radio" autocomplete="off">
+                                    Bombe <span id="bomb_label_modal"> </span>
+                                </label>
+                                <label class="btn btn-default" id="trap_btn_modal">
+                                    <input type="radio" autocomplete="off">
                                     Felle <span id="trap_label_modal"></span>
-                                </button>
+                                </label>
                             </div>
                         </div>
                     </form>
