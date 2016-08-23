@@ -31,8 +31,6 @@ function switchMapAndMessages() {
 }
 
 function displayNumberOfWeapons(bombs, traps) {
-    bombs = 0;
-    traps = 0;
     document.getElementById("bomb_label_modal").innerHTML = "x" + bombs;
     document.getElementById("trap_label_modal").innerHTML = "x" + traps;
 
@@ -57,9 +55,9 @@ function displayNumberOfWeapons(bombs, traps) {
     //autoSelectNoWeapon();
 }
 
-// ----------------------------------------------
-// ---   Recive data to server (post/messages)  ---
-// ----------------------------------------------
+// ------------------------------------------------
+// --- Recive data from server (post/messages)  ---
+// ------------------------------------------------
 
 function updateMessages() {
     $.ajax({
@@ -139,6 +137,28 @@ function sendMessage(msg) {
     });
 };
 
+function registerPost(postId, weapon) {
+    console.log(postId);
+    console.log(weapon);
+
+    if (weapon === "") {
+        weapon = null;
+    }
+
+    $.ajax({
+        type: "POST",
+        url: baseUrl + 'GameService',
+        headers:
+        createHeader(),
+        data: JSON.stringify({
+            'postKode': postId,
+            'våpen': weapon
+        })
+    });
+    autoSelectNoWeapon();
+    showToast("Post Registrert");
+};
+
 // -----------------------------------
 // ---   Save/load user options    ---
 // -----------------------------------
@@ -200,6 +220,10 @@ setInterval(function () {
 //Event that triggers when all of HTML has been loaded
 window.onload = function () {
     updateAndDisplayMapOrMessage(map_isVisible);
+    loadUserOptions();
+    updateMessages();
+    getGameState();
+
     document.getElementById("btn_switch_map_messages").onclick = function() {
         switchMapAndMessages();
     }
@@ -210,13 +234,24 @@ window.onload = function () {
         sendMessage(msg);
     }
 
-    loadUserOptions();
+    document.getElementById("register_post_main").onclick = function () {
+        var postId = document.getElementById("post_id_main").value;
+        document.getElementById("post_id_main").value = "";
+        var weapon = "";
+        if (document.getElementById("bomb_radio_main").checked) weapon = "BOMBE";
+        if (document.getElementById("trap_radio_main").checked) weapon = "FELLE";
+
+        registerPost(postId, weapon);
+    }
+
+    document.getElementById("register_post_modal").onclick = function () {
+
+    }
+
+    
     document.getElementById("registrer_user").onclick = function() {
         saveUserOption();
     }
-
-    updateMessages();
-    getGameState();
 
     var map = L.map('map').setView([59.935, 10.7585], 15);
 
@@ -343,13 +378,13 @@ function findBootstrapEnvironment() {
 function autoSelectNoWeapon() {
     document.getElementById("no_weapon_radio_main").checked = "true";
     document.getElementById("no_weapon_btn_main").classList.add("active");
-    document.getElementById("no_weapon_btn_main").focus();
+    //document.getElementById("no_weapon_btn_main").focus();
     document.getElementById("bomb_btn_main").classList.remove("active");
     document.getElementById("trap_btn_main").classList.remove("active");
 
     document.getElementById("no_weapon_radio_modal").checked = "true";
     document.getElementById("no_weapon_btn_modal").classList.add("active");
-    document.getElementById("no_weapon_btn_modal").focus();
+    //document.getElementById("no_weapon_btn_modal").focus();
     document.getElementById("bomb_btn_modal").classList.remove("active");
     document.getElementById("trap_btn_modal").classList.remove("active");
 }
