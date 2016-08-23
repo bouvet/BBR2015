@@ -56,6 +56,50 @@ function displayNumberOfWeapons(bombs, traps) {
     //autoSelectNoWeapon();
 }
 
+var post_markers = [];
+var post_marker_size = 0.00007;
+function updatePostsOnMap(Posts) {
+    if (!(map === null)) {
+        //clear old post markers
+        post_markers.forEach(function (post_marker) {
+            map.removeLayer(post_marker);
+        });
+        post_markers = [];
+
+        //add new post markers
+        if (!(Posts === undefined)) {
+            Posts.forEach(function (post) {
+                putPostOnMap(post);
+            });
+        }
+    }
+}
+
+function putPostOnMap(post) {
+    var zoom_lvl = (19-map.getZoom());
+    var lat = post.Latitude;
+    var lon = post.Longitude;
+    var value = post.PoengVerdi;
+    //var isRegistered = post.HarRegistrert;
+
+    zoom_lvl = Math.max(zoom_lvl, 2);
+    var _post_marker_size = post_marker_size * Math.pow(zoom_lvl, 1.3);
+    
+    var post_marker = L.polygon([
+        [lat + _post_marker_size * 3 / 4, lon - _post_marker_size / 1.25],
+        [lat + _post_marker_size * 3 / 4, lon + _post_marker_size / 1.25],
+        [lat - _post_marker_size / 4, lon]
+    ], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 1,
+        weight: 0
+    }).addTo(map);
+
+    post_marker.bindPopup(""+value);
+    post_markers[post_markers.length] = post_marker;
+}
+
 // ------------------------------------------------
 // --- Recive data from server (post/messages)  ---
 // ------------------------------------------------
@@ -93,6 +137,16 @@ function getGameState() {
 
 function processGameState(gameState) {
     weaponsAviable(gameState.vaapen)
+    //updatePostsOnMap(gameState.Poster);
+
+    updatePostsOnMap();
+
+    var post = {
+        "Latitude": 59.935,
+        "Longitude": 10.759,
+        "PoengVerdi": 50
+    }
+    putPostOnMap(post);
 }
 
 function weaponsAviable(weapons) {
@@ -111,9 +165,9 @@ function weaponsAviable(weapons) {
     displayNumberOfWeapons(n_bombs, n_traps);
 }
 
-function updatePlayersOnMap() {
+function updatePlayersOnMap(players) {
     if (!(map === null)) {
-
+        
     }
 }
 
@@ -189,10 +243,10 @@ function sendPosition() {
             if (!(circle === null)) {
                 map.removeLayer(circle);
             }
-            circle = L.circle([player_position.lat, player_position.lon], 10, {
+            circle = L.circle([player_position.lat, player_position.lon], 8, {
                 color: 'red',
                 fillColor: '#f03',
-                fillOpacity: 0.8
+                fillOpacity: 0.5
             }).addTo(map);
         }
 
@@ -271,6 +325,7 @@ window.onload = function () {
     getGameState();
 
     map = L.map('map').setView([59.935, 10.7585], 15);
+    
 
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
