@@ -1,4 +1,5 @@
-﻿var map_isVisible = true;
+﻿var baseUrl = "../api/";
+var map_isVisible = true;
 
 function updateAndDisplayMapOrMessage(show_map) {
     var bootstrap_size = findBootstrapEnvironment();
@@ -28,6 +29,38 @@ function switchMapAndMessages() {
     updateAndDisplayMapOrMessage(map_isVisible);
 }
 
+// ----------------------------------------------
+// ---   Send data to server (post/messages)  ---
+// ----------------------------------------------
+
+ function createHeader() {
+     var lag_kode = localStorage.getItem("lag_kode");
+     var deltaker_kode = localStorage.getItem("deltaker_kode");
+
+    headers = {
+        "Content-Type": "application/json",
+        "LagKode": lag_kode,
+        "DeltakerKode": deltaker_kode
+    };
+    console.log(headers);
+    return headers;
+};
+
+function sendMessage(msg) {
+    showToast("Melding sendt");
+    $.ajax({
+        type: "POST",
+        url: baseUrl + 'Meldinger',
+        headers:
+        createHeader(),
+        data: JSON.stringify({tekst : msg})
+    });
+};
+
+// -----------------------------------
+// ---   Save/load user options    ---
+// -----------------------------------
+
 function saveUserOption() {
     localStorage.setItem("prevUser", '1');
 
@@ -54,13 +87,6 @@ function loadUserOptions() {
     }
 }
 
-function showToast(msg) {
-    var x = document.getElementById("snackbar")
-    x.innerHTML = msg;
-    x.className = "show";
-    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
-}
-
 // -------------------
 // ---   Events    ---
 // -------------------
@@ -68,12 +94,18 @@ function showToast(msg) {
 //Event that triggers when all of HTML has been loaded
 window.onload = function () {
     updateAndDisplayMapOrMessage(map_isVisible);
-    document.getElementById("btn_switch_map_messages").onclick = function fun() {
+    document.getElementById("btn_switch_map_messages").onclick = function() {
         switchMapAndMessages();
     }
 
+    document.getElementById("send_messages").onclick = function() {
+        var msg = document.getElementById("send_messages_textbox_main").value;
+        document.getElementById("send_messages_textbox_main").value = "";
+        sendMessage(msg);
+    }
+
     loadUserOptions();
-    document.getElementById("registrer_user").onclick = function fun() {
+    document.getElementById("registrer_user").onclick = function() {
         saveUserOption();
     }
     
@@ -97,6 +129,13 @@ $(window).resize(function () {
 // -------------------
 // ---   Helpers   ---
 // -------------------
+
+function showToast(msg) {
+    var x = document.getElementById("snackbar")
+    x.innerHTML = msg;
+    x.className = "show";
+    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+}
 
 function updateMapAndMessagesSize() {
     var bootstrap_size = findBootstrapEnvironment();
