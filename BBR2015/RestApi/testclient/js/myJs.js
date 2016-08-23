@@ -1,6 +1,7 @@
 ﻿var baseUrl = "../api/";
 var meldingsSekvens = 0;
 var map_isVisible = true;
+var map = null;
 
 function updateAndDisplayMapOrMessage(show_map) {
     var bootstrap_size = findBootstrapEnvironment();
@@ -165,6 +166,45 @@ function registerPost(input) {
     showToast("Post Registrert");
 };
 
+var currentLocation = null;
+var player_position = [0, 0];
+var player_position_old = [0, 0];
+
+var circle = null;
+
+function sendPosition() {
+    navigator.geolocation.getCurrentPosition(success, null, { maximumAge: 0, timeout: 5000, enableHighAccuracy: true });
+    function success(position) {
+        player_position[0] = position.coords.latitude;
+        player_position[1] = position.coords.longitude;
+        var data = JSON.stringify({
+            "latitude": player_position[0],
+            "longitude": player_position[1]
+        });
+
+        if (!(map === null)) {
+            if (!(circle === null)) {
+                map.removeLayer(circle);
+            }
+            circle = L.circle([player_position[0], player_position[1]], 10, {
+                color: 'red',
+                fillColor: '#f03',
+                fillOpacity: 0.8
+            }).addTo(map);
+        }
+
+        $.ajax({
+            type: "POST",
+            url: baseUrl + 'PosisjonsService',
+            headers: createHeader(),
+            data: data
+        }).success(console.log("Posisjon sendt"));
+
+        player_position_old[0] = player_position[0];
+        player_position_old[1] = player_position[1];
+    }
+};
+
 // -----------------------------------
 // ---   Save/load user options    ---
 // -----------------------------------
@@ -216,7 +256,7 @@ function loadUserOptions() {
 setInterval(function () {
     var auto_update = localStorage.getItem("auto_update_setting");
     if (auto_update === "true") {
-        //sendPosisjon();
+        sendPosition();
         getGameState();
         updateMessages();
         //hentLagposisjoner();
@@ -229,6 +269,12 @@ window.onload = function () {
     loadUserOptions();
     updateMessages();
     getGameState();
+
+    map = L.map('map').setView([59.935, 10.7585], 15);
+
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
 
     document.getElementById("btn_switch_map_messages").onclick = function() {
         switchMapAndMessages();
@@ -243,7 +289,6 @@ window.onload = function () {
     document.getElementById("register_post_btn_main").onclick = function () {
         registerPost("main");
     }
-
     document.getElementById("register_post_btn_modal").onclick = function () {
         registerPost("modal");
     }
@@ -252,15 +297,6 @@ window.onload = function () {
     document.getElementById("registrer_user").onclick = function() {
         saveUserOption();
     }
-
-    var map = L.map('map').setView([59.935, 10.7585], 15);
-
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-
-    var marker = L.marker([59.935, 10.7585]).addTo(map);
-    map.removeLayer(marker);
 
     document.getElementById("bomb_btn_main").onclick = function () {
         if (document.getElementById("bomb_btn_main").classList.contains("disabled")) setTimeout(autoSelectNoWeapon, 2);
