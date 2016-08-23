@@ -62,7 +62,7 @@ function sendMessage(msg) {
 // -----------------------------------
 
 function saveUserOption() {
-    localStorage.setItem("prevUser", '1');
+    localStorage.setItem("prevUser", "true");
 
     var lag_kode = document.getElementById("lag_kode").value;
     localStorage.setItem("lag_kode", lag_kode);
@@ -70,17 +70,30 @@ function saveUserOption() {
     var deltaker_kode = document.getElementById("deltaker_kode").value;
     localStorage.setItem("deltaker_kode", deltaker_kode);
 
+    var radio_auto_update_no = document.getElementById("radio_auto_update_no").checked;
+    var radio_auto_update_yes = document.getElementById("radio_auto_update_yes").checked;
+
+    if (radio_auto_update_no === true) {
+        localStorage.setItem("auto_update_setting", "false");
+    } else if (radio_auto_update_yes === true) {
+        localStorage.setItem("auto_update_setting", "true");
+    } else {
+        alert("error in Loading user options. Autoupdate value is undefined.")
+        return;
+    }
+
     showToast("Lagrer brukerinnstillinger... ");
 }
 
 function loadUserOptions() {
     var prevUser = localStorage.getItem("prevUser");
-    if (prevUser === '1') {
+    if (prevUser === "true") {
         var lag_kode = localStorage.getItem("lag_kode");
         document.getElementById("lag_kode").value = lag_kode;
 
         var deltaker_kode = localStorage.getItem("deltaker_kode");
         document.getElementById("deltaker_kode").value = deltaker_kode;
+        
         showToast("Lag kode: " + lag_kode + ", deltager kode: "+deltaker_kode);
     } else {
         $('#options_modal').modal('show');
@@ -90,6 +103,17 @@ function loadUserOptions() {
 // -------------------
 // ---   Events    ---
 // -------------------
+
+//Update event
+setInterval(function () {
+    var auto_update = localStorage.getItem("auto_update_setting");
+    if (auto_update === "true") {
+        //sendPosisjon();
+        //hentGameState();
+        //hentMeldinger();
+        //hentLagposisjoner();
+    }
+}, 9000);
 
 //Event that triggers when all of HTML has been loaded
 window.onload = function () {
