@@ -30,10 +30,6 @@ function switchMapAndMessages() {
     updateAndDisplayMapOrMessage(map_isVisible);
 }
 
-function fetchAndDisplayMessages() {
-
-}
-
 function displayMessages (data) {
     data.meldinger.reverse();
     data.meldinger.forEach(function (melding) {
@@ -41,9 +37,9 @@ function displayMessages (data) {
             meldingsSekvens = melding.sekvens;
         }
         $("#messages_list").prepend(
-          "<li class='melding'>" +
-          "<div class='sender'>" + melding.deltaker + "</div>" +
-          "<div class='beskjed'>" + melding.melding + "</div>" +
+          "<li class='list-striped'>" +
+            "<div>" + melding.deltaker + "</div>" +
+            "<div>" + melding.melding + "</div>" +
           "</li>"
           );
     });
@@ -164,6 +160,8 @@ window.onload = function () {
     document.getElementById("registrer_user").onclick = function() {
         saveUserOption();
     }
+
+    updateMessages();
     
 
     var map = L.map('map').setView([59.935, 10.7585], 15);
