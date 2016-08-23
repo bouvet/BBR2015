@@ -125,6 +125,11 @@ namespace Repository
             }
             return _lagNavn[lagId];
         }
+
+        public bool ErGyldigMatchId(string id)
+        {
+            return false;
+        }
     }
 
     public class KontrollResultat

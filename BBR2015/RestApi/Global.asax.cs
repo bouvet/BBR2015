@@ -26,6 +26,8 @@ namespace RestApi
         }
         protected void Application_Start()
         {
+            ControllerBuilder.Current.SetControllerFactory(new WindsorMvcControllerFactory(_container));
+
             GlobalConfiguration.Configuration.Services.Replace(typeof(IHttpControllerActivator), new WindsorControllerActivator(_container));
             GlobalConfiguration.Configure(WebApiConfig.Register);
 

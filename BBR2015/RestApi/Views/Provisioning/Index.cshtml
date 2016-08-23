@@ -1,8 +1,13 @@
 ﻿@model RestApi.Controllers.ProvisioningController.IndexModel
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Bouvet Battle Royale";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>title</h2>
+<h2>Oppsett</h2>
+
+@if (Model.HarMelding)
+{
+    <p>@Model.Melding</p>
+}

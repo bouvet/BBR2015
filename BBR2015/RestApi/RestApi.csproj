@@ -368,6 +368,7 @@
     </Compile>
     <Compile Include="Infrastructure\WindsorControllerActivator.cs" />
     <Compile Include="Infrastructure\DepencencyConventions.cs" />
+    <Compile Include="Infrastructure\WindsorMvcControllerFactory.cs" />
     <Compile Include="Models\Koordinat.cs" />
     <Compile Include="Models\RegistrerNyPost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
