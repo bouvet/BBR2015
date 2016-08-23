@@ -1,363 +1,380 @@
-﻿<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>BBR Klient</title>
-    <link rel="stylesheet" type="text/css" href="css/css.css">
-  </head>
-  <style type="text/css">
-  html, body { height: 100%; margin: 0; padding: 0; }
-  #map-canvas { height: 100%; }
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello world!</title>
+    <meta charset="utf-8" />
+    <meta name="Author" content="Kristian LW" />
+    <meta name="Description" content="Bouvet Battle Royal" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  body {
+    <!--link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"s
+          integrity="sha384-h21C2fcDk/eFsW9sC9h0dhokq5pDinLNklTKoxIZRUn3+hvmgQSffLLQ4G4l2eEr" crossorigin="anonymous"-->
 
-}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-#left {
-  height: 100%;
-  width: 20%;
-  float: left;
-  background-color: whitesmoke;
-}
+    <link rel="stylesheet" href="https://npmcdn.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
 
-#meldingsboks {
-  margin-top: 50px;
-  overflow: scroll;
-  height: 50%;
-}
+    <link rel="stylesheet" href="css/myStyle.css">
+</head>
+<body>
+    <div id="snackbar">Some text some message..</div>
 
-#mapWrapper {
-  width: 80%;
-  height: 100%;
-  float: right;
-}
+    <!-- See map, see messages, navbar (hidden when not xs) -->
+    <nav class="navbar navbar-default navbar-fixed-top visible-xs">
+        <div class="container">
 
-</style>
-  <body>
-  <div id="left">
-    <input type="checkbox" id="skalSendePosisjon">Automatisk pull/post</input>
-    <div id="infoboks">
-      <label for="lagId">LagKode:</label>
-      <input id="lagId" value="arrangoerlaget_maa_ha_den_aller_beste_koden"/><br />
-      <label for="deltakerId">DeltakerKode:</label>
-      <input id="deltakerId" placeholder="deltakerId" value=""/>
-      <br />
-      <br />
-      <label for="postId">Postkode:</label>
-      <input id="postId" />
-      <select id="vaapen">
-        <option value="">Ingen våpen</option>
-        <option value="BOMBE">Bombe</option>
-        <option value="FELLE">FELLE</option>
-      </select>
-      <button id="sendPostkode">Send</button>
+            <!-- Options-->
+            <div class="col-xs-3">
+                <button class="btn btn-default btn-lg btn-block" data-target="#options_modal" data-toggle="modal">
+                 <span class="glyphicon glyphicon-cog"></span> </button>
+            </div>
+
+            <!-- Map / Messages-->
+            <div class="col-xs-6">
+                <button class="btn btn-default btn-lg btn-block" id="btn_switch_map_messages" onclick="">
+                    <span id="btn_switch_map_messages_span"> Messages </span>
+                </button>
+            </div>
+
+            <!-- Info -->
+            <div class="col-xs-3">
+                <button class="btn btn-default btn-lg btn-block" data-target="#information_modal" data-toggle="modal">
+                 <span class="glyphicon glyphicon-info-sign"></span> </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Information modal-->
+    <div class="modal fade" id="information_modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="col-xs-6 col-sm-6"> <h2> Informasjon </h2> </div>
+                    <div class="col-xs-6 col-sm-6">
+                        <button data-dismiss="modal" class="btn btn-danger form-group btn" style="float:right;">
+                            <span> &times; </span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="modal-body">
+                    <div style="overflow:auto" id="information_modal_body">
+                        <div class="well">
+                            <h4> Hvordan spille spillet </h4>
+                            <p> Man spiller ved å samle poster. </p>
+                        </div>
+
+                        <div class="well">
+                            <h4> Meldinger </h4>
+                            <p> Man kan også sende meldinger til hverandre.</p>
+                        </div>
+
+                        <div class="well">
+                            <h4> Meldinger </h4>
+                            <p> Man kan også sende meldinger til hverandre.</p>
+                        </div>
+
+                        <div class="well">
+                            <h4> Meldinger </h4>
+                            <p> Man kan også sende meldinger til hverandre.</p>
+                        </div>
+
+                        <div class="well">
+                            <h4> Meldinger </h4>
+                            <p> Man kan også sende meldinger til hverandre.</p>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
     </div>
-    <div id="meldingsboks">
-      <input id="melding" />
-      <button id="sendMelding">Send melding</button>
-      <button id="hentMeldinger">Hent meldinger</button>
-      <ul id="messages">
-        
-      </ul>
+
+    <!-- Options modal-->
+    <div class="modal fade" id="options_modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="col-xs-6 col-sm-6"> <h2> Options </h2> </div>
+                    <div class="col-xs-6 col-sm-6">
+                        <button data-dismiss="modal" class="btn btn-danger form-group btn" style="float:right;">
+                            <span> &times; </span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="modal-body">
+                    <form class="form">
+                        <div class="col-lg-12 col-sx-12">
+                            <div class="form-group">
+                                <label for="lag_kode"> Lag kode </label> 
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="lag_kode"
+                                           placeholder="lag kode" id="lag_kode" />
+                                    <span class="input-group-addon">@example.com</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="deltaker_kode"> Deltaker kode </label> 
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="deltaker_kode"
+                                           placeholder="deltaker kode" id="deltaker_kode" />
+                                    <span class="input-group-addon">@example.com</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-offset-1">
+                                <div class="form-group">
+                                    <label for="radio_auto_update"> Oppdater siden automatisk? </label> <br />
+                                    <div class="btn-group btn-group-lg btn-no-padding" role="group" aria-label="..." data-toggle="buttons">
+                                        <label class="btn btn-default btn-no-padding"> <input type="radio" name="radio_auto_update" value="0" />  No </label>
+                                        <label class="btn btn-default btn-no-padding active"> <input type="radio" name="radio_auto_update" value="1" /> Yes </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    &nbsp;
+                </div>
+
+                <div class="modal-footer">
+                    <button id="registrer_user" class="btn btn-success form-group btn-lg" style="float: right" data-dismiss="modal">
+                        <span class="glyphicon glyphicon-check"></span> Lagre
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-  
-  <div id="mapWrapper">
-    <button id="sendPosisjon" onclick="sendPosisjon">Send posisjon</button>
-    <button id="hentPosisjoner" onclick="hentLagposisjoner">Hent posisjoner</button>
-    <button id="hentGameState">Hent GameStateFeed</button>
-    <div id="map-canvas"></div>
-  </div>
 
-  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyBjM8Xm96zbyHHp5nTDQL6PODB0JauCxn8"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-  <script>
+    <!-- Map / messages-->
+    <div class="col-lg-9 col-md-8 col-sm-7 little_padding">
+        <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12 little_padding">
+            <div id="map">
+                <h2> This is where the map should be </h2>
+            </div>
+        </div>
 
-  $("#sendPosisjon").click(function() {
-    sendPosisjon();
-  });
-  $("#hentPosisjoner").click(function() {
-    hentLagposisjoner();
-  });
+        <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12 little_padding">
+            <div id="messages">
+                <div class="panel panel-success">
+                    <div class="panel-heading" id="messages_panel_heading">
+                        <h4> Meldinger </h4>
+                    </div>
+                    <div class="panel-body">
+                        <div style="overflow:auto" id="messages_panel_body">
+                            <p id="meldinger">
+                                Melding 1 <br /> Melding 2 <br />  Melding 3 <br /> Melding 4 <br /> Melding 5 <br />
+                                Melding 6 <br />  Melding 7 <br />  Melding 8 <br />  Melding 9 <br />  Melding 10 <br />
+                                Melding 11 <br /> Melding 12 <br />  Melding 13 <br /> Melding 14 <br /> Melding 15 <br />
+                                Melding 16 <br />  Melding 17 <br />  Melding 18 <br />  Melding 19 <br />  Melding 20 <br />
+                                Melding 21 <br /> Melding 22 <br />  Melding 23 <br /> Melding 24 <br /> Melding 25 <br />
+                                Melding 26 <br />  Melding 27 <br />  Melding 28 <br />  Melding 29 <br />  Melding 30 <br />
+                                Melding 31 <br /> Melding 32 <br />  Melding 33 <br /> Melding 34 <br /> Melding 35 <br />
+                                Melding 36 <br />  Melding 37 <br />  Melding 38 <br />  Melding 39 <br />  Melding 40 <br />
+                            </p>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  $("#sendPostkode").click(function() {
-    sendPostkode();
-  });
-  $("#hentGameState").click(function() {
-    hentGameState();
-  });
+    <!-- Register post, send message, hidden when xs-->
+    <div class="col-xs-12 col-sm-5 col-md-4 col-lg-3 little_padding hidden-xs">
+        <!-- Option / information -->
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="panel panel-success" id="options_and_information">
+                <div class="panel-heading">
+                    <div>
+                        <!-- Options-->
+                        <div class="col-xs-6">
+                            <button class="btn btn-default btn-block" data-target="#options_modal" data-toggle="modal" >
+                             <span class="glyphicon glyphicon-cog"> </span> Options </button>
+                        </div>
 
-  var map;
-  var spillerMarkers = new Map();
-  var poster = [];
-  var meldingsSekvens = 0;
+                        <!-- Info -->
+                        <div class="col-xs-6">
+                            <button class="btn btn-default btn-block" data-target="#information_modal" data-toggle="modal" >
+                            <span class="glyphicon glyphicon-info-sign">  </span> Info </button>
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                </div>
+            </div>
+        </div>
 
-  var baseUrl = "../api/";
+        <!-- Register post-->
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="panel panel-success" id="register_post_panel">
+                <div class="panel-heading">
+                    <h4> Registrer Post</h4>
+                </div>
+                <div class="panel-body">
+                    <form class="form">
+                        <div class="col-lg-12 col-sx-12">
+                            <div class="form-group">
+                                <label for="post_id"> Postkode </label> <input type="number" class="form-control" name="post_id"
+                                                                               placeholder="postkode" />
+                            </div>
+                        </div>
 
+                        <div class="col-lg-12 col-sx-12 col-sm-12 col-md-12">
+                            <div class="btn-group btn-group-lg btn-no-padding" role="group" aria-label="..." data-toggle="buttons">
+                                <label class="btn btn-default active">
+                                    <input type="radio" name="radio_bootstrap" value="0" />
+                                    <span class="glyphicon glyphicon-ban-circle"> </span>
+                                </label>
+                                <label class="btn btn-default btn-no-padding"> <input type="radio" name="radio_bootstrap" value="1" />  Bombe </label>
+                                <label class="btn btn-default btn-no-padding"> <input type="radio" name="radio_bootstrap" value="2" /> Felle </label>
+                            </div>
+                        </div>
+                    </form>
 
+                    &nbsp; <br />
 
-  var initMap = function() {
-    var mapOptions = {
-    zoom: 16
-    };
-    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-    // Try HTML5 geolocation
-    if(navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        function(position) {
-          var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-          map.setCenter(pos);
-      }, function() {
-        handleNoGeolocation(true);
-      }, 
-        {maximumAge:600000, timeout:5000, enableHighAccuracy: true}
-      );
-    } else {
-      // Browser doesn't support Geolocation
-      handleNoGeolocation(false);
-    }
-  };
+                    <div class="col-md-4 col-xs-4 col-lg-4">
+                        <button id="#register_post" class="btn btn-success form-group btn-lg">
+                            <span class="glyphicon glyphicon-check"></span> Resgistrer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <!-- Post messages-->
+        <div class="col-xs-12 col-sm-12 col-md-12 debug_style">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h4> Send melding</h4>
+                </div>
+                <div class="panel-body">
+                    <form class="form">
+                        <div class="form-group">
+                            <textarea id="bio" name="bio" class="form-control"> </textarea>
+                        </div>
 
+                        <div id="float_left">
+                            <div class="col-md-4 col-xs-4 col-lg-4">
+                                <button id="#register_post" class="btn btn-success btn-lg form-group">
+                                    <span class="glyphicon-envelope"></span> Send melding
+                                </button>
+                            </div>
+                        </div>
+                        <h3> &nbsp;</h3>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  var handleNoGeolocation = function(errorFlag) {
-    var content;
-    if (errorFlag) {
-      content = 'Error: The Geolocation service failed.';
-    } else {
-      content = 'Error: Your browser doesn\'t support geolocation.';
-    }
-    var options = {
-      map: map,
-      position: new google.maps.LatLng(60, 105),
-      content: content
-    };
-    var infowindow = new google.maps.InfoWindow(options);
-    map.setCenter(options.position);
-  };
+    <!-- Register post, send message, visible when xs-->
+    <!-- Register post modal-->
+    <div class="modal fade" id="register_post_modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="col-xs-6 col-sm-6"> <h2> Registrer Post </h2> </div>
+                    <div class="col-xs-6 col-sm-6">
+                        <button data-dismiss="modal" class="btn btn-danger form-group btn" style="float:right;">
+                            <span> &times; </span>
+                        </button>
+                    </div>
+                </div>
 
+                <div class="modal-body">
+                    <form class="form">
+                        <div class="col-lg-12 col-sx-12">
+                            <div class="form-group">
+                                <label for="post_id"> Postkode </label> <input type="number" class="form-control" name="post_id"
+                                                                               maxlength="10" placeholder="postkode" />
+                            </div>
+                        </div>
 
-  $("#sendMelding").click(function() {
-    var text = $("#melding").val();
-    console.log(text);
-    sendMelding(text);
-  });
+                        <div class="col-lg-12 col-sx-12 col-sm-12 col-md-12">
+                            <div class="btn-group btn-group-lg btn-no-padding" role="group" aria-label="..." data-toggle="buttons">
+                                <label class="btn btn-default active">
+                                    <input type="radio" name="radio_bootstrap" value="0" />
+                                    <span class="glyphicon glyphicon-ban-circle"> </span>
+                                </label>
+                                <label class="btn btn-default btn-no-padding"> <input type="radio" name="radio_bootstrap" value="1" />  Bombe </label>
+                                <label class="btn btn-default btn-no-padding"> <input type="radio" name="radio_bootstrap" value="2" /> Felle </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
 
-  $("#hentMeldinger").click(function() {
-    hentMeldinger();
-  });
+                <div class="modal-footer">
+                    <button id="#register_post" data-dismiss="modal" class="btn btn-success form-group btn-lg" style="float:right">
+                        <span class="glyphicon glyphicon-check"></span> Resgistrer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Send message modal-->
+    <div class="modal fade" id="send_message_modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="col-xs-6 col-sm-6"> <h2> Send melding </h2> </div>
+                    <div class="col-xs-6 col-sm-6">
+                        <button data-dismiss="modal" class="btn btn-danger form-group btn" style="float:right;">
+                            <span> &times; </span>
+                        </button>
+                    </div>
+                </div>
 
-  var createHeader = function () {
-    var lagId = $('#lagId').val();
-    var deltakerId = $('#deltakerId').val();
-    headers = {
-        "Content-Type": "application/json",
-        "LagKode": $('#lagId').val(),
-        "DeltakerKode": $('#deltakerId').val()
-    };
-    console.log(headers);
-    return headers;
-  };
+                <div class="modal-body">
+                    <form class="form">
+                        <div class="form-group">
+                            <label for="melding"> Melding </label> <textarea id="melding" name="melding" class="form-control"> </textarea>
+                        </div>
+                    </form>
+                </div>
 
-  var sendPostkode = function() {
-    console.log("HUHEUHEU")
-    var weapon = $("#vaapen").val();
-    var postId = $("#postId").val();
-    console.log(postId);
-    console.log(weapon);
+                <div class="modal-footer">
+                    <button id="#send_melding_modal" class="btn btn-success btn-lg form-group" style="float:right">
+                        <span class="glyphicon-envelope"></span> Send Melding
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    if (weapon === "") {
-      weapon = null;
-    }
+    <!-- Navbar bottom, visible when xs-->
+    <nav class="navbar navbar-default navbar-fixed-bottom visible-xs">
+        <div class="container">
 
-    $.ajax({
-      type: "POST",
-      url: baseUrl + 'GameService', 
-      headers:     
-      createHeader(),
-      data: JSON.stringify({
-        'postKode': postId,
-        'våpen': weapon
-      })
-    });
-  };
+            <!-- Register post-->
+            <div class="col-xs-6">
+                <button data-target="#register_post_modal" data-toggle="modal" class="btn btn-default btn-lg btn-block"> Post </button>
+            </div>
 
-  var sendMelding = function (melding) {
-    $.ajax({
-      type: "POST",
-      url: baseUrl + 'Meldinger', 
-      headers:     
-      createHeader(),
-      data: JSON.stringify({
-        "tekst": melding
-      })
-    });
-  };
-
-  var hentMeldinger = function () {
-    $.ajax({
-      type: "GET",
-      url: baseUrl + 'Meldinger/' + meldingsSekvens, 
-      headers: createHeader()
-    }).done(visMeldinger);
-  };
-
-  var visMeldinger = function(data) {
-    data.meldinger.reverse();
-    data.meldinger.forEach(function(melding) {
-      console.log("legger til melding");
-      console.log(melding);
-      if (meldingsSekvens < melding.sekvens) {
-        meldingsSekvens = melding.sekvens;
-      }
-      $("#messages").prepend(
-        "<li class='melding'>" +
-        "<div class='sender'>" + melding.deltaker + "</div>" +
-        "<div class='beskjed'>" + melding.melding + "</div>" +
-        "</li>"
-        );
-    });
-  };
-
-  var createMapMarkerFromPlayer = function(player) {
-    var myLatlng = new google.maps.LatLng(player.latitude, player.longitude);
-    // To add the marker to the map, use the 'map' property
-    var marker = new google.maps.Marker({
-        position: myLatlng,
-        map: map,
-        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
-      });
-    marker.setMap(map);
-    return marker;
-  };
-
-  var hentLagposisjoner = function() {
-    console.log("Henter posisjoner");
-    $.ajax({
-      type: 'GET',
-      url: baseUrl + 'PosisjonsService',
-      headers: createHeader()
-    }).done(tegnLagposisjoner);
-  };
-
-  var tegnLagposisjoner = function(data) {
-    console.log("Tegner posisjoner");
-        data.forEach(function(player) {
-        console.log(player);
-        var spillerMaker;
-        if (spillerMarkers.get(player.deltakerId) === undefined) {
-          console.log("Tegner ny spiller på kartet");
-          spillerMarker = spillerMarkers.get(player.deltakerId);
-          var marker = createMapMarkerFromPlayer(player);
-          spillerMarkers.set(player.deltakerId, marker);
-        } else {
-          console.log("Oppdaterer posisjon på spiller");
-          spillerMarker = spillerMarkers.get(player.deltakerId);
-          console.log(spillerMarker);
-          spillerMarker.setPosition(new google.maps.LatLng(player.latitude, player.longitude));
-        }
-      });
-    };
-
-    var currentLocation = null;
-    var sendPosisjon = function() {
-      console.log("Sender posisjoner");
-      navigator.geolocation.getCurrentPosition(success, null, {maximumAge:0, timeout:5000, enableHighAccuracy: true});
-      function success(position) {
-         var lat = position.coords.latitude;
-         var lon = position.coords.longitude;
-         var data = JSON.stringify({
-            "latitude": lat, 
-            "longitude": lon
-          });
-
-
-          var myLatlng = new google.maps.LatLng(lat, lon);
-          // To add the marker to the map, use the 'map' property
-          
-
-          if (!currentLocation) {
-            var marker = new google.maps.Marker({
-              position: myLatlng,
-              map: map,
-              icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
-            });
-            if(currentLocation !== null) {
-              currentLocation.setMap(map);
-            }
-          }
-          if (currentLocation !== null) {
-            current1Location.setPosition(lat, lon);
-          }
-       
-        $.ajax({
-          type: "POST",
-          url: baseUrl + 'PosisjonsService',
-          headers: createHeader(),
-          data: data
-        }).success(console.log("Posisjon sendt"));
-      }
-    };
+            <!-- Send melding -->
+            <div class="col-xs-6">
+                <button href="#send_message_modal" data-toggle="modal" class="btn btn-default btn-lg btn-block"> Send melding </button>
+            </div>
+        </div>
+    </nav>
 
 
-  var hentGameState = function() {
-    console.log("Henter gamestate");
-    $.ajax({
-      type: 'GET',
-      url:  baseUrl + 'GameStateFeed',
-      headers: createHeader()
-    }).success(prosesserGameState);
-  };
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="js/myJs.js"></script>
+    <script src="https://npmcdn.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
 
 
-  var prosesserGameState = function(gameState) {
-    tegnPunkter(gameState.poster);
-    visVaapen(gameState.tilgjengeligeVåpen);
-    /*
-    Do something with score
-     */
-
-  };
-
-  var createMapMarkerFromPunkt = function(punkt) {
-      var myLatlng = new google.maps.LatLng(punkt.latitude, punkt.longitude);
-    // To add the marker to the map, use the 'map' property
-    var marker = new google.maps.Marker({
-        position: myLatlng,
-        map: map,
-        title: "Fullført: " + punkt.harRegistert
-    });
-    marker.setMap(map);
-    return marker;
-  }; 
-
-  var tegnPunkter = function(punkter) {
-    punkter.forEach(function(punkt) {
-      console.log("Tegner nytt punkt");
-      punkter.push(createMapMarkerFromPunkt(punkt));
-    });
-
-  };
-
-  var visVaapen = function(vaapen) {
-    console.log("Viser tilgjengelige våpen");
-    // Vis dropdown med tilgjengelige våpen
-  };
-
-  setInterval(function() {
-    if(document.getElementById('skalSendePosisjon').checked) {
-      sendPosisjon();
-      hentGameState();
-      hentMeldinger();
-      sendPosisjon();
-      hentLagposisjoner();
-    }
-  }, 3000);
-
-  
-  google.maps.event.addDomListener(window, 'load', initMap);
-  </script>
-
-  </body>
+</body>
 </html>
