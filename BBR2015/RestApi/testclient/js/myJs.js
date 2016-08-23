@@ -1,4 +1,5 @@
 ﻿var baseUrl = "../api/";
+var meldingsSekvens = 0;
 var map_isVisible = true;
 
 function updateAndDisplayMapOrMessage(show_map) {
@@ -27,6 +28,37 @@ function updateAndDisplayMapOrMessage(show_map) {
 function switchMapAndMessages() {
     map_isVisible = !map_isVisible;
     updateAndDisplayMapOrMessage(map_isVisible);
+}
+
+function fetchAndDisplayMessages() {
+
+}
+
+function displayMessages (data) {
+    data.meldinger.reverse();
+    data.meldinger.forEach(function (melding) {
+        if (meldingsSekvens < melding.sekvens) {
+            meldingsSekvens = melding.sekvens;
+        }
+        $("#messages_list").prepend(
+          "<li class='melding'>" +
+          "<div class='sender'>" + melding.deltaker + "</div>" +
+          "<div class='beskjed'>" + melding.melding + "</div>" +
+          "</li>"
+          );
+    });
+};
+
+// ----------------------------------------------
+// ---   Recive data to server (post/messages)  ---
+// ----------------------------------------------
+
+function updateMessages() {
+    $.ajax({
+        type: "GET",
+        url: baseUrl + 'Meldinger/' + meldingsSekvens,
+        headers: createHeader()
+    }).done(displayMessages);
 }
 
 // ----------------------------------------------
@@ -104,16 +136,16 @@ function loadUserOptions() {
 // ---   Events    ---
 // -------------------
 
-//Update event
+//Time-event
 setInterval(function () {
     var auto_update = localStorage.getItem("auto_update_setting");
     if (auto_update === "true") {
         //sendPosisjon();
         //hentGameState();
-        //hentMeldinger();
+        updateMessages();
         //hentLagposisjoner();
     }
-}, 9000);
+}, 3000);
 
 //Event that triggers when all of HTML has been loaded
 window.onload = function () {
