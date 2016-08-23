@@ -137,7 +137,13 @@ function sendMessage(msg) {
     });
 };
 
-function registerPost(postId, weapon) {
+function registerPost(input) {
+    var postId = document.getElementById("post_id_" + input).value;
+    document.getElementById("post_id_" + input).value = "";
+    var weapon = "";
+    if (document.getElementById("bomb_radio_" + input).checked) weapon = "BOMBE";
+    if (document.getElementById("trap_radio_" + input).checked) weapon = "FELLE";
+
     console.log(postId);
     console.log(weapon);
 
@@ -234,18 +240,12 @@ window.onload = function () {
         sendMessage(msg);
     }
 
-    document.getElementById("register_post_main").onclick = function () {
-        var postId = document.getElementById("post_id_main").value;
-        document.getElementById("post_id_main").value = "";
-        var weapon = "";
-        if (document.getElementById("bomb_radio_main").checked) weapon = "BOMBE";
-        if (document.getElementById("trap_radio_main").checked) weapon = "FELLE";
-
-        registerPost(postId, weapon);
+    document.getElementById("register_post_btn_main").onclick = function () {
+        registerPost("main");
     }
 
-    document.getElementById("register_post_modal").onclick = function () {
-
+    document.getElementById("register_post_btn_modal").onclick = function () {
+        registerPost("modal");
     }
 
     
