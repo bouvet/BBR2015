@@ -14,9 +14,34 @@ textarea {
    resize: none;
 }
 
-body{
-    padding-top: 25px;
+.centerBlock {
+  display: table;
+  margin: 0 auto;
+  padding-top:5px;
 }
+
+.text-style-points{
+    font-size: 200%;
+}
+
+.text-green{
+    color:green;
+}
+
+.text-red{
+    color:red;
+}
+
+body{
+    padding-top: 10px;
+}
+
+
+.little-padding-left-right{
+    padding-left:  5px;
+    padding-right: 5px;
+}
+
 
 .little_padding{
     padding: 0px;
@@ -32,7 +57,7 @@ body{
 }
 
 .btn-img{
-    padding: 5px 10px 5px 10px !important;
+    padding: 5px 10px 5px 7px !important;
 }
 
 /* The snackbar - position it at the bottom and in the middle of the screen */

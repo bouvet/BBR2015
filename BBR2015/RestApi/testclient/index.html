@@ -20,26 +20,40 @@
 <body>
     <div id="snackbar">Some text some message..</div>
 
-    <!-- See map, see messages, navbar (hidden when not xs) -->
+    <!-- Map / messages / rank / info / settings, navbar (visible when xs) -->
     <nav class="navbar navbar-default navbar-fixed-top visible-xs">
-        <div class="container">
+        <div class="container little_padding">
 
             <!-- Options-->
-            <div class="col-xs-3">
-                <button class="btn btn-default btn-lg btn-block" data-target="#options_modal" data-toggle="modal">
+            <div class="col-xs-1 little_padding">
+                <button class="btn btn-default btn-lg btn-block little-padding-left-right" data-target="#options_modal" data-toggle="modal">
                  <span class="glyphicon glyphicon-cog"></span> </button>
             </div>
 
+            <!-- Points infront of prev team -->
+            <div class="col-xs-3">
+                <div class="centerBlock">
+                    <span id="team_status_prev_team_score_diff_xs" class="text-style-points text-green"></span>
+                </div>
+            </div>
+
             <!-- Map / Messages-->
-            <div class="col-xs-6">
-                <button class="btn btn-default btn-lg btn-block" id="btn_switch_map_messages" onclick="">
+            <div class="col-xs-4 little_padding">
+                <button class="btn btn-default btn-lg btn-block little-padding-left-right" id="btn_switch_map_messages" onclick="">
                     <span id="btn_switch_map_messages_span"> Messages </span>
                 </button>
             </div>
 
-            <!-- Info -->
+            <!-- Points behind next team -->
             <div class="col-xs-3">
-                <button class="btn btn-default btn-lg btn-block" data-target="#information_modal" data-toggle="modal">
+                <div class="centerBlock">
+                    <span id="team_status_next_team_score_diff_xs" class="text-style-points text-red"></span>
+                </div>
+            </div>
+
+            <!-- Info -->
+            <div class="col-xs-1 little_padding">
+                <button class="btn btn-default btn-lg btn-block little-padding-left-right" data-target="#information_modal" data-toggle="modal">
                  <span class="glyphicon glyphicon-info-sign"></span> </button>
             </div>
         </div>
@@ -156,36 +170,40 @@
         </div>
     </div>
 
-    <!-- Map / messages-->
+    <!-- Map / messages / rank-->
     <div class="col-lg-9 col-md-8 col-sm-7 little_padding">
+        <!-- Map -->
         <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12 little_padding">
             <div id="map">
                 <h2> This is where the map should be </h2>
             </div>
         </div>
 
-        <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12 little_padding">
-            <div id="messages">
-                <div class="panel panel-success">
-                    <div class="panel-heading" id="messages_panel_heading">
+        <!-- Messages -->
+        <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12 little_padding" id="messages">
+            <div class="panel panel-success">
+                <div class="panel-heading" id="messages_panel_heading">
+                    <div class="col-sm-6">
                         <h4> Meldinger </h4>
                     </div>
-                    <div class="panel-body">
-                        <div style="overflow:auto" id="messages_panel_body">
-                            <!--p id="meldinger">
-                                Melding 1 <br /> Melding 2 <br />  Melding 3 <br /> Melding 4 <br /> Melding 5 <br />
-                                Melding 6 <br />  Melding 7 <br />  Melding 8 <br />  Melding 9 <br />  Melding 10 <br />
-                                Melding 11 <br /> Melding 12 <br />  Melding 13 <br /> Melding 14 <br /> Melding 15 <br />
-                                Melding 16 <br />  Melding 17 <br />  Melding 18 <br />  Melding 19 <br />  Melding 20 <br />
-                                Melding 21 <br /> Melding 22 <br />  Melding 23 <br /> Melding 24 <br /> Melding 25 <br />
-                                Melding 26 <br />  Melding 27 <br />  Melding 28 <br />  Melding 29 <br />  Melding 30 <br />
-                                Melding 31 <br /> Melding 32 <br />  Melding 33 <br /> Melding 34 <br /> Melding 35 <br />
-                                Melding 36 <br />  Melding 37 <br />  Melding 38 <br />  Melding 39 <br />  Melding 40 <br />
-                            </p -->
 
-                            <ul id="messages_list" style="list-style:none; padding-left:0px"></ul>
-                        </div>
-                        
+                    <div class="col-sm-3 visible-sm little_padding">
+                        <!-- Points infront of prev team -->
+                        <span id="team_status_prev_team_score_diff_main" class="text-style-points text-green"></span>
+                    </div>
+
+                    <div class="col-sm-3 visible-sm little_padding">
+                        <!-- Points behind next team -->
+                        <span id="team_status_next_team_score_diff_main" class="text-style-points text-red"></span>
+                    </div>
+
+
+                    <br />
+                    <br />
+                </div>
+                <div class="panel-body">
+                    <div style="overflow:auto" id="messages_panel_body">
+                        <ul id="messages_list" style="list-style:none; padding-left:0px"></ul>
                     </div>
                 </div>
             </div>
