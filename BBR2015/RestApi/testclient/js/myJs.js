@@ -15,7 +15,7 @@ function updateAndDisplayMapOrMessage(show_map) {
             $("#messages")[0].style.display = 'none';
             $("#map")[0].style.display = 'block';
 
-            $("#btn_switch_map_messages_span")[0].innerHTML = "Messages";
+            $("#btn_switch_map_messages_span")[0].innerHTML = "Meldinger";
         } else {
             $("#messages")[0].style.display = 'block';
             $("#map")[0].style.display = 'none';
@@ -30,6 +30,17 @@ function updateAndDisplayMapOrMessage(show_map) {
     }
 
     updateMapAndMessagesSize();
+}
+
+function updateScoreDiffToNextAndPrevTeam(ranking) {
+    var prev_team_msg = ranking.poengForanLagetBak + " <span class='glyphicon glyphicon-circle-arrow-up'> </span> ";
+    var next_team_msg = " <span class='glyphicon glyphicon-circle-arrow-down'> </span>" + ranking.poengBakLagetForan;
+
+    $("#team_status_prev_team_score_diff_xs")[0].innerHTML = prev_team_msg;
+    $("#team_status_next_team_score_diff_xs")[0].innerHTML = next_team_msg;
+
+    $("#team_status_prev_team_score_diff_main")[0].innerHTML = prev_team_msg;
+    $("#team_status_next_team_score_diff_main")[0].innerHTML = next_team_msg;
 }
 
 function switchMapAndMessages() {
@@ -173,6 +184,7 @@ function getGameState() {
 function processGameState(gameState) {
     weaponsAviable(gameState.vaapen)
     updatePostsOnMap(gameState.Poster);
+    updateScoreDiffToNextAndPrevTeam(gameState.ranking);
 }
 
 function weaponsAviable(weapons) {
@@ -450,8 +462,8 @@ function updateMapAndMessagesSize() {
     var messages_inner_panel_height = 0;
 
     if (bootstrap_size === 'xs') {
-        map_margin_top = 25;
-        messages_margin_top = 20;
+        map_margin_top = 40;
+        messages_margin_top = 35;
 
         map_margin_bottom = 30;
         messages_margin_bottom = 30;
@@ -464,9 +476,11 @@ function updateMapAndMessagesSize() {
     } else if (bootstrap_size === 'sm') {
         messages_margin_top = 23;
         messages_margin_left = 10;
+        messages_margin_right = 50;
         map_margin_left = 10;
 
-        map_height = $('#register_post_panel')[0].height() + $('#options_and_information')[0].height() + 22;
+        map_height = $('#register_post_panel').height() + $('#options_and_information').height() + 22;
+        console.log(map_height);
         messages_height = height_screen - map_height - 50;
         messages_inner_panel_height = messages_height - 100;
 
