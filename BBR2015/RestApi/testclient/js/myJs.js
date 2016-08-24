@@ -34,7 +34,7 @@ function updateAndDisplayMapOrMessage(show_map) {
 
 function updateScoreDiffToNextAndPrevTeam(ranking) {
     var prev_team_msg = ranking.poengForanLagetBak + " <span class='glyphicon glyphicon-circle-arrow-up'> </span> ";
-    var next_team_msg = " <span class='glyphicon glyphicon-circle-arrow-down'> </span>" + ranking.poengBakLagetForan;
+    var next_team_msg = " <span class='glyphicon glyphicon-circle-arrow-down'> </span> " + ranking.poengBakLagetForan;
 
     $("#team_status_prev_team_score_diff_xs")[0].innerHTML = prev_team_msg;
     $("#team_status_next_team_score_diff_xs")[0].innerHTML = next_team_msg;
