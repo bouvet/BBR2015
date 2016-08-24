@@ -62,7 +62,6 @@ function displayNumberOfWeapons(bombs, traps) {
 }
 
 var post_markers = [];
-var post_marker_size = 0.00007;
 function updatePostsOnMap(Posts) {
     if (!(map === null)) {
         //clear old post markers
@@ -72,11 +71,7 @@ function updatePostsOnMap(Posts) {
         post_markers = [];
 
         //add new post markers
-        if (!(Posts === undefined)) {
-            Posts.forEach(function (post) {
-                putPostOnMap(post);
-            });
-        }
+        if (!(Posts === undefined)) { Posts.forEach(putPostOnMap(post)); }
     }
 }
 
@@ -87,7 +82,7 @@ function putPostOnMap(post) {
     var isRegistered = post.HarRegistrert;
 
     var post_color = "gray";
-    if (isRegistered===0) {
+    if (isRegistered==="false") {
         for (var i = 0; i < post_color_map.length; i++) {
             if (value > post_color_map[i][1]) {
                 post_color = post_color_map[i][0];
@@ -101,6 +96,43 @@ function putPostOnMap(post) {
 
     post_marker.bindPopup(""+value);
     post_markers[post_markers.length] = post_marker;
+}
+
+var player_markers = [];
+function updateTeamOnMap(players) {
+    if (!(map === null)) {
+        //clear old player markers
+        player_markers.forEach(function (player_marker) {
+            map.removeLayer(player_marker)
+        });
+        player_markers = [];
+
+        //add new player markers
+        if (!(players === undefined)) {
+            players.forEach(function (player) {
+                putPlayerOnMap(player)
+            });
+        }
+    }
+}
+
+function putPlayerOnMap(player) {
+    var lat = player.latitude;
+    var lon = player.longitude;
+    var name = player.navn;
+
+    var distance_m = calcDistanceToClientPlayer(lat, lon);
+    if (distance_m < 12) {
+        return;
+    }
+
+    player_markers[player_markers.length] = L.circle([lat, lon], 6, {
+        color: 'blue',
+        fillColor: 'blue',
+        fillOpacity: 1,
+        weight: 0,
+    }).addTo(map);
+
 }
 
 // ------------------------------------------------
@@ -159,10 +191,12 @@ function weaponsAviable(weapons) {
     displayNumberOfWeapons(n_bombs, n_traps);
 }
 
-function updatePlayersOnMap(players) {
-    if (!(map === null)) {
-        
-    }
+function getTeamPosition() {
+    $.ajax({
+        type: 'GET',
+        url: baseUrl + 'PosisjonsService',
+        headers: createHeader()
+    }).success(updateTeamOnMap);
 }
 
 // ----------------------------------------------
@@ -239,10 +273,11 @@ function sendPosition() {
             if (!(circle === null)) {
                 map.removeLayer(circle);
             }
-            circle = L.circle([player_position.lat, player_position.lon], 8, {
+            circle = L.circle([player_position.lat, player_position.lon], 6, {
                 color: 'red',
                 fillColor: '#f03',
-                fillOpacity: 0.5
+                fillOpacity: 1,
+                weight: 0
             }).addTo(map);
         }
 
@@ -317,17 +352,12 @@ setInterval(function () {
         sendPosition();
         getGameState();
         updateMessages();
-        //hentLagposisjoner();
+        getTeamPosition();
     }
 }, 3000);
 
 //Event that triggers when all of HTML has been loaded
 window.onload = function () {
-    updateAndDisplayMapOrMessage(map_isVisible);
-    loadUserOptions();
-    updateMessages();
-    getGameState();
-
     map = L.map('map').setView([59.935, 10.7585], 15);
 
     post_marker_icon_general = L.Icon.extend({
@@ -341,6 +371,13 @@ window.onload = function () {
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
+
+    updateAndDisplayMapOrMessage(map_isVisible);
+    loadUserOptions();
+    updateMessages();
+    getGameState();
+    sendPosition();
+    getTeamPosition();
 
     $("#btn_switch_map_messages")[0].onclick = function () {
         switchMapAndMessages();
@@ -489,4 +526,16 @@ function autoSelectNoWeapon() {
     //document.getElementById("no_weapon_btn_modal").focus();
     $("#bomb_btn_modal")[0].classList.remove("active");
     $("#trap_btn_modal")[0].classList.remove("active");
+}
+
+// should work for small distances #siving
+function calcDistanceToClientPlayer(lat, lon) {
+    var deltaLat = lat - player_position.lat;
+    var deltaLon = lon - player_position.lon;
+
+    var earthCircumference_m = 40000;
+    var deltaLat_m = deltaLat * earthCircumference_m * Math.cos(Math.PI / 180 * lat);
+    var detlaLon_m = deltaLon * earthCircumference_m;
+    var distance = Math.sqrt(Math.pow(deltaLat_m, 2) + Math.pow(detlaLon_m, 2));
+    return distance;
 }
