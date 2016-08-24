@@ -341,14 +341,14 @@ function loadUserOptions() {
         
         //logIn(lag_kode, deltaker_kode); disabled for debugging
     } else {
-        $('#options_modal')[0].modal('show');
+        $('#options_modal').modal('show');
     }
 }
 
 function logIn(lag_kode, deltaker_kode) {
     var msg = "Deltaker  " + deltaker_kode + " logget inn";
 
-    var successHandler = function () { showToast("Innlogget med lagkode " + lag_kode + " og deltager id " + deltaker_kode); };
+    var successHandler = function () { showToast("Innlogget med lagkode: " + lag_kode + " og deltagerkode: " + deltaker_kode); };
     var errHandler = function () { showToast("Innlogging feilet"); };
     sendMessage(msg, successHandler, errHandler);
 }
