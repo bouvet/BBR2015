@@ -2,6 +2,11 @@
 var meldingsSekvens = 0;
 var map_isVisible = true;
 var map = null;
+var post_marker_icon_general = null;
+
+var post_color_map = [["red", 95], ["orange", 75], ["yellow", 55],
+                    ["green_yellow", 35], ["green", 15], ["gray", 0]];
+
 
 function updateAndDisplayMapOrMessage(show_map) {
     var bootstrap_size = findBootstrapEnvironment();
@@ -76,25 +81,23 @@ function updatePostsOnMap(Posts) {
 }
 
 function putPostOnMap(post) {
-    var zoom_lvl = (19-map.getZoom());
-    var lat = post.Latitude;
-    var lon = post.Longitude;
+    var lat   = post.Latitude;
+    var lon   = post.Longitude;
     var value = post.PoengVerdi;
-    //var isRegistered = post.HarRegistrert;
+    var isRegistered = post.HarRegistrert;
 
-    zoom_lvl = Math.max(zoom_lvl, 2);
-    var _post_marker_size = post_marker_size * Math.pow(zoom_lvl, 1.3);
-    
-    var post_marker = L.polygon([
-        [lat + _post_marker_size * 3 / 4, lon - _post_marker_size / 1.25],
-        [lat + _post_marker_size * 3 / 4, lon + _post_marker_size / 1.25],
-        [lat - _post_marker_size / 4, lon]
-    ], {
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 1,
-        weight: 0
-    }).addTo(map);
+    var post_color = "gray";
+    if (isRegistered===0) {
+        for (var i = 0; i < post_color_map.length; i++) {
+            if (value > post_color_map[i][1]) {
+                post_color = post_color_map[i][0];
+                break;
+            }
+        }
+    }
+
+    var post_marker_color = new post_marker_icon_general({ iconUrl: "img/flag_"+post_color+".png" });
+    var post_marker = L.marker([lat, lon], { icon: post_marker_color }).addTo(map);
 
     post_marker.bindPopup(""+value);
     post_markers[post_markers.length] = post_marker;
@@ -137,16 +140,7 @@ function getGameState() {
 
 function processGameState(gameState) {
     weaponsAviable(gameState.vaapen)
-    //updatePostsOnMap(gameState.Poster);
-
-    updatePostsOnMap();
-
-    var post = {
-        "Latitude": 59.935,
-        "Longitude": 10.759,
-        "PoengVerdi": 50
-    }
-    putPostOnMap(post);
+    updatePostsOnMap(gameState.Poster);
 }
 
 function weaponsAviable(weapons) {
@@ -187,14 +181,16 @@ function updatePlayersOnMap(players) {
     return headers;
 };
 
-function sendMessage(msg) {
+function sendMessage(msg, successHandler, errHandler) {
     showToast("Melding sendt");
     $.ajax({
         type: "POST",
         url: baseUrl + 'Meldinger',
         headers:
         createHeader(),
-        data: JSON.stringify({tekst : msg})
+        data: JSON.stringify({ tekst: msg }),
+        success: successHandler,
+        error : errHandler
     });
 };
 
@@ -284,7 +280,7 @@ function saveUserOption() {
         return;
     }
 
-    showToast("Lagrer brukerinnstillinger... ");
+    logIn(lag_kode, deltaker_kode);
 }
 
 function loadUserOptions() {
@@ -296,10 +292,18 @@ function loadUserOptions() {
         var deltaker_kode = localStorage.getItem("deltaker_kode");
         document.getElementById("deltaker_kode").value = deltaker_kode;
         
-        showToast("Lag kode: " + lag_kode + ", deltager kode: "+deltaker_kode);
+        //logIn(lag_kode, deltaker_kode); disabled for debugging
     } else {
         $('#options_modal').modal('show');
     }
+}
+
+function logIn(lag_kode, deltaker_kode) {
+    var msg = "Deltaker  " + deltaker_kode + " logget inn";
+
+    var successHandler = function () { showToast("Innlogget med lagkode " + lag_kode + " og deltager id " + deltaker_kode); };
+    var errHandler = function () { showToast("Innlogging feilet"); };
+    sendMessage(msg, successHandler, errHandler);
 }
 
 // -------------------
@@ -325,7 +329,15 @@ window.onload = function () {
     getGameState();
 
     map = L.map('map').setView([59.935, 10.7585], 15);
-    
+
+    post_marker_icon_general = L.Icon.extend({
+        options: {
+            iconSize: [30, 42],
+            shadowSize: [50, 64],
+            iconAnchor: [10, 42],
+            popupAnchor: [0, -42]
+        }
+    });
 
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
