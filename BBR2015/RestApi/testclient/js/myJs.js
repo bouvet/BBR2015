@@ -12,20 +12,21 @@ function updateAndDisplayMapOrMessage(show_map) {
     var bootstrap_size = findBootstrapEnvironment();
     if (bootstrap_size === 'xs') {
         if (show_map) {
-            document.getElementById("messages").style.display = 'none';
-            document.getElementById("map").style.display = 'block';
+            $("#messages")[0].style.display = 'none';
+            $("#map")[0].style.display = 'block';
 
-            document.getElementById("btn_switch_map_messages_span").innerHTML = "Messages";
+            $("#btn_switch_map_messages_span")[0].innerHTML = "Messages";
         } else {
-            document.getElementById("messages").style.display = 'block';
-            document.getElementById("map").style.display = 'none';
+            $("#messages")[0].style.display = 'block';
+            $("#map")[0].style.display = 'none';
 
-            document.getElementById("btn_switch_map_messages_span").innerHTML = "Map";
+            $("#btn_switch_map_messages_span")[0].innerHTML = "Map";
         }
     } else {
-        document.getElementById("messages").style.display = 'block';
-        document.getElementById("map").style.display = 'block';
-        document.getElementById("btn_switch_map_messages_span").innerHTML = "Messages";
+        //document.getElementById("messages").style.display = 'block';
+       $("#messages")[0].style.display = 'block';
+       $("#map")[0].style.display = 'block';
+       $("#btn_switch_map_messages_span")[0].innerHTML = "Messages";
     }
 
     updateMapAndMessagesSize();
@@ -37,28 +38,27 @@ function switchMapAndMessages() {
 }
 
 function displayNumberOfWeapons(bombs, traps) {
-    document.getElementById("bomb_label_modal").innerHTML = "x" + bombs;
-    document.getElementById("trap_label_modal").innerHTML = "x" + traps;
+    $("#bomb_label_modal")[0].innerHTML = "x" + bombs;
+    $("#trap_label_modal")[0].innerHTML = "x" + traps;
 
-    document.getElementById("bomb_label_main").innerHTML = "x" + bombs;
-    document.getElementById("trap_label_main").innerHTML = "x" + traps;
+    $("#bomb_label_main")[0].innerHTML = "x" + bombs;
+    $("#trap_label_main")[0].innerHTML = "x" + traps;
  
     if (bombs === 0) {
-        document.getElementById("bomb_btn_main").classList.add("disabled");
-        document.getElementById("bomb_btn_modal").classList.add("disabled");
+        $("#bomb_btn_main")[0].classList.add("disabled");
+        $("#bomb_btn_modal")[0].classList.add("disabled");
     } else {
-        document.getElementById("bomb_btn_main").classList.remove("disabled");
-        document.getElementById("bomb_btn_modal").classList.remove("disabled");
+        $("#bomb_btn_main")[0].classList.remove("disabled");
+        $("#bomb_btn_modal")[0].classList.remove("disabled");
     }
 
     if (traps === 0) {
-        document.getElementById("trap_btn_main").classList.add("disabled");
-        document.getElementById("trap_btn_modal").classList.add("disabled");
+        $("#trap_btn_main")[0].classList.add("disabled");
+        $("#trap_btn_modal")[0].classList.add("disabled");
     } else {
-        document.getElementById("trap_btn_main").classList.remove("disabled");
-        document.getElementById("trap_btn_modal").classList.remove("disabled");
+        $("#trap_btn_main")[0].classList.remove("disabled");
+        $("#trap_btn_modal")[0].classList.remove("disabled");
     }
-    //autoSelectNoWeapon();
 }
 
 var post_markers = [];
@@ -195,11 +195,11 @@ function sendMessage(msg, successHandler, errHandler) {
 };
 
 function registerPost(input) {
-    var postId = document.getElementById("post_id_" + input).value;
-    document.getElementById("post_id_" + input).value = "";
+    var postId = $("#post_id_" + input)[0].value;
+    $("#post_id_" + input)[0].value = "";
     var weapon = "";
-    if (document.getElementById("bomb_radio_" + input).checked) weapon = "BOMBE";
-    if (document.getElementById("trap_radio_" + input).checked) weapon = "FELLE";
+    if ($("#bomb_radio_" + input)[0].checked) weapon = "BOMBE";
+    if ($("#trap_radio_" + input)[0].checked) weapon = "FELLE";
 
     console.log(postId);
     console.log(weapon);
@@ -262,14 +262,14 @@ function sendPosition() {
 function saveUserOption() {
     localStorage.setItem("prevUser", "true");
 
-    var lag_kode = document.getElementById("lag_kode").value;
+    var lag_kode = $("#lag_kode")[0].value;
     localStorage.setItem("lag_kode", lag_kode);
 
-    var deltaker_kode = document.getElementById("deltaker_kode").value;
+    var deltaker_kode = $("#deltaker_kode")[0].value;
     localStorage.setItem("deltaker_kode", deltaker_kode);
 
-    var radio_auto_update_no = document.getElementById("radio_auto_update_no").checked;
-    var radio_auto_update_yes = document.getElementById("radio_auto_update_yes").checked;
+    var radio_auto_update_no = $("#radio_auto_update_no")[0].checked;
+    var radio_auto_update_yes = $("#radio_auto_update_yes")[0].checked;
 
     if (radio_auto_update_no === true) {
         localStorage.setItem("auto_update_setting", "false");
@@ -287,14 +287,14 @@ function loadUserOptions() {
     var prevUser = localStorage.getItem("prevUser");
     if (prevUser === "true") {
         var lag_kode = localStorage.getItem("lag_kode");
-        document.getElementById("lag_kode").value = lag_kode;
+        $("#lag_kode")[0].value = lag_kode;
 
         var deltaker_kode = localStorage.getItem("deltaker_kode");
-        document.getElementById("deltaker_kode").value = deltaker_kode;
+        $("#deltaker_kode")[0].value = deltaker_kode;
         
         //logIn(lag_kode, deltaker_kode); disabled for debugging
     } else {
-        $('#options_modal').modal('show');
+        $('#options_modal')[0].modal('show');
     }
 }
 
@@ -333,7 +333,6 @@ window.onload = function () {
     post_marker_icon_general = L.Icon.extend({
         options: {
             iconSize: [30, 42],
-            shadowSize: [50, 64],
             iconAnchor: [10, 42],
             popupAnchor: [0, -42]
         }
@@ -343,39 +342,39 @@ window.onload = function () {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    document.getElementById("btn_switch_map_messages").onclick = function() {
+    $("#btn_switch_map_messages")[0].onclick = function () {
         switchMapAndMessages();
     }
 
-    document.getElementById("send_messages").onclick = function() {
-        var msg = document.getElementById("send_messages_textbox_main").value;
-        document.getElementById("send_messages_textbox_main").value = "";
+    $("#send_messages")[0].onclick = function () {
+        var msg = $("#send_messages_textbox_main")[0].value;
+        $("#send_messages_textbox_main")[0].value = "";
         sendMessage(msg);
     }
 
-    document.getElementById("register_post_btn_main").onclick = function () {
+    $("#register_post_btn_main")[0].onclick = function () {
         registerPost("main");
     }
-    document.getElementById("register_post_btn_modal").onclick = function () {
+    $("#register_post_btn_modal")[0].onclick = function () {
         registerPost("modal");
     }
 
     
-    document.getElementById("registrer_user").onclick = function() {
+    $("#registrer_user")[0].onclick = function () {
         saveUserOption();
     }
 
-    document.getElementById("bomb_btn_main").onclick = function () {
-        if (document.getElementById("bomb_btn_main").classList.contains("disabled")) setTimeout(autoSelectNoWeapon, 2);
+    $("#bomb_btn_main")[0].onclick = function () {
+        if ($("#bomb_btn_main")[0].classList.contains("disabled")) setTimeout(autoSelectNoWeapon, 2);
     }
-    document.getElementById("trap_btn_main").onclick = function () {
-        if (document.getElementById("trap_btn_main").classList.contains("disabled")) setTimeout(autoSelectNoWeapon, 2);
+    $("#trap_btn_main")[0].onclick = function () {
+        if ($("#trap_btn_main")[0].classList.contains("disabled")) setTimeout(autoSelectNoWeapon, 2);
     }
-    document.getElementById("bomb_btn_modal").onclick = function () {
-        if (document.getElementById("bomb_btn_modal").classList.contains("disabled")) setTimeout(autoSelectNoWeapon, 2);
+    $("#bomb_btn_modal")[0].onclick = function () {
+        if ($("#bomb_btn_modal")[0].classList.contains("disabled")) setTimeout(autoSelectNoWeapon, 2);
     }
-    document.getElementById("trap_btn_modal").onclick = function () {
-        if (document.getElementById("trap_btn_modal").classList.contains("disabled")) setTimeout(autoSelectNoWeapon, 2);
+    $("#trap_btn_modal")[0].onclick = function () {
+        if ($("#trap_btn_modal")[0].classList.contains("disabled")) setTimeout(autoSelectNoWeapon, 2);
     }
 }
 
@@ -424,17 +423,17 @@ function updateMapAndMessagesSize() {
         messages_height = map_height-60;
         messages_inner_panel_height = messages_height;
         
-        document.getElementById("messages_panel_heading").style.display = 'none';
+        $("#messages_panel_heading")[0].style.display = 'none';
     } else if (bootstrap_size === 'sm') {
         messages_margin_top = 23;
         messages_margin_left = 10;
         map_margin_left = 10;
 
-        map_height = $('#register_post_panel').height() + $('#options_and_information').height() + 22;
+        map_height = $('#register_post_panel')[0].height() + $('#options_and_information')[0].height() + 22;
         messages_height = height_screen - map_height - 50;
         messages_inner_panel_height = messages_height - 100;
 
-        document.getElementById("messages_panel_heading").style.display = 'block';
+        $("#messages_panel_heading")[0].style.display = 'block';
     } else {
         map_margin_bottom = 35;
         map_margin_right = 10;
@@ -444,21 +443,21 @@ function updateMapAndMessagesSize() {
         messages_height = map_height;
         messages_inner_panel_height = messages_height - 100;
 
-        document.getElementById("messages_panel_heading").style.display = 'block';
+        $("#messages_panel_heading")[0].style.display = 'block';
     }
     
-    document.getElementById("map").style.height = map_height + 'px';
-    document.getElementById("map").style.marginTop = map_margin_top + 'px';
-    document.getElementById("map").style.marginLeft = map_margin_left + 'px';
-    document.getElementById("map").style.marginRight = map_margin_right + 'px';
+    $("#map")[0].style.height = map_height + 'px';
+    $("#map")[0].style.marginTop = map_margin_top + 'px';
+    $("#map")[0].style.marginLeft = map_margin_left + 'px';
+    $("#map")[0].style.marginRight = map_margin_right + 'px';
 
-    document.getElementById("messages").style.height = messages_height + 'px';
-    document.getElementById("messages").style.marginTop = messages_margin_top + 'px';
-    document.getElementById("messages").style.marginLeft = messages_margin_left + 'px';
-    document.getElementById("messages").style.marginRight = messages_margin_right + 'px';
+    $("#messages")[0].style.height = messages_height + 'px';
+    $("#messages")[0].style.marginTop = messages_margin_top + 'px';
+    $("#messages")[0].style.marginLeft = messages_margin_left + 'px';
+    $("#messages")[0].style.marginRight = messages_margin_right + 'px';
 
-    document.getElementById("messages_panel_body").style.height = messages_inner_panel_height + 'px';
-    document.getElementById("information_modal_body").style.height = (height_screen-250) + 'px';
+    $("#messages_panel_body")[0].style.height = messages_inner_panel_height + 'px';
+    $("#information_modal_body")[0].style.height = (height_screen - 250) + 'px';
 }
 
 function findBootstrapEnvironment() {
@@ -479,15 +478,15 @@ function findBootstrapEnvironment() {
 }
 
 function autoSelectNoWeapon() {
-    document.getElementById("no_weapon_radio_main").checked = "true";
-    document.getElementById("no_weapon_btn_main").classList.add("active");
+    $("#no_weapon_radio_main")[0].checked = "true";
+    $("#no_weapon_btn_main")[0].classList.add("active");
     //document.getElementById("no_weapon_btn_main").focus();
-    document.getElementById("bomb_btn_main").classList.remove("active");
-    document.getElementById("trap_btn_main").classList.remove("active");
+    $("#bomb_btn_main")[0].classList.remove("active");
+    $("#trap_btn_main")[0].classList.remove("active");
 
-    document.getElementById("no_weapon_radio_modal").checked = "true";
-    document.getElementById("no_weapon_btn_modal").classList.add("active");
+    $("#no_weapon_radio_modal")[0].checked = "true";
+    $("#no_weapon_btn_modal")[0].classList.add("active");
     //document.getElementById("no_weapon_btn_modal").focus();
-    document.getElementById("bomb_btn_modal").classList.remove("active");
-    document.getElementById("trap_btn_modal").classList.remove("active");
+    $("#bomb_btn_modal")[0].classList.remove("active");
+    $("#trap_btn_modal")[0].classList.remove("active");
 }
