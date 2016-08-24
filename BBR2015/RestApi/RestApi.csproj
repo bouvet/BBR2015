@@ -284,6 +284,15 @@
     <Content Include="scoreboard\js\app.js" />
     <Content Include="scoreboard\lib\leaflet.awesome-markers.js" />
     <Content Include="testclient\css\myStyle.css" />
+    <Content Include="testclient\img\250px-Flag_icon_green_4.svg.png" />
+    <Content Include="testclient\img\bomb.png" />
+    <Content Include="testclient\img\flag_gray.png" />
+    <Content Include="testclient\img\flag_green.png" />
+    <Content Include="testclient\img\flag_green_yellow.png" />
+    <Content Include="testclient\img\flag_orange.png" />
+    <Content Include="testclient\img\flag_red.png" />
+    <Content Include="testclient\img\flag_yellow.png" />
+    <Content Include="testclient\img\trap.png" />
     <Content Include="testclient\js\myJs.js" />
     <Content Include="testclient_old\css\css.css" />
     <Content Include="testclient_old\Gruntfile.js" />

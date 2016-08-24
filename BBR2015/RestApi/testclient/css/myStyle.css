@@ -31,6 +31,10 @@ body{
     padding:5px 5px 5px 5px;
 }
 
+.btn-img{
+    padding: 5px 10px 5px 10px !important;
+}
+
 /* The snackbar - position it at the bottom and in the middle of the screen */
 #snackbar {
     visibility: hidden; /* Hidden by default. Visible on click */
