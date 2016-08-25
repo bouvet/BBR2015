@@ -3,6 +3,7 @@ var meldingsSekvens = 0;
 var map_isVisible = true;
 var map = null;
 var post_marker_icon_general = null;
+var prev_rank = -1;
 
 var post_color_map = [["red", 95], ["orange", 75], ["yellow", 55],
                     ["green_yellow", 35], ["green", 15], ["gray", 0]];
@@ -32,8 +33,28 @@ function updateAndDisplayMapOrMessage(show_map) {
 }
 
 function updateScoreDiffToNextAndPrevTeam(ranking) {
-    var prev_team_msg = ranking.poengForanLagetBak + " <span class='glyphicon glyphicon-circle-arrow-up'> </span> ";
-    var next_team_msg = " <span class='glyphicon glyphicon-circle-arrow-down'> </span> " + ranking.poengBakLagetForan;
+    var arrow_up = "<span class='glyphicon glyphicon-circle-arrow-up'> </span>";
+    var arrow_down = "<span class='glyphicon glyphicon-circle-arrow-down'> </span>";
+
+    var new_rank = ranking.rank;
+    if (new_rank !== prev_rank) {
+        var msg = { 'deltaker': "", 'melding': '' };
+        if (prev_rank === -1) {
+            msg.deltaker = 'Ranking';
+            msg.melding = 'Dere er på ' + new_rank + '. plass';
+        } else if (new_rank > prev_rank) {
+            msg.deltaker = arrow_up + ' Ny ranking ' + arrow_up;
+            msg.melding  = 'Rykket frem til ' + new_rank + '. plass!';
+        } else {
+            msg.deltaker = arrow_down + ' Ny ranking ' + arrow_down;
+            msg.melding = 'Falt tilabke til ' + new_rank + '. plass';
+        }
+        addNewMessage(msg);
+    }
+    prev_rank = new_rank;
+
+    var prev_team_msg = ranking.poengForanLagetBak + " " + arrow_up + " ";
+    var next_team_msg = " " + arrow_down + " " + ranking.poengBakLagetForan;
 
     $("#team_status_prev_team_score_diff_xs")[0].innerHTML = prev_team_msg;
     $("#team_status_next_team_score_diff_xs")[0].innerHTML = next_team_msg;
@@ -69,6 +90,15 @@ function displayNumberOfWeapons(bombs, traps) {
         $("#trap_btn_main")[0].classList.remove("disabled");
         $("#trap_btn_modal")[0].classList.remove("disabled");
     }
+}
+
+function addNewMessage(msg) {
+    $("#messages_list").prepend(
+        "<li class='list-striped'>" +
+        "<div> <b>" + msg.deltaker + "</b> </div>" +
+        "<div>" + msg.melding + "</div>" +
+        "</li>"
+    );
 }
 
 var post_markers = [];
@@ -153,11 +183,12 @@ function putPlayerOnMap(player) {
 // --- Recive data from server (post/messages)  ---
 // ------------------------------------------------
 
-function updateMessages() {
+function updateMessages(successHandler) {
     $.ajax({
         type: "GET",
         url: baseUrl + 'Meldinger/' + meldingsSekvens,
-        headers: createHeader()
+        headers: createHeader(),
+        success: successHandler
     }).done(displayMessagesFromServer);
 }
 
@@ -170,15 +201,6 @@ function displayMessagesFromServer(data) {
         addNewMessage(msg);
     });
 };
-
-function addNewMessage(msg) {
-    $("#messages_list").prepend(
-        "<li class='list-striped'>" +
-        "<div>" + msg.deltaker + "</div>" +
-        "<div>" + msg.melding + "</div>" +
-        "</li>"
-    );
-}
 
 function getGameState() {
     $.ajax({
@@ -393,8 +415,9 @@ window.onload = function () {
 
     updateAndDisplayMapOrMessage(map_isVisible);
     loadUserOptions();
-    updateMessages();
-    getGameState();
+    updateMessages(getGameState);   // This causes the gamestate to be loaded after the messages. This 
+                                    // ensures that the "rank" message from the client appears after
+                                    // all the other messages (as this is update in "getGameState"). 
     sendPosition();
     getTeamPosition();
 
