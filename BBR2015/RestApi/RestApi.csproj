@@ -338,8 +338,6 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
-    <Content Include="testclient\css\css.css" />
-    <Content Include="testclient\Gruntfile.js" />
     <Content Include="testclient\css\myStyle.css" />
     <Content Include="testclient\img\250px-Flag_icon_green_4.svg.png" />
     <Content Include="testclient\img\bomb.png" />

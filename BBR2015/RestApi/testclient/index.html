@@ -199,8 +199,8 @@
         <!-- Option / information -->
         <div class="col-xs-12 col-sm-12 col-md-12">
             <div class="panel panel-success" id="options_and_information">
-                <div class="panel-heading">
-                    <div class="little-padding">
+                <div class="panel-heading little-padding-left-right">
+                    <div class="little-padding-left-right">
                         <!-- Options-->
                         <div class="col-xs-6">
                             <button class="btn btn-default btn-block" data-target="#options_modal" data-toggle="modal" >
@@ -214,51 +214,45 @@
                         </div>
                     </div>
                     <br />
-                    <br />
-                </div>
-            </div>
-        </div>
+                    <div class="col-xs-12 little-padding-left-right" style="padding-top:8px">
+                        <div class="carousel slide" id="rank_and_score_Carousel_main" data-interval="4000">
+                            <div class="carousel-inner">
+                                <div class="item active">
+                                    <div class="centerBlock little_padding">
+                                        <span class="text-style-points team_status_rank"></span>
+                                    </div>
+                                </div>
 
-        <div class="col-xs-12 col-sm-12 col-md-12">
-            <div class="panel panel-success" id="options_and_information">
-                <div class="panel-heading">
-                    <div class="col-xs-12 little-padding-left-right">
-                        <div class="col-xs-12">
-                            <div class="carousel slide" id="rank_and_score_Carousel_main" data-interval="4000">
-                                <div class="carousel-inner" id="carousel_background">
-                                    <div class="item active">
-                                        <div class="centerBlock">
-                                            <span class="text-style-points team_status_rank"></span>
+                                <div class="item">
+                                    <div class="centerBlock little_padding">
+                                        <span class="text-style-points team_status_score"></span>
+                                    </div>
+                                </div>
+
+                                <div class="item">
+                                    <div class="col-xs-6 little-padding-left-right">
+                                        <div class="centerBlock little_padding">
+                                            <span class="text-style-points text-green team_status_prev_team_score_diff"></span>
                                         </div>
                                     </div>
-
-                                    <div class="item">
-                                        <div class="centerBlock">
-                                            <span class="text-style-points team_status_score"></span>
-                                        </div>
-                                    </div>
-
-                                    <div class="item">
-                                        <div class="col-xs-6">
-                                            <div class="centerBlock">
-                                                <span class="text-style-points text-green team_status_prev_team_score_diff"></span>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-6">
-                                            <div class="centerBlock">
-                                                <span class="text-style-points text-red team_status_next_team_score_diff"></span>
-                                            </div>
+                                    <div class="col-xs-6 little-padding-left-right">
+                                        <div class="centerBlock little_padding">
+                                            <span class="text-style-points text-red team_status_next_team_score_diff"></span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    
+                    <br />
                     <br />
                     <br />
                 </div>
             </div>
         </div>
+
+        
 
         <!-- Register post-->
         <div class="col-xs-12 col-sm-12 col-md-12">
