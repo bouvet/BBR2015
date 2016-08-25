@@ -7,7 +7,6 @@ var post_marker_icon_general = null;
 var post_color_map = [["red", 95], ["orange", 75], ["yellow", 55],
                     ["green_yellow", 35], ["green", 15], ["gray", 0]];
 
-
 function updateAndDisplayMapOrMessage(show_map) {
     var bootstrap_size = findBootstrapEnvironment();
     if (bootstrap_size === 'xs') {
@@ -159,23 +158,27 @@ function updateMessages() {
         type: "GET",
         url: baseUrl + 'Meldinger/' + meldingsSekvens,
         headers: createHeader()
-    }).done(displayMessages);
+    }).done(displayMessagesFromServer);
 }
 
-function displayMessages(data) {
+function displayMessagesFromServer(data) {
     data.meldinger.reverse();
-    data.meldinger.forEach(function (melding) {
-        if (meldingsSekvens < melding.sekvens) {
-            meldingsSekvens = melding.sekvens;
+    data.meldinger.forEach(function (msg) {
+        if (meldingsSekvens < msg.sekvens) {
+            meldingsSekvens = msg.sekvens;
         }
-        $("#messages_list").prepend(
-          "<li class='list-striped'>" +
-            "<div>" + melding.deltaker + "</div>" +
-            "<div>" + melding.melding + "</div>" +
-          "</li>"
-          );
+        addNewMessage(msg);
     });
 };
+
+function addNewMessage(msg) {
+    $("#messages_list").prepend(
+        "<li class='list-striped'>" +
+        "<div>" + msg.deltaker + "</div>" +
+        "<div>" + msg.melding + "</div>" +
+        "</li>"
+    );
+}
 
 function getGameState() {
     $.ajax({
