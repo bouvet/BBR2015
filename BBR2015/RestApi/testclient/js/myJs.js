@@ -82,7 +82,11 @@ function updatePostsOnMap(Posts) {
         post_markers = [];
 
         //add new post markers
-        if (!(Posts === undefined)) { Posts.forEach(putPostOnMap(post)); }
+        if (!(Posts === undefined)) {
+            Posts.forEach(function (post) {
+                putPostOnMap(post);
+            });
+        }
     }
 }
 
