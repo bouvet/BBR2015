@@ -20,41 +20,28 @@
 <body>
     <div id="snackbar">Some text some message..</div>
 
-    <!-- Map / messages / rank / info / settings, navbar (visible when xs) -->
+    <!-- Map / messages / info / settings, navbar (visible when xs) -->
     <nav class="navbar navbar-default navbar-fixed-top visible-xs">
         <div class="container little_padding">
-
             <!-- Options-->
-            <div class="col-xs-1 little_padding">
+            <div class="col-xs-2 little_padding">
                 <button class="btn btn-default btn-lg btn-block little-padding-left-right" data-target="#options_modal" data-toggle="modal">
-                 <span class="glyphicon glyphicon-cog"></span> </button>
-            </div>
-
-            <!-- Points infront of prev team -->
-            <div class="col-xs-3">
-                <div class="centerBlock">
-                    <span id="team_status_prev_team_score_diff_xs" class="text-style-points text-green"></span>
-                </div>
+                    <span class="glyphicon glyphicon-cog"></span>
+                </button>
             </div>
 
             <!-- Map / Messages-->
-            <div class="col-xs-4 little_padding">
+            <div class="col-xs-8 little_padding">
                 <button class="btn btn-default btn-lg btn-block little-padding-left-right" id="btn_switch_map_messages" onclick="">
                     <span id="btn_switch_map_messages_span"> Messages </span>
                 </button>
             </div>
 
-            <!-- Points behind next team -->
-            <div class="col-xs-3">
-                <div class="centerBlock">
-                    <span id="team_status_next_team_score_diff_xs" class="text-style-points text-red"></span>
-                </div>
-            </div>
-
             <!-- Info -->
-            <div class="col-xs-1 little_padding">
+            <div class="col-xs-2 little_padding">
                 <button class="btn btn-default btn-lg btn-block little-padding-left-right" data-target="#information_modal" data-toggle="modal">
-                 <span class="glyphicon glyphicon-info-sign"></span> </button>
+                    <span class="glyphicon glyphicon-info-sign"></span>
+                </button>
             </div>
         </div>
     </nav>
@@ -390,17 +377,58 @@
     </div>
 
     <!-- Navbar bottom, visible when xs-->
-    <nav class="navbar navbar-default navbar-fixed-bottom visible-xs">
-        <div class="container little-padding-left-right">
+    <nav class="navbar navbar-default navbar_custom_background navbar-fixed-bottom visible-xs">
+        <div class="container little_padding">
 
-            <!-- Register post-->
-            <div class="col-xs-6 little-padding-left-right">
-                <button data-target="#register_post_modal" data-toggle="modal" class="btn btn-default btn-lg btn-block"> Post </button>
+            <!-- Score/Rank -->
+            <div class="col-xs-12 little-padding-left-right">
+                <div class="col-xs-12">
+                    <div class="carousel slide" id="rank_and_score_Carousel" data-interval="4000">
+                        <div class="carousel-inner" id="carousel_background">
+                            <div class="item active">
+                                <div class="centerBlock">
+                                    <span id="team_status_rank" class="text-style-points"></span>
+                                </div>
+                            </div>
+
+                            <div class="item">
+                                <div class="centerBlock">
+                                    <span id="team_status_score" class="text-style-points"></span>
+                                </div>
+                            </div>
+                           
+                            <div class="item">
+                                <div class="col-xs-6">
+                                    <div class="centerBlock">
+                                        <span id="team_status_prev_team_score_diff_xs" class="text-style-points text-green"></span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="centerBlock">
+                                        <span id="team_status_next_team_score_diff_xs" class="text-style-points text-red"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- div class="item">
+                                <div class="centerBlock">
+                                    <span id="last_message_carousel" style="white-space: pre"  class="text-style-points"></span>
+                                </div>
+                            </div -->
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Send melding -->
-            <div class="col-xs-6 little-padding-left-right">
-                <button href="#send_message_modal" data-toggle="modal" class="btn btn-default btn-lg btn-block"> Send melding </button>
+            <div class="col-xs-12" style="padding:0px">
+                <div class="btn-group btn-group-justified btn-group-lg little-padding">
+                    <div class="btn-group" role="group">
+                        <button data-target="#register_post_modal" data-toggle="modal" class="btn btn-default btn-lg little-padding-left-right"> Post </button>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button data-target="#send_message_modal" data-toggle="modal" class="btn btn-default btn-lg little-padding-left-right"> Send melding </button>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>

@@ -6,6 +6,9 @@ var post_marker_icon_general = null;
 var prev_rank = -1;
 var uleste_meldinger = 0;
 
+var score_next_team_diff = 0;
+var score_prev_team_diff = 0;
+
 var post_color_map = [["red", 95], ["orange", 75], ["yellow", 55],
                     ["green_yellow", 35], ["green", 15], ["gray", 0]];
 
@@ -40,31 +43,38 @@ function updateScoreDiffToNextAndPrevTeam(ranking) {
     var arrow_up = "<span class='glyphicon glyphicon-circle-arrow-up'> </span>";
     var arrow_down = "<span class='glyphicon glyphicon-circle-arrow-down'> </span>";
 
+    score_next_team_diff = ranking.poengBakLagetForan;
+    score_prev_team_diff = ranking.poengForanLagetBak;
+
     var new_rank = ranking.rank;
     if (new_rank !== prev_rank) {
         var msg = { 'deltaker': "", 'melding': '' };
+        
         if (prev_rank === -1) {
             msg.deltaker = 'Ranking';
-            msg.melding = 'Dere er på ' + new_rank + '. plass';
+            msg.melding = 'Dere er på ' + new_rank + '. plass.';
         } else if (new_rank > prev_rank) {
             msg.deltaker = arrow_up + ' Ny ranking ' + arrow_up;
             msg.melding  = 'Rykket frem til ' + new_rank + '. plass!';
         } else {
             msg.deltaker = arrow_down + ' Ny ranking ' + arrow_down;
-            msg.melding = 'Falt tilabke til ' + new_rank + '. plass';
+            msg.melding = 'Falt tilabke til ' + new_rank + '. plass.';
         }
+
         addNewMessage(msg);
     }
     prev_rank = new_rank;
 
-    var prev_team_msg = ranking.poengForanLagetBak + " " + arrow_up + " ";
-    var next_team_msg = " " + arrow_down + " " + ranking.poengBakLagetForan;
+    var prev_team_msg = score_prev_team_diff + " " + arrow_up + " ";
+    var next_team_msg = " " + arrow_down + " " + score_next_team_diff;
 
     $("#team_status_prev_team_score_diff_xs")[0].innerHTML = prev_team_msg;
     $("#team_status_next_team_score_diff_xs")[0].innerHTML = next_team_msg;
 
     $("#team_status_prev_team_score_diff_main")[0].innerHTML = prev_team_msg;
     $("#team_status_next_team_score_diff_main")[0].innerHTML = next_team_msg;
+
+    $("#team_status_rank")[0].innerHTML = "Rank #"+new_rank;
 }
 
 function switchMapAndMessages() {
@@ -101,6 +111,8 @@ function addNewMessage(msg) {
         uleste_meldinger++;
         updateAndDisplayMapOrMessage(map_isVisible);
     };
+    //$("#last_message_carousel")[0].innerHTML = msg.melding;
+    
     $("#messages_list").prepend(
         "<li class='list-striped'>" +
         "<div> <b>" + msg.deltaker + "</b> </div>" +
@@ -222,6 +234,7 @@ function processGameState(gameState) {
     weaponsAviable(gameState.vaapen)
     updatePostsOnMap(gameState.Poster);
     updateScoreDiffToNextAndPrevTeam(gameState.ranking);
+    $("#team_status_score")[0].innerHTML = "Score #" + gameState.score;
 }
 
 function weaponsAviable(weapons) {
@@ -428,6 +441,8 @@ window.onload = function () {
     sendPosition();
     getTeamPosition();
 
+    $("#rank_and_score_Carousel").carousel();
+
     $("#btn_switch_map_messages")[0].onclick = function () {
         switchMapAndMessages();
     }
@@ -506,7 +521,7 @@ function updateMapAndMessagesSize() {
         messages_margin_bottom = 30;
 
         map_height = height_screen - map_margin_bottom - map_margin_top;
-        messages_height = map_height-60;
+        messages_height = map_height-40;
         messages_inner_panel_height = messages_height;
         
         $("#messages_panel_heading")[0].style.display = 'none';
@@ -516,7 +531,6 @@ function updateMapAndMessagesSize() {
         map_margin_left = 10;
 
         map_height = $('#register_post_panel').height() + $('#options_and_information').height() + 22;
-        console.log(map_height);
         messages_height = height_screen - map_height - 50;
         messages_inner_panel_height = messages_height - 100;
 

@@ -47,6 +47,10 @@ body{
     padding: 0px;
 }
 
+.navbar_custom_background{
+    background-color:rgba(255,255,255,0.55);
+}
+
 .list-striped:nth-child(odd){
     background-color:rgb(255, 249, 204);
     padding:5px 5px 5px 5px;
