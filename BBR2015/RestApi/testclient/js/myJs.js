@@ -480,7 +480,6 @@ function updateMapAndMessagesSize() {
     } else if (bootstrap_size === 'sm') {
         messages_margin_top = 23;
         messages_margin_left = 10;
-        messages_margin_right = 50;
         map_margin_left = 10;
 
         map_height = $('#register_post_panel').height() + $('#options_and_information').height() + 22;

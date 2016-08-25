@@ -180,34 +180,35 @@
         </div>
 
         <!-- Messages -->
-        <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12 little_padding" id="messages">
-            <div class="panel panel-success">
-                <div class="panel-heading" id="messages_panel_heading">
-                    <div class="col-sm-6">
-                        <h4> Meldinger </h4>
+        <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12 little_padding">
+            <div id="messages">
+                <div class="panel panel-success">
+                    <div class="panel-heading" id="messages_panel_heading">
+                        <div class="col-sm-5">
+                            <h4> Meldinger </h4>
+                        </div>
+
+                        <div class="col-sm-3 visible-sm little_padding">
+                            <!-- Points infront of prev team -->
+                            <span id="team_status_prev_team_score_diff_main" class="text-style-points text-green"></span>
+                        </div>
+
+                        <div class="col-sm-3 visible-sm little_padding">
+                            <!-- Points behind next team -->
+                            <span id="team_status_next_team_score_diff_main" class="text-style-points text-red"></span>
+                        </div>
+                        <h4> &nbsp;</h4>
                     </div>
-
-                    <div class="col-sm-3 visible-sm little_padding">
-                        <!-- Points infront of prev team -->
-                        <span id="team_status_prev_team_score_diff_main" class="text-style-points text-green"></span>
-                    </div>
-
-                    <div class="col-sm-3 visible-sm little_padding">
-                        <!-- Points behind next team -->
-                        <span id="team_status_next_team_score_diff_main" class="text-style-points text-red"></span>
-                    </div>
-
-
-                    <br />
-                    <br />
-                </div>
-                <div class="panel-body">
-                    <div style="overflow:auto" id="messages_panel_body">
-                        <ul id="messages_list" style="list-style:none; padding-left:0px"></ul>
+                    <div class="panel-body">
+                        <div style="overflow:auto" id="messages_panel_body">
+                            <ul id="messages_list" style="list-style:none; padding-left:0px"></ul>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+
     </div>
 
     <!-- Register post, send message, hidden when xs-->
