@@ -68,13 +68,15 @@ function updateScoreDiffToNextAndPrevTeam(ranking) {
     var prev_team_msg = score_prev_team_diff + " " + arrow_up + " ";
     var next_team_msg = " " + arrow_down + " " + score_next_team_diff;
 
-    $("#team_status_prev_team_score_diff_xs")[0].innerHTML = prev_team_msg;
-    $("#team_status_next_team_score_diff_xs")[0].innerHTML = next_team_msg;
+    $(".team_status_prev_team_score_diff")[0].innerHTML = prev_team_msg;
+    $(".team_status_next_team_score_diff")[0].innerHTML = next_team_msg;
 
-    $("#team_status_prev_team_score_diff_main")[0].innerHTML = prev_team_msg;
-    $("#team_status_next_team_score_diff_main")[0].innerHTML = next_team_msg;
+    $(".team_status_prev_team_score_diff")[1].innerHTML = prev_team_msg;
+    $(".team_status_next_team_score_diff")[1].innerHTML = next_team_msg;
 
-    $("#team_status_rank")[0].innerHTML = "Rank #"+new_rank;
+    $(".team_status_rank")[0].innerHTML = "Rank #" + new_rank;
+    $(".team_status_rank")[1].innerHTML = "Rank #" + new_rank;
+
 }
 
 function switchMapAndMessages() {
@@ -235,7 +237,8 @@ function processGameState(gameState) {
     weaponsAviable(gameState.vaapen)
     updatePostsOnMap(gameState.Poster);
     updateScoreDiffToNextAndPrevTeam(gameState.ranking);
-    $("#team_status_score")[0].innerHTML = "Score #" + gameState.score;
+    $(".team_status_score")[0].innerHTML = "Score #" + gameState.score;
+    $(".team_status_score")[1].innerHTML = "Score #" + gameState.score;
 }
 
 function weaponsAviable(weapons) {
@@ -428,7 +431,8 @@ window.onload = function () {
     sendPosition();
     getTeamPosition();
 
-    $("#rank_and_score_Carousel").carousel();
+    $("#rank_and_score_Carousel_main").carousel(); 
+    $("#rank_and_score_Carousel_sx").carousel();
 
     $("#btn_switch_map_messages")[0].onclick = function () {
         switchMapAndMessages();

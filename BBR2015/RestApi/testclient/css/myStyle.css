@@ -47,6 +47,10 @@ body{
     padding: 0px;
 }
 
+.little_margin_bottom{
+    margin-bottom:5px;
+}
+
 .navbar_custom_background{
     background-color:rgba(255,255,255,0.55);
 }
