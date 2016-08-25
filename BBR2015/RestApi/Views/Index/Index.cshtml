@@ -1,0 +1,48 @@
+﻿@model RestApi.Controllers.IndexModel
+
+@{
+    ViewBag.Title = "Bouvet Battle Royale";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Velkommen - slik blir du med i spillet</h1>
+<div>
+    <ol>
+        @if (!string.IsNullOrEmpty(Model.EksternInfoUrl))
+        {
+            <li>
+                Les litt om opplegget (<a href="@Model.EksternInfoUrl">klikk her</a>)
+            </li>
+        }
+        @if (Model.TillatNyttLag)
+        {
+            <li>Skaff deg en lagkode ved å opprette et lag (@Html.ActionLink("klikk her", "NyttLag", "Provisioning", new {id = Model.MatchId}, null))</li>
+        }
+        else
+        {
+            <li>Skaff deg en lagkode (hør med dem som styrer spillet)</li>
+        }
+
+        @if (Model.TillatNySpiller)
+        {
+            <li>Registrer deg som deltaker - med lagets hemmelige kode (@Html.ActionLink("klikk her", "NySpiller", "Provisioning", new {id = Model.MatchId}, null))</li>
+        }
+        else
+        {
+            <li>Skaff deg en deltakerkode (hør med dem som styrer spillet)</li>
+        }
+
+        <li>Utforsk <a href="./swagger/">API dokumentasjonen</a> (legg inn lag- og deltakerkode i toppen)</li>
+        
+        @if (!string.IsNullOrEmpty(Model.TestklientUrl))
+        {
+            <li>Lag din egen klient (eller bruk <a href="/testclient/">vår testklient</a>)</li>
+        }
+        else
+        {
+            <li>Lag din egen klient - hvis du vil, altså - dere får utdelt en ferdig klient når vi skal kjøre spillet.</li>
+        }
+        <li>Lykke til!</li>
+    </ol>
+</div>
+

@@ -141,8 +141,7 @@ namespace Repository.Import
         private void SkrivMatch(MatchImport.ExcelMatch match)
         {
             var sheet = _excel.Workbook.Worksheets["Match"];
-            var row = 2;
-
+           
             // Headers
             for (var i = 0; i < ExcelSheet.Match.Kolonner.Length; i++)
             {

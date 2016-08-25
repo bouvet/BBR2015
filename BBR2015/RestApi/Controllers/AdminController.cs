@@ -28,8 +28,9 @@ namespace RestApi.Controllers
         private readonly KmlToExcelPoster _kmlToExcelPoster;
         private readonly ExcelWriter _excelWriter;
         private readonly ExcelExport _excelExport;
+        private readonly DataContextFactory _dataContextFactory;
 
-        public AdminController(GameStateService gameStateService, OverridableSettings appSettings, TilgangsKontroll tilgangsKontroll, PosisjonsService posisjonsService, ExcelImport excelImport, KmlToExcelPoster kmlToExcelPoster, ExcelWriter excelWriter, ExcelExport excelExport)
+        public AdminController(GameStateService gameStateService, OverridableSettings appSettings, TilgangsKontroll tilgangsKontroll, PosisjonsService posisjonsService, ExcelImport excelImport, KmlToExcelPoster kmlToExcelPoster, ExcelWriter excelWriter, ExcelExport excelExport, DataContextFactory dataContextFactory)
         {
             _gameStateService = gameStateService;
             _appSettings = appSettings;
@@ -39,6 +40,7 @@ namespace RestApi.Controllers
             _kmlToExcelPoster = kmlToExcelPoster;
             _excelWriter = excelWriter;
             _excelExport = excelExport;
+            _dataContextFactory = dataContextFactory;
         }
 
         /// <summary>
@@ -76,6 +78,24 @@ namespace RestApi.Controllers
             _tilgangsKontroll.Nullstill();
             _posisjonsService.Nullstill();
             ThrottleAttribute.Reload();
+            return Ok();
+        }
+
+        /// <summary>
+        /// Sletter alle data
+        /// </summary>
+        [Route("api/Admin/DeleteAllData")]
+        [HttpPost]
+        [Obsolete("Skal være udokumentert")]
+        public IHttpActionResult DeleteAllData()
+        {
+            if(!_appSettings.TillatSlettAlleData)
+                return BadRequest();
+
+            _dataContextFactory.DeleteAllData();
+
+            ClearCaching();
+
             return Ok();
         }
 
@@ -168,7 +188,7 @@ namespace RestApi.Controllers
         /// <returns>Byte stream av Excel-fil.</returns>
         [Route("api/Admin/ExportToExcel/{matchId}")]
         [HttpPost]
-        public async Task<HttpResponseMessage> ExportToExcel(string matchId)
+        public HttpResponseMessage ExportToExcel(string matchId)
         {
             //if (string.IsNullOrEmpty(matchId))
             //    throw new ArgumentException("matchId");

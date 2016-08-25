@@ -20,6 +20,11 @@
             Støttemetode i tilfelle en fikk problemer, eller ville fikse ting rett i databasen. Ved å kjøre denne metoden pusher en ut oppdateringer som i utgangspunktet ville blitt cachet til f.eks. neste postregistrering.
             </summary>
         </member>
+        <member name="M:RestApi.Controllers.AdminController.DeleteAllData">
+            <summary>
+            Sletter alle data
+            </summary>
+        </member>
         <member name="M:RestApi.Controllers.AdminController.ConnectionString">
             <summary>
             Henter ut applikasjonens ConnectionString for å dobbeltsjekke oppsettet uten å måtte gå inn på serveren.

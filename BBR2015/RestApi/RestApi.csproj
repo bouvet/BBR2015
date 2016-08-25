@@ -177,7 +177,6 @@
     <Content Include="Content\Site.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Index.html" />
     <Content Include="docs\RestApi.XML">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -329,6 +328,8 @@
     <Content Include="scoreboard\lib\leaflet.awesome-markers.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <None Include="Properties\PublishProfiles\bbr-ntnu-test - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\bbr-ntnu-test - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -356,6 +357,7 @@
     <Compile Include="Controllers\ForbiddenActionResult.cs" />
     <Compile Include="Controllers\GameServiceController.cs" />
     <Compile Include="Controllers\GameStateFeedController.cs" />
+    <Compile Include="Controllers\IndexController.cs" />
     <Compile Include="Controllers\KmlController.cs" />
     <Compile Include="Controllers\PosisjonsServiceController.cs" />
     <Compile Include="Controllers\ProvisioningController.cs" />
@@ -514,6 +516,7 @@
     <Content Include="Views\Provisioning\Index.cshtml" />
     <Content Include="Views\Provisioning\NySpiller.cshtml" />
     <Content Include="Views\Provisioning\NyttLag.cshtml" />
+    <Content Include="Views\Index\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

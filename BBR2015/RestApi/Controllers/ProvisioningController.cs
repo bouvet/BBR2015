@@ -53,13 +53,14 @@ namespace RestApi.Controllers
             return View(model);
         }
 
-        private ActionResult RedirectTilForsiden(string melding)
+        private ActionResult RedirectTilForsiden(string melding, bool erFeilmelding = true)
         {
             var indexModel = new IndexModel
             {
                 TillatNyttLag = _settings.TillatOpprettNyttLag,
                 TillatNySpiller = _settings.TillatOpprettNySpiller,
-                Melding = melding
+                Melding = melding,
+                ErFeilmelding = erFeilmelding
             };
 
             return View("Index", indexModel);
@@ -81,7 +82,7 @@ namespace RestApi.Controllers
 
                 _lagOppstillingService.OpprettNySpiller(model.HemmeligKodeForLag, model.KodeForSpiller, model.Navn);
 
-                return RedirectTilForsiden(string.Format($"Ny spiller er opprettet. Bruk LagKode: '{model.HemmeligKodeForLag}' og DeltakerKode: '{model.KodeForSpiller}' i spillet.", false));
+                return RedirectTilForsiden(string.Format($"Ny spiller er opprettet. Bruk LagKode: '{model.HemmeligKodeForLag}' og DeltakerKode: '{model.KodeForSpiller}' i spillet."), false);
             }
             catch
             {
@@ -113,7 +114,7 @@ namespace RestApi.Controllers
 
                 _lagOppstillingService.OpprettNyttLag(model.MatchId, model.HemmeligKode, model.Navn);
 
-                return RedirectTilForsiden(string.Format($"Nytt lag er opprettet. Bruk lagkoden: '{model.HemmeligKode}' for opprettelse av ny deltaker. Se link under.", false));
+                return RedirectTilForsiden(string.Format($"Nytt lag er opprettet. Bruk lagkoden: '{model.HemmeligKode}' for opprettelse av ny deltaker. Se link under."), false);
             }
             catch
             {

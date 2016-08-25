@@ -112,6 +112,30 @@ namespace Database
             set { _overrides["BBR_TillatOpprettNySpiller"] = value.ToString(); }
         }
 
+        public bool TillatSlettAlleData {
+            get
+            {
+                bool value;
+                if (Boolean.TryParse(Get("BBR_TillatSlettAlleData"), out value))
+                    return value;
+                return false;
+            }
+            set { _overrides["BBR_TillatSlettAlleData"] = value.ToString(); }
+        }
+
+
+        public string EksternInfoUrl
+        {
+            get { return Get("BBR_EksternInfoUrl"); }
+            set { _overrides["BBR_EksternInfoUrl"] = value; }
+        }
+
+        public string TestklientUrl
+        {
+            get { return Get("BBR_TestklientUrl"); }
+            set { _overrides["BBR_TestklientUrl"] = value; }
+        }
+        
         private string Get(string settingsKey)
         {
             if (_overrides.ContainsKey(settingsKey))

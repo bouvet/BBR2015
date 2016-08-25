@@ -44,7 +44,7 @@ namespace Repository
             {
                 var currentMatch= (from m in context.Matcher
                     where m.StartTid < TimeService.Now && TimeService.Now < m.SluttTid
-                    select m).SingleOrDefault();
+                    select m).FirstOrDefault();
 
                 if (currentMatch == null)
                     return Guid.Empty;
