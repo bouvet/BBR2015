@@ -5,9 +5,9 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Ny spiller</h2>
+<h2>Ny deltaker</h2>
 <form method="post">
-    @Html.HiddenFor(x => x.MatchId)
+ 
     <div class="form-group">
         @Html.LabelFor(x => x.HemmeligKodeForLag) @Html.ValidationMessageFor(x => x.HemmeligKodeForLag)
         @Html.EditorFor(x => x.HemmeligKodeForLag, new { htmlAttributes = new { @class = "form-control" } })
@@ -23,21 +23,5 @@
     <div class="form-group">
         <input type="submit" value="Lagre" class="form-control btn btn-primary">
     </div>
-    @*<table class="table table-responsive table-condensed">
-        <tbody>
-            <tr>
-                <td>@Html.LabelFor(x => x.HemmeligKodeForLag)</td>
-                <td>@Html.EditorFor(x => x.HemmeligKodeForLag) </td>
-            </tr>
-            <tr>
-                <td>@Html.LabelFor(x => x.Navn)</td>
-                <td>@Html.EditorFor(x => x.Navn) @Html.ValidationMessageFor(x => x.Navn)</td>
-            </tr>
-            <tr>
-                <td>@Html.LabelFor(x => x.KodeForSpiller)</td>
-                <td>@Html.EditorFor(x => x.KodeForSpiller) @Html.ValidationMessageFor(x => x.KodeForSpiller)</td>
-            </tr>
-            <tr><td>&nbsp;</td><td></td></tr>
-        </tbody>
-    </table>*@
+
 </form>

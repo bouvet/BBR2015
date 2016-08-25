@@ -60,9 +60,16 @@ namespace Repository
                                     select pim).SingleOrDefault();
 
                         if (post == null)
+                        {
+                            _eventPublisher.PrøvdeÅRegistrereEnPostMedFeilKode(lagId, deltakerId);
                             return; // Feil kode eller post - straff?
+                        }
 
-                        if (post.ErSynlig)
+                        if (!post.ErSynlig)
+                        {
+                            _eventPublisher.PrøvdeÅRegistrereEnPostSomIkkeErSynlig(lagId, deltakerId);
+                        }
+                        else
                         {
                             if (context.PostRegisteringer.Any(x => x.RegistertForLag.Id == lagIMatch.Id && x.RegistertPost.Id == post.Id))
                             {
@@ -259,6 +266,26 @@ namespace Repository
 
             _meldingService.PostMelding(deltakerId, lagId, melding);
             _meldingService.PostMelding(deltakerId, AdminLagId, melding);
+        }
+
+        public void PrøvdeÅRegistrereEnPostMedFeilKode(string lagId, string deltakerId)
+        {
+            var lagNavn = _tilgangsKontroll.HentLagNavn(lagId);
+            var deltakerNavn = _tilgangsKontroll.HentDeltakerNavn(deltakerId);
+
+            var melding = string.Format("{0} ({1}) prøvde å registrere en post, men brukte feil kode.", deltakerNavn, lagNavn);
+
+            _meldingService.PostMeldingTilAlle(deltakerId, lagId, melding);
+        }
+
+        public void PrøvdeÅRegistrereEnPostSomIkkeErSynlig(string lagId, string deltakerId)
+        {
+            var lagNavn = _tilgangsKontroll.HentLagNavn(lagId);
+            var deltakerNavn = _tilgangsKontroll.HentDeltakerNavn(deltakerId);
+
+            var melding = string.Format("{0} ({1}) prøvde å registrere en post som ikke er synlig.", deltakerNavn, lagNavn);
+
+            _meldingService.PostMeldingTilAlle(deltakerId, lagId, melding);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Database;
@@ -128,7 +129,26 @@ namespace Repository
 
         public bool ErGyldigMatchId(string id)
         {
-            return false;
+            Guid matchId;
+            if (!Guid.TryParse(id, out matchId))
+                return false;
+
+            using (var context = _dataContextFactory.Create())
+            {
+                return context.Matcher.Any(x => x.MatchId == matchId);
+            }
+        }
+
+        public bool ErLagKodeIBruk(string hemmeligKodeForLag)
+        {
+            return Lagene.Any(x => x.HemmeligKode.Equals(hemmeligKodeForLag));
+        }
+
+        public bool ErDeltakerKodeIBruk(string kodeForSpiller)
+        {
+            return (from l in Lagene
+                    from d in l.Deltakere
+                    select d).Any(x => x.Kode.Equals(kodeForSpiller));
         }
     }
 

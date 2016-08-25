@@ -6,7 +6,6 @@ using System.Web.Http.Filters;
 using Database;
 using Database.Infrastructure;
 using Repository;
-using RestApi.Infrastructure;
 
 namespace RestApi.Filters
 {

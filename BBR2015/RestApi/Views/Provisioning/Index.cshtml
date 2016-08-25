@@ -5,9 +5,30 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Oppsett</h2>
+<h2>Lagoppstilling</h2>
 
 @if (Model.HarMelding)
 {
-    <p>@Model.Melding</p>
+    if (Model.ErFeilmelding)
+    {
+        <div style="color: red">@Model.Melding</div>
+    }
+    else
+    {
+        <div style="color: green">@Model.Melding</div>
+    }
+}
+
+@if (Model.TillatNyttLag)
+{
+    <div>
+        @Html.ActionLink("Registrer nytt lag", "NyttLag", "Provisioning", new {id = Model.MatchId}, null)
+    </div>
+}
+
+@if (Model.TillatNySpiller)
+{
+    <div>
+        @Html.ActionLink("Registrer ny deltaker", "NySpiller", "Provisioning")
+    </div>
 }
