@@ -19,12 +19,14 @@ function updateAndDisplayMapOrMessage(show_map) {
             var message_span_msg = uleste_meldinger>0? "Meldinger (" + uleste_meldinger +")":"Meldinger";
             $("#btn_switch_map_messages_span")[0].innerHTML = message_span_msg;
         } else {
+            uleste_meldinger = 0;
             $("#messages")[0].style.display = 'block';
             $("#map")[0].style.display = 'none';
 
             $("#btn_switch_map_messages_span")[0].innerHTML = "Map";
         }
     } else {
+        uleste_meldinger = 0;
         //document.getElementById("messages").style.display = 'block';
        $("#messages")[0].style.display = 'block';
        $("#map")[0].style.display = 'block';
@@ -427,7 +429,6 @@ window.onload = function () {
     getTeamPosition();
 
     $("#btn_switch_map_messages")[0].onclick = function () {
-        uleste_meldinger = 0;
         switchMapAndMessages();
     }
 
