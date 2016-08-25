@@ -4,6 +4,7 @@ var map_isVisible = true;
 var map = null;
 var post_marker_icon_general = null;
 var prev_rank = -1;
+var uleste_meldinger = 0;
 
 var post_color_map = [["red", 95], ["orange", 75], ["yellow", 55],
                     ["green_yellow", 35], ["green", 15], ["gray", 0]];
@@ -15,7 +16,8 @@ function updateAndDisplayMapOrMessage(show_map) {
             $("#messages")[0].style.display = 'none';
             $("#map")[0].style.display = 'block';
 
-            $("#btn_switch_map_messages_span")[0].innerHTML = "Meldinger";
+            var message_span_msg = uleste_meldinger>0? "Meldinger (" + uleste_meldinger +")":"Meldinger";
+            $("#btn_switch_map_messages_span")[0].innerHTML = message_span_msg;
         } else {
             $("#messages")[0].style.display = 'block';
             $("#map")[0].style.display = 'none';
@@ -26,7 +28,7 @@ function updateAndDisplayMapOrMessage(show_map) {
         //document.getElementById("messages").style.display = 'block';
        $("#messages")[0].style.display = 'block';
        $("#map")[0].style.display = 'block';
-       $("#btn_switch_map_messages_span")[0].innerHTML = "Messages";
+       $("#btn_switch_map_messages_span")[0].innerHTML = "Meldinger";
     }
 
     updateMapAndMessagesSize();
@@ -93,6 +95,10 @@ function displayNumberOfWeapons(bombs, traps) {
 }
 
 function addNewMessage(msg) {
+    if (map_isVisible === true) {
+        uleste_meldinger++;
+        updateAndDisplayMapOrMessage(map_isVisible);
+    };
     $("#messages_list").prepend(
         "<li class='list-striped'>" +
         "<div> <b>" + msg.deltaker + "</b> </div>" +
@@ -413,7 +419,6 @@ window.onload = function () {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    updateAndDisplayMapOrMessage(map_isVisible);
     loadUserOptions();
     updateMessages(getGameState);   // This causes the gamestate to be loaded after the messages. This 
                                     // ensures that the "rank" message from the client appears after
@@ -422,6 +427,7 @@ window.onload = function () {
     getTeamPosition();
 
     $("#btn_switch_map_messages")[0].onclick = function () {
+        uleste_meldinger = 0;
         switchMapAndMessages();
     }
 
