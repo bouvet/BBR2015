@@ -51,7 +51,7 @@ function updateScoreDiffToNextAndPrevTeam(ranking) {
     if (new_rank !== prev_rank && prev_rank !== -1) {
         var msg = { 'deltaker': "", 'melding': '' };
         
-        if (new_rank > prev_rank) {
+        if (new_rank < prev_rank) {
             msg.deltaker = arrow_up + ' Ny ranking ' + arrow_up;
             msg.melding  = 'Rykket frem til ' + new_rank + '. plass!';
         } else {
@@ -330,8 +330,8 @@ function registerPost(input) {
         weapon = null;
     }
 
-    var successHandler = function () { showToast("Post ble ikke registrert. Sjekk at postkode er riktig og at du er innlogget."); };
-    var errHandler = function () { showToast("Post registrert"); };
+    var successHandler = function () { showToast("Post registrert"); };
+    var errHandler = function () { showToast("Post ble ikke registrert. Sjekk at postkode er riktig og at du er innlogget."); };
 
     $.ajax({
         type: "POST",
