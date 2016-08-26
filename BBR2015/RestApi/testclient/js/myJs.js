@@ -148,7 +148,7 @@ function putPostOnMap(post) {
     var isRegistered = post.harRegistrert;
 
     var post_color = "gray";
-    if (isRegistered=== false) {
+    if (isRegistered=== 'false') {
         for (var i = 0; i < post_color_map.length; i++) {
             if (value > post_color_map[i][1]) {
                 post_color = post_color_map[i][0];
@@ -235,7 +235,15 @@ function getGameState() {
 
 function processGameState(gameState) {
     weaponsAviable(gameState.vaapen);
-    updatePostsOnMap(gameState.poster);
+    //updatePostsOnMap(gameState.poster);
+
+    post = {'latitude': 59.937, 'longitude': 10.7585, 'poengVerdi': 50,'harRegistrert':'false'};
+    putPostOnMap(post);
+
+    post2 = { 'latitude': 59.933, 'longitude': 10.7585, 'poengVerdi': 80, 'harRegistrert': 'false' };
+    putPostOnMap(post2);
+
+
     updateScoreDiffToNextAndPrevTeam(gameState.ranking);
     $(".team_status_score")[0].innerHTML = "Score #" + gameState.score;
     $(".team_status_score")[1].innerHTML = "Score #" + gameState.score;
