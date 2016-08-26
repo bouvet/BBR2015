@@ -172,6 +172,7 @@ function putPostOnMap(post) {
 }
 
 var players_and_markers = new Map();
+var player_id_name_map = new Map();
 function updateTeamOnMap(players) {
     if (!(map === null)) {
         players.forEach(function (player) {
@@ -182,6 +183,8 @@ function updateTeamOnMap(players) {
                 var marker = putPlayerOnMap(player);
                 player_and_marker = { 'player': player, 'marker': marker };
                 players_and_markers.set(player.navn, player_and_marker);
+                console.log(player.deltakerId);
+                player_id_name_map.set(player.deltakerId, player.navn);
             } else { // old player
                 var lat = (player_and_marker.player.latitude);
                 var lon = (player_and_marker.player.longitude);
@@ -192,7 +195,7 @@ function updateTeamOnMap(players) {
     }
 }
 
-var farger = ['red','blue','yellow','orange','black','green']
+var farger = ['red', 'blue', 'yellow', 'orange', 'black', 'green']
 function putPlayerOnMap(player) {
     var lat = player.latitude;
     var lon = player.longitude;
@@ -228,6 +231,17 @@ function displayMessagesFromServer(data) {
         if (meldingsSekvens < msg.sekvens) {
             meldingsSekvens = msg.sekvens;
         }
+
+        var name = player_id_name_map.get(msg.deltaker);
+        console.log(msg.deltaker);
+        console.log(name);
+        if (name !== undefined) {
+            msg.deltaker = name;
+            console.log(name);
+        } else {
+            msg.deltaker = "Ukjent sender";
+        }
+
         addNewMessage(msg);
     });
 };
