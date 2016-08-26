@@ -154,9 +154,6 @@ function putPostOnMap(post) {
         }
     }
 
-    /*var post_marker_color = new post_marker_icon_general({ iconUrl: "img/flag_"+post_color+".png" });
-    var post_marker = L.marker([lat, lon], { icon: post_marker_color }).addTo(map);*/
-
     var redMarker = L.AwesomeMarkers.icon({
         icon: 'flag',
         markerColor: post_color
@@ -164,23 +161,26 @@ function putPostOnMap(post) {
 
     var post_marker = L.marker([lat, lon], { icon: redMarker }).addTo(map); 
 
+    post_marker.setZIndexOffset(-99);
     post_marker.bindPopup(""+value);
     post_markers[post_markers.length] = post_marker;
 }
 
 var players_and_markers = new Map();
 var players_id_name_map = new Map();
+var player_count = 0;
 function updateTeamOnMap(players) {
     if (map !== null) {
         players.forEach(function (player) {
             var player_and_marker = players_and_markers.get(player.navn);
             if (player_and_marker === undefined) { //new player
-                console.log("new player: " + player.navn+", deltakerId: player.deltakerId");
+                console.log("new player: " + player.navn+", deltakerId: "+player.deltakerId);
 
-                var marker = putPlayerOnMap(player);
+                var marker = putPlayerOnMap(player, player_count,99999);
                 player_and_marker = { 'player': player, 'marker': marker };
                 players_and_markers.set(player.navn, player_and_marker);
                 players_id_name_map.set(player.deltakerId, player.navn);
+                player_count++;
             } else { // old player
                 var lat = (player_and_marker.player.latitude);
                 var lon = (player_and_marker.player.longitude);
@@ -191,19 +191,22 @@ function updateTeamOnMap(players) {
     }
 }
 
-var farger = ['red', 'blue', 'yellow', 'orange', 'black', 'green']
-function putPlayerOnMap(player) {
+function putPlayerOnMap(player, n , zIndex) {
     var lat = player.latitude;
     var lon = player.longitude;
     var name = player.navn;
 
-    var farge = farger[players_and_markers.size % farger.length];
-    var player_marker = L.circle([lat, lon], 6, {
-        color: farge,
-        fillColor: farge,
-        fillOpacity: 1,
-        weight: 0,
-    }).addTo(map);
+    var farge = post_color_map[n][0];
+
+    var marker_icon = L.AwesomeMarkers.icon({
+        icon: 'star',
+        markerColor: 'blue',
+        iconColor: farge
+    });
+
+    var player_marker = L.marker([lat, lon], { icon: marker_icon }).addTo(map);
+
+    player_marker.setZIndexOffset(zIndex);
     player_marker.bindPopup("" + name);
     return player_marker;
 }
@@ -481,6 +484,13 @@ window.onload = function () {
     }).addTo(map);
 
     loadUserOptions();
+
+    var player1 = { "latitude": 59.9332042, "longitude": 10.7575169, "navn": "Per" };
+    var player2 = { "latitude": 59.9332942, "longitude": 10.7575169, "navn": "Per 2" };
+
+    putPlayerOnMap(player1,1,-10);
+    putPlayerOnMap(player2,2,-10);
+
 
     $("#rank_and_score_Carousel_main").carousel(); 
     $("#rank_and_score_Carousel_sx").carousel();
