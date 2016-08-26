@@ -9,8 +9,8 @@ var uleste_meldinger = 0;
 var score_next_team_diff = 0;
 var score_prev_team_diff = 0;
 
-var post_color_map = [["red", 95], ["orange", 75], ["yellow", 55],
-                    ["green_yellow", 35], ["green", 15], ["gray", 0]];
+var post_color_map = [["red", 95], ["orange", 75], ["green", 55],
+                    ["darkgreen", 35], ["gray", 0]];
 
 function updateAndDisplayMapOrMessage(show_map) {
     var bootstrap_size = findBootstrapEnvironment();
@@ -148,7 +148,7 @@ function putPostOnMap(post) {
     var isRegistered = post.harRegistrert;
 
     var post_color = "gray";
-    if (isRegistered=== 'false') {
+    if (isRegistered=== false) {
         for (var i = 0; i < post_color_map.length; i++) {
             if (value > post_color_map[i][1]) {
                 post_color = post_color_map[i][0];
@@ -157,8 +157,15 @@ function putPostOnMap(post) {
         }
     }
 
-    var post_marker_color = new post_marker_icon_general({ iconUrl: "img/flag_"+post_color+".png" });
-    var post_marker = L.marker([lat, lon], { icon: post_marker_color }).addTo(map);
+    /*var post_marker_color = new post_marker_icon_general({ iconUrl: "img/flag_"+post_color+".png" });
+    var post_marker = L.marker([lat, lon], { icon: post_marker_color }).addTo(map);*/
+
+    var redMarker = L.AwesomeMarkers.icon({
+        icon: 'flag',
+        markerColor: post_color
+    });
+
+    var post_marker = L.marker([lat, lon], { icon: redMarker }).addTo(map); 
 
     post_marker.bindPopup(""+value);
     post_markers[post_markers.length] = post_marker;
@@ -235,15 +242,7 @@ function getGameState() {
 
 function processGameState(gameState) {
     weaponsAviable(gameState.vaapen);
-    //updatePostsOnMap(gameState.poster);
-
-    post = {'latitude': 59.937, 'longitude': 10.7585, 'poengVerdi': 50,'harRegistrert':'false'};
-    putPostOnMap(post);
-
-    post2 = { 'latitude': 59.933, 'longitude': 10.7585, 'poengVerdi': 80, 'harRegistrert': 'false' };
-    putPostOnMap(post2);
-
-
+    updatePostsOnMap(gameState.poster);
     updateScoreDiffToNextAndPrevTeam(gameState.ranking);
     $(".team_status_score")[0].innerHTML = "Score #" + gameState.score;
     $(".team_status_score")[1].innerHTML = "Score #" + gameState.score;

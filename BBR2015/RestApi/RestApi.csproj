@@ -339,6 +339,14 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="testclient\css\images\markers-matte%402x.png" />
+    <Content Include="testclient\css\images\markers-matte.png" />
+    <Content Include="testclient\css\images\markers-plain.png" />
+    <Content Include="testclient\css\images\markers-shadow%402x.png" />
+    <Content Include="testclient\css\images\markers-shadow.png" />
+    <Content Include="testclient\css\images\markers-soft%402x.png" />
+    <Content Include="testclient\css\images\markers-soft.png" />
+    <Content Include="testclient\css\leaflet.awesome-markers.css" />
     <Content Include="testclient\css\myStyle.css" />
     <Content Include="testclient\img\250px-Flag_icon_green_4.svg.png" />
     <Content Include="testclient\img\bomb.png" />
@@ -349,6 +357,7 @@
     <Content Include="testclient\img\flag_red.png" />
     <Content Include="testclient\img\flag_yellow.png" />
     <Content Include="testclient\img\trap.png" />
+    <Content Include="testclient\js\leaflet.awesome-markers.min.js" />
     <Content Include="testclient\js\myJs.js" />
     <Content Include="testclient_old\css\css.css" />
     <Content Include="testclient_old\Gruntfile.js" />
