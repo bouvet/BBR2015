@@ -254,7 +254,6 @@
             </div>
         </div>
 
-        
 
         <!-- Register post-->
         <div class="col-xs-12 col-sm-12 col-md-12">
@@ -265,7 +264,7 @@
                 <div class="panel-body">
                     <div class="col-lg-12 col-sx-12">
                         <div class="form-group little_margin_bottom">
-                            <label for="post_id"> Postkode </label> <input type="number" class="form-control" name="post_id"
+                            <label for="post_id"> Postkode </label> <input type="text" class="form-control" name="post_id"
                                                                             placeholder="postkode" id="post_id_main"/>
                         </div>
                     </div>
@@ -300,7 +299,7 @@
             </div>
         </div>
 
-        <!-- Post messages-->
+        <!-- Send messages-->
         <div class="col-xs-12 col-sm-12 col-md-12 debug_style">
             <div class="panel panel-success">
                 <div class="panel-heading">
@@ -313,7 +312,7 @@
 
                     <div id="float_left">
                         <div class="col-md-4 col-xs-4 col-lg-4">
-                            <button id="send_messages" class="btn btn-success btn-lg form-group">
+                            <button id="send_messages_main" class="btn btn-success btn-lg form-group">
                                 <span class="glyphicon-envelope"></span> Send melding
                             </button>
                         </div>
@@ -342,7 +341,7 @@
                     <form class="form">
                         <div class="col-lg-12 col-sx-12">
                             <div class="form-group">
-                                <label for="post_id"> Postkode </label> <input type="number" class="form-control" name="post_id"
+                                <label for="post_id"> Postkode </label> <input type="text" class="form-control" name="post_id"
                                                                                placeholder="postkode" id="post_id_modal"/>
                             </div>
                         </div>
@@ -394,13 +393,13 @@
                 <div class="modal-body">
                     <form class="form">
                         <div class="form-group">
-                            <label for="melding"> Melding </label> <textarea id="melding" name="melding" class="form-control"> </textarea>
+                            <label for="melding"> Melding </label> <textarea id="send_messages_textbox_modal" name="melding" class="form-control"> </textarea>
                         </div>
                     </form>
                 </div>
 
                 <div class="modal-footer">
-                    <button id="#send_melding_modal" class="btn btn-success btn-lg form-group" style="float:right">
+                    <button id="send_melding_modal" class="btn btn-success btn-lg form-group" style="float:right" data-dismiss="modal">
                         <span class="glyphicon-envelope"></span> Send Melding
                     </button>
                 </div>

@@ -489,9 +489,15 @@ window.onload = function () {
         switchMapAndMessages();
     }
 
-    $("#send_messages")[0].onclick = function () {
+    $("#send_messages_main")[0].onclick = function () {
         var msg = $("#send_messages_textbox_main")[0].value;
         $("#send_messages_textbox_main")[0].value = "";
+        sendMessage(msg);
+    }
+
+    $("#send_melding_modal")[0].onclick = function () {
+        var msg = $("#send_messages_textbox_modal")[0].value;
+        $("#send_messages_textbox_modal")[0].value = "";
         sendMessage(msg);
     }
 
