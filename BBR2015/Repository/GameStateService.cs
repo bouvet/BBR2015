@@ -33,10 +33,10 @@ namespace Repository
             using (var context = _dataContextFactory.Create())
             {
                 var sorterteLag =
-                    context.LagIMatch.Include(x => x.Lag).Include(x => x.VåpenBeholdning).Include("Våpenbeholdning.BruktIPostRegistrering")
+                    context.LagIMatch.Include(x => x.Lag.Deltakere).Include(x => x.VåpenBeholdning).Include("Våpenbeholdning.BruktIPostRegistrering")
                            .Where(x => x.Match.MatchId == matchId)
                            .OrderByDescending(x => x.PoengSum)
-                           .ToList();
+                           .ToList();                
 
                 // Legg på poeng fra Achievements 
                 var achievementsPoeng = from a in context.Achievements
@@ -126,10 +126,8 @@ namespace Repository
                                       HarRegistrert = reg != null,
                                       Rekkefølge = random.Next(0, short.MaxValue) // order by random                                 
                                   }).OrderBy(x => x.Rekkefølge).ToList(),
-                        Vaapen = lag.LagIMatch.VåpenBeholdning.Where(x => x.BruktIPostRegistrering == null).Select(x => new GameStateVaapen
-                        {
-                            VaapenId = x.VaapenId
-                        }).ToList(),
+                        Vaapen = lag.LagIMatch.VåpenBeholdning.Where(x => x.BruktIPostRegistrering == null).Select(x => new GameStateVaapen { VaapenId = x.VaapenId }).ToList(),
+                        Deltakere = lag.Lag.Deltakere.Select(x => new GameStateDeltaker { DeltakerId = x.DeltakerId, Navn = x.Navn }).ToList(),
                         Achievements = new List<GameStateAchievement>()//achievementsPoeng.Where(x => x.LagId == lag.Lag.LagId).Select(x => x.Achievements)
                     };
 
@@ -391,6 +389,7 @@ namespace Repository
         public string LagFarge { get; set; }
         public string LagIkon { get; set; }
         public string LagId { get; set; }
+        public List<GameStateDeltaker> Deltakere { get; set; }
     }
 
     public class GameStateAchievement
@@ -420,5 +419,11 @@ namespace Repository
 
         [JsonIgnore]
         public int Rekkefølge { get; set; }
+    }
+
+    public class GameStateDeltaker
+    {
+        public string DeltakerId { get; set; }
+        public string Navn { get; set; }
     }
 }

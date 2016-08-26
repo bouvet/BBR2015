@@ -304,6 +304,19 @@ namespace RestApi.Tests
         }
 
         [Test]
+        public void Gamestate_skal_ha_deltakere()
+        {
+            var match = _gitt.EnMatchMedTreLagOgTrePoster();
+
+            var lag1 = match.DeltakendeLag.First();
+
+            var gamestateservice = _container.Resolve<GameStateService>();
+
+            var lag1State = gamestateservice.Get(lag1.Lag.LagId);
+            Assert.AreEqual(2, lag1State.Deltakere.Count(), "Skal ha 2 deltakere");
+        }
+
+        [Test]
         public void GittAktivPost_NårEtLagBrukerBombe_SkalLagetFåPoengOgPostenBliUsynligIEtAntallMinutterSelvOmStateBlirRekalkulert()
         {
             var match = _gitt.EnMatchMedTreLagOgTrePoster();
