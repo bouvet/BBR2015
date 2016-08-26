@@ -1,5 +1,6 @@
 ﻿var baseUrl = "../api/";
 var meldingsSekvens = 0;
+var loggedIn = false;
 var map_isVisible = true;
 var map = null;
 var post_marker_icon_general = null;
@@ -47,13 +48,10 @@ function updateScoreDiffToNextAndPrevTeam(ranking) {
     score_prev_team_diff = ranking.poengForanLagetBak;
 
     var new_rank = ranking.rank;
-    if (new_rank !== prev_rank) {
+    if (new_rank !== prev_rank && prev_rank !== -1) {
         var msg = { 'deltaker': "", 'melding': '' };
         
-        if (prev_rank === -1) {
-            msg.deltaker = 'Ranking';
-            msg.melding = 'Dere er på ' + new_rank + '. plass.';
-        } else if (new_rank > prev_rank) {
+        if (new_rank > prev_rank) {
             msg.deltaker = arrow_up + ' Ny ranking ' + arrow_up;
             msg.melding  = 'Rykket frem til ' + new_rank + '. plass!';
         } else {
@@ -76,7 +74,6 @@ function updateScoreDiffToNextAndPrevTeam(ranking) {
 
     $(".team_status_rank")[0].innerHTML = "Rank #" + new_rank;
     $(".team_status_rank")[1].innerHTML = "Rank #" + new_rank;
-
 }
 
 function switchMapAndMessages() {
@@ -172,19 +169,18 @@ function putPostOnMap(post) {
 }
 
 var players_and_markers = new Map();
-var player_id_name_map = new Map();
+var players_id_name_map = new Map();
 function updateTeamOnMap(players) {
-    if (!(map === null)) {
+    if (map !== null) {
         players.forEach(function (player) {
             var player_and_marker = players_and_markers.get(player.navn);
             if (player_and_marker === undefined) { //new player
-                console.log("new player: " + player.navn);
+                console.log("new player: " + player.navn+", deltakerId: player.deltakerId");
 
                 var marker = putPlayerOnMap(player);
                 player_and_marker = { 'player': player, 'marker': marker };
                 players_and_markers.set(player.navn, player_and_marker);
-                console.log(player.deltakerId);
-                player_id_name_map.set(player.deltakerId, player.navn);
+                players_id_name_map.set(player.deltakerId, player.navn);
             } else { // old player
                 var lat = (player_and_marker.player.latitude);
                 var lon = (player_and_marker.player.longitude);
@@ -212,6 +208,13 @@ function putPlayerOnMap(player) {
     return player_marker;
 }
 
+function removeAllPlayersFromMap() {
+    players_and_markers.forEach(function (item, key, mapObj) {
+        map.removeLayer(item.marker);
+    });
+    players_and_markers = new Map();
+}
+
 // ------------------------------------------------
 // --- Recive data from server (post/messages)  ---
 // ------------------------------------------------
@@ -232,12 +235,9 @@ function displayMessagesFromServer(data) {
             meldingsSekvens = msg.sekvens;
         }
 
-        var name = player_id_name_map.get(msg.deltaker);
-        console.log(msg.deltaker);
-        console.log(name);
+        var name = players_id_name_map.get(msg.deltaker);
         if (name !== undefined) {
             msg.deltaker = name;
-            console.log(name);
         } else {
             msg.deltaker = "Ukjent sender";
         }
@@ -258,6 +258,7 @@ function processGameState(gameState) {
     weaponsAviable(gameState.vaapen);
     updatePostsOnMap(gameState.poster);
     updateScoreDiffToNextAndPrevTeam(gameState.ranking);
+
     $(".team_status_score")[0].innerHTML = "Score #" + gameState.score;
     $(".team_status_score")[1].innerHTML = "Score #" + gameState.score;
 }
@@ -404,17 +405,40 @@ function loadUserOptions() {
         var deltaker_kode = localStorage.getItem("deltaker_kode");
         $("#deltaker_kode")[0].value = deltaker_kode;
         
-        //logIn(lag_kode, deltaker_kode); disabled for debugging
+        logIn(lag_kode, deltaker_kode);
     } else {
         $('#options_modal').modal('show');
     }
 }
 
 function logIn(lag_kode, deltaker_kode) {
-    var msg = "Deltaker  " + deltaker_kode + " logget inn";
+    var msg = "Jeg har logget inn!";
+    console.log("prøver å logge inn... Lagkode: " + lag_kode + ", deltakerKode: " + deltaker_kode);
 
-    var successHandler = function () { showToast("Innlogget med lagkode: " + lag_kode + " og deltagerkode: " + deltaker_kode); };
-    var errHandler = function () { showToast("Innlogging feilet"); };
+    meldingsSekvens = 0;
+    $("#messages_list")[0].innerHTML = ""; // remove all messages
+    updatePostsOnMap(undefined); // removes all posts
+    removeAllPlayersFromMap(); // removes all prev team members
+
+    var successHandler = function () {
+        showToast("Innlogget med lagkode: " + lag_kode + " og deltagerkode: " + deltaker_kode);
+        console.log("Logget inn");
+        loggedIn = true;
+        mainLoop();
+    };
+
+    var errHandler = function () {
+        showToast("Innlogging feilet");
+        console.log("Innlogging feilet!");
+        loggedIn = false;
+
+        $(".team_status_score")[0].innerHTML = "Logg på";
+        $(".team_status_score")[1].innerHTML = "Logg på";
+
+        $(".team_status_rank")[0].innerHTML = "Logg på";
+        $(".team_status_rank")[1].innerHTML = "Logg på";
+    };
+
     sendMessage(msg, successHandler, errHandler);
 }
 
@@ -422,15 +446,22 @@ function logIn(lag_kode, deltaker_kode) {
 // ---   Events    ---
 // -------------------
 
-//Time-event
-setInterval(function () {
+//main loop
+function mainLoop() {
     var auto_update = localStorage.getItem("auto_update_setting");
-    if (auto_update === "true") {
+    if (auto_update === "true" && loggedIn === true) {
+        getTeamPosition();
         sendPosition();
         getGameState();
         updateMessages();
-        getTeamPosition();
+    } else {
+        console.log("logget på: " + loggedIn);
     }
+}
+
+//Time-event
+setInterval(function () {
+    mainLoop();
 }, 3000);
 
 //Event that triggers when all of HTML has been loaded
@@ -450,11 +481,6 @@ window.onload = function () {
     }).addTo(map);
 
     loadUserOptions();
-    updateMessages(getGameState);   // This causes the gamestate to be loaded after the messages. This 
-                                    // ensures that the "rank" message from the client appears after
-                                    // all the other messages (as this is update in "getGameState"). 
-    sendPosition();
-    getTeamPosition();
 
     $("#rank_and_score_Carousel_main").carousel(); 
     $("#rank_and_score_Carousel_sx").carousel();
