@@ -329,6 +329,9 @@ function registerPost(input) {
         weapon = null;
     }
 
+    var successHandler = function () { showToast("Post ble ikke registrert. Sjekk at postkode er riktig og at du er innlogget."); };
+    var errHandler = function () { showToast("Post registrert"); };
+
     $.ajax({
         type: "POST",
         url: baseUrl + 'GameService',
@@ -337,10 +340,11 @@ function registerPost(input) {
         data: JSON.stringify({
             'postKode': postId,
             'våpen': weapon
-        })
+        }),
+        success: successHandler,
+        error: errHandler
     });
     autoSelectNoWeapon();
-    showToast("Post Registrert");
 };
 
 var player_position = {"lat":0, "lon":0};
