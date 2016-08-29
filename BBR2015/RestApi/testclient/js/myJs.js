@@ -296,7 +296,12 @@ function processGameState(gameState) {
 
     $(".team_status_score")[0].innerHTML = "Score #" + gameState.score;
     $(".team_status_score")[1].innerHTML = "Score #" + gameState.score;
-    hasProcessedGameState = true;
+
+    if(hasProcessedGameState===false){
+        hasProcessedGameState = true;
+        meldingsSekvens = 0;
+        $("#messages_list")[0].innerHTML = ""; // remove all messages
+    }
 }
 
 function weaponsAviable(weapons) {
@@ -496,7 +501,7 @@ function mainLoop() {
         getTeamPosition();
         sendPosition();
         getGameState();
-        if (hasProcessedGameState) { updateMessages(); }
+        updateMessages();
     } else {
         console.log("Er ikke logger på");
     }
