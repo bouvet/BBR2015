@@ -350,6 +350,8 @@
     <Content Include="testclient\css\myStyle.css" />
     <Content Include="testclient\img\250px-Flag_icon_green_4.svg.png" />
     <Content Include="testclient\img\bomb.png" />
+    <Content Include="testclient\img\Cancel.png" />
+    <Content Include="testclient\img\Cancel_sm.png" />
     <Content Include="testclient\img\flag_gray.png" />
     <Content Include="testclient\img\flag_green.png" />
     <Content Include="testclient\img\flag_green_yellow.png" />

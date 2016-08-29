@@ -624,6 +624,8 @@ function updateMapAndMessagesSize() {
 
     $("#messages_panel_body")[0].style.height = messages_inner_panel_height + 'px';
     $("#information_modal_body")[0].style.height = (height_screen - 250) + 'px';
+
+
 }
 
 function findBootstrapEnvironment() {
