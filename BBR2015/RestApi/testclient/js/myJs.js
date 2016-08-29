@@ -326,15 +326,15 @@ function registerPost(input) {
     if ($("#bomb_radio_" + input)[0].checked) weapon = "BOMBE";
     if ($("#trap_radio_" + input)[0].checked) weapon = "FELLE";
 
-    console.log(postId);
-    console.log(weapon);
 
-    if (weapon === "") {
+    if (weapon === "" || $("#no_weapon_radio_" + input)[0].checked) {
         weapon = null;
     }
 
-    var successHandler = function () { showToast("Post registrert"); };
-    var errHandler = function () { showToast("Post ble ikke registrert. Sjekk at postkode er riktig og at du er innlogget."); };
+    console.log("Registrer post: "+postId+", "+weapon);
+
+    var successHandler = function () { showToast("Prøver å registrere post..."); getGameState(); };
+    var errHandler = function () { showToast("Post ble ikke registrert. Sjekk at du er innlogget og har internett."); };
 
     $.ajax({
         type: "POST",
@@ -485,12 +485,6 @@ window.onload = function () {
 
     loadUserOptions();
 
-    var player1 = { "latitude": 59.9332042, "longitude": 10.7575169, "navn": "Per" };
-    var player2 = { "latitude": 59.9332942, "longitude": 10.7575169, "navn": "Per 2" };
-
-    putPlayerOnMap(player1,1,-10);
-    putPlayerOnMap(player2,2,-10);
-
 
     $("#rank_and_score_Carousel_main").carousel(); 
     $("#rank_and_score_Carousel_sx").carousel();
@@ -524,16 +518,20 @@ window.onload = function () {
     }
 
     $("#bomb_btn_main")[0].onclick = function () {
-        if ($("#bomb_btn_main")[0].classList.contains("disabled")) setTimeout(autoSelectNoWeapon, 2);
+        if ($("#bomb_btn_main")[0].classList.contains("disabled")) { setTimeout(autoSelectNoWeapon, 2); }
+        else { autoSelectWeapon("BOMBE") }
     }
     $("#trap_btn_main")[0].onclick = function () {
-        if ($("#trap_btn_main")[0].classList.contains("disabled")) setTimeout(autoSelectNoWeapon, 2);
+        if ($("#trap_btn_main")[0].classList.contains("disabled")) { setTimeout(autoSelectNoWeapon, 2); }
+        else { autoSelectWeapon("FELLE") }
     }
     $("#bomb_btn_modal")[0].onclick = function () {
-        if ($("#bomb_btn_modal")[0].classList.contains("disabled")) setTimeout(autoSelectNoWeapon, 2);
+        if ($("#bomb_btn_modal")[0].classList.contains("disabled")) { setTimeout(autoSelectNoWeapon, 2); }
+        else { autoSelectWeapon("BOMBE") }
     }
     $("#trap_btn_modal")[0].onclick = function () {
-        if ($("#trap_btn_modal")[0].classList.contains("disabled")) setTimeout(autoSelectNoWeapon, 2);
+        if ($("#trap_btn_modal")[0].classList.contains("disabled")){ setTimeout(autoSelectNoWeapon, 2); }
+        else { autoSelectWeapon("FELLE") }
     }
 }
 
@@ -637,17 +635,32 @@ function findBootstrapEnvironment() {
 }
 
 function autoSelectNoWeapon() {
-    $("#no_weapon_radio_main")[0].checked = "true";
-    $("#no_weapon_btn_main")[0].classList.add("active");
-    //document.getElementById("no_weapon_btn_main").focus();
-    $("#bomb_btn_main")[0].classList.remove("active");
-    $("#trap_btn_main")[0].classList.remove("active");
+    autoSelectWeapon(null);
+}
 
-    $("#no_weapon_radio_modal")[0].checked = "true";
-    $("#no_weapon_btn_modal")[0].classList.add("active");
-    //document.getElementById("no_weapon_btn_modal").focus();
-    $("#bomb_btn_modal")[0].classList.remove("active");
-    $("#trap_btn_modal")[0].classList.remove("active");
+
+function autoSelectWeapon(weapon){
+    var input = ["modal", "main"];
+    input.forEach(function (_i){
+        $("#no_weapon_radio_" + _i).prop("checked", false);
+        $("#bomb_radio_" + _i).prop("checked", false);
+        $("#trap_radio_" + _i).prop("checked", false);
+
+        $("#no_weapon_btn_" + _i)[0].classList.toggle("active", false);
+        $("#bomb_btn_" + _i)[0].classList.toggle("active", false);
+        $("#trap_btn_" + _i)[0].classList.toggle("active", false);
+
+        if (weapon === "BOMBE") {
+            $("#bomb_radio_" + _i).prop("checked", true);
+            $("#bomb_btn_" + _i)[0].classList.toggle("active", true);
+        } else if (weapon === "FELLE") {
+            $("#trap_radio_" + _i).prop("checked", true);
+            $("#trap_btn_" + _i)[0].classList.toggle("active", true);
+        } else {
+            $("#no_weapon_radio_" + _i).prop("checked", true);
+            $("#no_weapon_btn_" + _i)[0].classList.toggle("active", true);
+        }
+    });
 }
 
 // should work for small distances #siving
