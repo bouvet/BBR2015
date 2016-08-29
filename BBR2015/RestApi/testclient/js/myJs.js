@@ -6,6 +6,7 @@ var map = null;
 var post_marker_icon_general = null;
 var prev_rank = -1;
 var uleste_meldinger = 0;
+var hasProcessedGameState = false;
 
 var score_next_team_diff = 0;
 var score_prev_team_diff = 0;
@@ -177,6 +178,14 @@ function putPostOnMap(post) {
     return post_marker;
 }
 
+function clearPosts() {
+    console.log("Remove all posts from map");
+    postMarkersMap.forEach(function (postFromMap, key, mapObj) {
+        if (postFromMap.marker !== null) { map.removeLayer(postFromMap.marker); }
+    });
+    postMarkersMap = new Map();
+}
+
 var players_and_markers = new Map();
 var player_count = 0;
 function updateTeamOnMap(players) {
@@ -287,6 +296,7 @@ function processGameState(gameState) {
 
     $(".team_status_score")[0].innerHTML = "Score #" + gameState.score;
     $(".team_status_score")[1].innerHTML = "Score #" + gameState.score;
+    hasProcessedGameState = true;
 }
 
 function weaponsAviable(weapons) {
@@ -438,34 +448,42 @@ function loadUserOptions() {
 }
 
 function logIn(lag_kode, deltaker_kode) {
-    var msg = "Jeg har logget inn!";
     console.log("prøver å logge inn... Lagkode: " + lag_kode + ", deltakerKode: " + deltaker_kode);
 
     meldingsSekvens = 0;
     $("#messages_list")[0].innerHTML = ""; // remove all messages
-    updatePostsOnMap(undefined); // removes all posts
     removeAllPlayersFromMap(); // removes all prev team members
+    clearPosts(); // removes all prev posts
 
     var successHandler = function () {
         showToast("Innlogget med lagkode: " + lag_kode + " og deltagerkode: " + deltaker_kode);
         console.log("Logget inn");
         loggedIn = true;
+        hasProcessedGameState = false;
         mainLoop();
     };
 
     var errHandler = function () {
         showToast("Innlogging feilet");
         console.log("Innlogging feilet!");
-        loggedIn = false;
-
-        $(".team_status_score")[0].innerHTML = "Logg på";
-        $(".team_status_score")[1].innerHTML = "Logg på";
-
-        $(".team_status_rank")[0].innerHTML = "Logg på";
-        $(".team_status_rank")[1].innerHTML = "Logg på";
+        logOut();
     };
 
+    var msg = "Jeg har logget inn!";
     sendMessage(msg, successHandler, errHandler);
+}
+
+function logOut() {
+    $("#messages_list")[0].innerHTML = ""; // remove all messages
+    removeAllPlayersFromMap(); // removes all prev team members
+    clearPosts(); // removes all prev posts
+    loggedIn = false;
+
+    $(".team_status_score")[0].innerHTML = "Logg på";
+    $(".team_status_score")[1].innerHTML = "Logg på";
+
+    $(".team_status_rank")[0].innerHTML = "Logg på";
+    $(".team_status_rank")[1].innerHTML = "Logg på";
 }
 
 // -------------------
@@ -474,20 +492,22 @@ function logIn(lag_kode, deltaker_kode) {
 
 //main loop
 function mainLoop() {
-    var auto_update = localStorage.getItem("auto_update_setting");
-    if (auto_update === "true" && loggedIn === true) {
+    if (loggedIn === true) {
         getTeamPosition();
         sendPosition();
         getGameState();
-        updateMessages();
+        if (hasProcessedGameState) { updateMessages(); }
     } else {
-        console.log("logget på: " + loggedIn);
+        console.log("Er ikke logger på");
     }
 }
 
 //Time-event
 setInterval(function () {
-    mainLoop();
+    var auto_update = $("#radio_auto_update_yes")[0].checked;
+    if (auto_update === true) {
+        mainLoop();
+    }
 }, 3000);
 
 //Event that triggers when all of HTML has been loaded
@@ -662,7 +682,6 @@ function findBootstrapEnvironment() {
 function autoSelectNoWeapon() {
     autoSelectWeapon(null);
 }
-
 
 function autoSelectWeapon(weapon){
     var input = ["modal", "main"];
