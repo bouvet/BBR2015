@@ -167,19 +167,16 @@ function putPostOnMap(post) {
 }
 
 var players_and_markers = new Map();
-var players_id_name_map = new Map();
 var player_count = 0;
 function updateTeamOnMap(players) {
     if (map !== null) {
         players.forEach(function (player) {
             var player_and_marker = players_and_markers.get(player.navn);
             if (player_and_marker === undefined) { //new player
-                console.log("new player: " + player.navn+", deltakerId: "+player.deltakerId);
 
                 var marker = putPlayerOnMap(player, player_count,99999);
                 player_and_marker = { 'player': player, 'marker': marker };
                 players_and_markers.set(player.navn, player_and_marker);
-                players_id_name_map.set(player.deltakerId, player.navn);
                 player_count++;
             } else { // old player
                 var lat = (player_and_marker.player.latitude);
@@ -191,12 +188,12 @@ function updateTeamOnMap(players) {
     }
 }
 
-function putPlayerOnMap(player, n , zIndex) {
+function putPlayerOnMap(player, color_index , zIndex) {
     var lat = player.latitude;
     var lon = player.longitude;
     var name = player.navn;
 
-    var farge = post_color_map[n][0];
+    var farge = post_color_map[color_index][0];
 
     var marker_icon = L.AwesomeMarkers.icon({
         icon: 'star',
@@ -216,6 +213,17 @@ function removeAllPlayersFromMap() {
         map.removeLayer(item.marker);
     });
     players_and_markers = new Map();
+}
+
+var players_id_name_map = new Map();
+function mapNames(players) {
+    players.forEach(function (player) {
+        var new_player = players_id_name_map.get(player.deltakerId);
+        if (new_player === undefined) {
+            console.log("new player: " + player.navn + ", deltakerId: " + player.deltakerId);
+            players_id_name_map.set(player.deltakerId, player.navn);
+        }
+    });
 }
 
 // ------------------------------------------------
@@ -261,6 +269,7 @@ function processGameState(gameState) {
     weaponsAviable(gameState.vaapen);
     updatePostsOnMap(gameState.poster);
     updateScoreDiffToNextAndPrevTeam(gameState.ranking);
+    mapNames(gameState.deltakere);
 
     $(".team_status_score")[0].innerHTML = "Score #" + gameState.score;
     $(".team_status_score")[1].innerHTML = "Score #" + gameState.score;
