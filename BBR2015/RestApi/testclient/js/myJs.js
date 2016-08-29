@@ -152,6 +152,8 @@ function putPostOnMap(post) {
                 break;
             }
         }
+    } else {
+        return;
     }
 
     var redMarker = L.AwesomeMarkers.icon({
