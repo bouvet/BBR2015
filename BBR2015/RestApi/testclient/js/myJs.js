@@ -21,21 +21,21 @@ function updateAndDisplayMapOrMessage(show_map) {
             $("#messages")[0].style.display = 'none';
             $("#map")[0].style.display = 'block';
 
-            var message_span_msg = uleste_meldinger>0? "Meldinger (" + uleste_meldinger +")":"Meldinger";
+            var message_span_msg = uleste_meldinger > 0 ? "MELDINGER (" + uleste_meldinger + ")" : "MELDINGER";
             $("#btn_switch_map_messages_span")[0].innerHTML = message_span_msg;
         } else {
             uleste_meldinger = 0;
             $("#messages")[0].style.display = 'block';
             $("#map")[0].style.display = 'none';
 
-            $("#btn_switch_map_messages_span")[0].innerHTML = "Map";
+            $("#btn_switch_map_messages_span")[0].innerHTML = "KART";
         }
     } else {
         uleste_meldinger = 0;
         //document.getElementById("messages").style.display = 'block';
        $("#messages")[0].style.display = 'block';
        $("#map")[0].style.display = 'block';
-       $("#btn_switch_map_messages_span")[0].innerHTML = "Meldinger";
+       $("#btn_switch_map_messages_span")[0].innerHTML = "MELDINGER";
     }
 
     updateMapAndMessagesSize();
@@ -618,13 +618,15 @@ function updateMapAndMessagesSize() {
     var messages_inner_panel_height = 0;
 
     if (bootstrap_size === 'xs') {
-        map_margin_top = 40;
+        map_margin_right = 10;
+        map_margin_left = 10;
+        map_margin_top = 60;
         messages_margin_top = 35;
 
         map_margin_bottom = 30;
         messages_margin_bottom = 30;
 
-        map_height = height_screen - map_margin_bottom - map_margin_top;
+        map_height = height_screen - map_margin_bottom - map_margin_top - 25;
         messages_height = map_height-40;
         messages_inner_panel_height = messages_height;
         

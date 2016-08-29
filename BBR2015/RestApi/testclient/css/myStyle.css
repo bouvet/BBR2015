@@ -1,17 +1,129 @@
 ﻿body{
-    background-color:papayawhip;
+    background-color:#212121;
+    color: #d45a1f;
 }
 
 .debug_style{
 
 }
 
+#navbar_bottom_container{
+    padding:0px 10px 0px 10px;
+}
+
+.btn-navbar-bottom{
+    background-color:#d45a1f;
+    color:#ffffff;
+    border:0px solid #000000;
+    border-radius:0;
+}
+
+#map{
+    border: 2px solid #ffffff;
+}
+
+.btn-navbar-top{
+    padding:10px 5px 10px 5px;
+}
+
+#navbar_top_container{
+    padding:0px 5px 0px 5px;
+}
+
+.no_padding{
+    padding:0px 0px 0px 0px;
+}
+
+.navbar_transparent_background{
+    background-color:transparent;
+    border: 0px solid #000000;
+}
+
+.navbar_slightly_transparent_background{
+    background-color:rgba(0,0,0,0.65);
+    border: 0px solid #000000;
+}
+
+.text-orange{
+    color:#d45a1f;
+}
+
+#register_Post_Heading{
+    font-size:20px;
+    color:#ffffff;
+    border-bottom: 3px solid #d45a1f;
+
+}
+
+#btn_switch_map_messages{
+    color: #d45a1f;
+    border-radius: 0;
+    background-color: #000000;
+    border: 1px solid #ffffff;
+}
+
+.panel-success{
+    border-color:transparent;
+}
+
+.panel-success>.panel-heading{
+    color:#d45a1f;
+}
+
+.btn-orange-bouvet{
+    border: 1px solid #d45a1f;
+    border-radius: 0;
+    background-color: transparent;
+    color:#ffffff;
+    font-size: 19px;
+    padding: 10px 5px 10px 5px;
+}
+
+.btn-orange-bouvet:hover{
+    background-color: #d45a1f;
+}
+
+.panel-success>.panel-heading{
+    background-color:#343434;
+    border: 0px solid #d45a1f;
+}
+
 #float_left{
     margin-left:0px;
 }
 
+#options_info_div{
+    padding:15px 0px 25px 0px;
+}
+
+#post_id_main{
+    border-radius:0;
+    border: 1px solid #d45a1f;
+}
+
+#rank_and_score_Carousel_main{
+    padding:15px 0px 20px 0px;
+}
+
 textarea {
    resize: none;
+}
+
+.panel-heading-centered{
+    text-align:center;
+}
+
+.panel{
+    background-color:transparent;
+}
+
+.panel-body{
+    background-color:#343434;
+    padding: 0px 0px 15px 0px;
+}
+
+#messages .panel-body{
+    background-color:transparent;
 }
 
 .centerBlock {
@@ -22,6 +134,16 @@ textarea {
 
 .text-style-points{
     font-size: 200%;
+}
+
+#messages_panel_heading{
+    border: 1px solid #ffffff;
+    border-radius: 0;
+    background-color:transparent;
+}
+
+#messages_panel_heading h4{
+    font-size:30px;
 }
 
 .text-green{
@@ -51,17 +173,12 @@ body{
     margin-bottom:5px;
 }
 
-.navbar_custom_background{
-    background-color:rgba(255,255,255,0.55);
-}
-
-.list-striped:nth-child(odd){
-    background-color:rgb(255, 249, 204);
-    padding:5px 5px 5px 5px;
-}
-
-.list-striped:nth-child(even){
-    padding:5px 5px 5px 5px;
+.list-striped{
+    color:#ffffff;
+    border-bottom: 1px solid #ffffff;
+    padding: 15px 5px 10px 5px;
+    margin-bottom: 10px;
+    font-size: 16px;
 }
 
 .btn-img{
