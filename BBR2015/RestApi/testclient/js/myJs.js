@@ -120,21 +120,29 @@ function addNewMessage(msg) {
     );
 }
 
-var post_markers = [];
-function updatePostsOnMap(Posts) {
-    if (!(map === null)) {
-        //clear old post markers
-        post_markers.forEach(function (post_marker) {
-            map.removeLayer(post_marker);
-        });
-        post_markers = [];
+var postMarkersMap = new Map();
+function updatePostsOnMap(postsFromServer) {
+    if (map !== null && postsFromServer!==undefined) {
+        postsFromServer.forEach(function (postFromServer) {
+            var lat = postFromServer.latitude;
+            var lon = postFromServer.longitude;
+            var idString = "lat:"+lat+";lon:"+lon;
+            var postFromMap = postMarkersMap.get(idString);
 
-        //add new post markers
-        if (!(Posts === undefined)) {
-            Posts.forEach(function (post) {
-                putPostOnMap(post);
-            });
-        }
+            if (postFromMap === undefined) {
+                var post_marker = putPostOnMap(postFromServer);
+                postFromMap = { 'post': postFromServer, 'marker': post_marker };
+                postMarkersMap.set(idString, postFromMap);
+                console.log("ny post id: " + idString + ", value: " + postFromServer.poengVerdi)
+
+            } else if (postFromMap.post.poengVerdi !== postFromServer.poengVerdi ||
+                       postFromMap.post.harRegistrert !== postFromServer.harRegistrert) {
+                if (postFromMap.marker !== null) { map.removeLayer(postFromMap.marker); }
+                console.log("post changed value or was taken. post id: " + idString + ", value: " + postFromServer.poengVerdi + ", oldValue: " + postFromMap.post.poengVerdi);
+                postFromMap.marker = putPostOnMap(postFromServer);
+                postFromMap.post = postFromServer;
+            }
+        });
     }
 }
 
@@ -153,7 +161,7 @@ function putPostOnMap(post) {
             }
         }
     } else {
-        return;
+        return null;
     }
 
     var redMarker = L.AwesomeMarkers.icon({
@@ -164,8 +172,9 @@ function putPostOnMap(post) {
     var post_marker = L.marker([lat, lon], { icon: redMarker }).addTo(map); 
 
     post_marker.setZIndexOffset(-99);
-    post_marker.bindPopup(""+value);
-    post_markers[post_markers.length] = post_marker;
+    post_marker.bindPopup("" + value);
+
+    return post_marker;
 }
 
 var players_and_markers = new Map();
@@ -173,13 +182,16 @@ var player_count = 0;
 function updateTeamOnMap(players) {
     if (map !== null) {
         players.forEach(function (player) {
-            var player_and_marker = players_and_markers.get(player.navn);
-            if (player_and_marker === undefined) { //new player
+            if (player.navn !== null) return;
 
+            var player_and_marker = players_and_markers.get(player.navn);
+
+            if (player_and_marker === undefined) { //new player
                 var marker = putPlayerOnMap(player, player_count,99999);
                 player_and_marker = { 'player': player, 'marker': marker };
                 players_and_markers.set(player.navn, player_and_marker);
                 player_count++;
+
             } else { // old player
                 var lat = (player_and_marker.player.latitude);
                 var lon = (player_and_marker.player.longitude);
