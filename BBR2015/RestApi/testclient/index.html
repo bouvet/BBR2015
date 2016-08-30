@@ -6,6 +6,9 @@
     <meta name="Author" content="Kristian LW" />
     <meta name="Description" content="Bouvet Battle Royale" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#212121" />
+
+    <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
 
     <!--link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/cosmo/bootstrap.min.css" rel="stylesheet"s
           integrity="sha384-h21C2fcDk/eFsW9sC9h0dhokq5pDinLNklTKoxIZRUn3+hvmgQSffLLQ4G4l2eEr" crossorigin="anonymous"-->
@@ -108,11 +111,16 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="col-xs-6 col-sm-6"> <h2> Options </h2> </div>
-                    <div class="col-xs-6 col-sm-6">
+                    <div class="col-xs-8 col-sm-8"> <h2 class="text-white"> OPTIONS </h2> </div>
+                    <div class="col-xs-4 col-sm-4">
                         <button data-dismiss="modal" class="btn btn-danger form-group btn" style="float:right;">
                             <span> &times; </span>
                         </button>
+                    </div>
+
+                    <div class="col-xs-12">
+                        <div class="col-xs-4 orange-bouvet-bottom-line">
+                        </div>
                     </div>
                 </div>
 
@@ -120,17 +128,17 @@
                     <form class="form">
                         <div class="col-lg-12 col-sx-12">
                             <div class="form-group">
-                                <label for="lag_kode"> Lag kode </label> 
+                                <label for="lag_kode" class="text-white"> Lag kode </label> 
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="lag_kode"
+                                    <input type="text" class="form-control text-field-bouvet" name="lag_kode"
                                            placeholder="lag kode" id="lag_kode" />
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="deltaker_kode"> Deltaker kode </label> 
+                                <label for="deltaker_kode" class="text-white"> Deltaker kode </label> 
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="deltaker_kode"
+                                    <input type="text" class="form-control text-field-bouvet" name="deltaker_kode"
                                            placeholder="deltaker kode" id="deltaker_kode" />
                                 </div>
                             </div>
@@ -138,7 +146,7 @@
 
                         <div class="row">
                             <div class="col-xs-offset-1">
-                                <label for="radio_auto_update"> Oppdater siden automatisk? </label> <br />
+                                <label for="radio_auto_update" class="text-white"> Oppdater siden automatisk? </label> <br />
                                 <div class="btn-group btn-group-lg btn-no-padding" role="group" aria-label="..." data-toggle="buttons">
                                     <label class="btn btn-default btn-no-padding"> <input type="radio" name="radio_auto_update" id="radio_auto_update_no"
                                                                                             value="0" />  Nei </label>
@@ -152,7 +160,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button id="registrer_user" class="btn btn-success form-group btn-lg" style="float: right" data-dismiss="modal">
+                    <button id="registrer_user" class="btn btn-success form-group btn-lg btn-navbar-bottom" style="float: right" data-dismiss="modal">
                         <span class="glyphicon glyphicon-check"></span> Lagre
                     </button>
                 </div>
@@ -322,11 +330,17 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="col-xs-6 col-sm-6"> <h2> Registrer Post </h2> </div>
-                    <div class="col-xs-6 col-sm-6">
+                    <div class="col-xs-8 col-sm-8"> <h2 class="text-white"> REGISTRER POST </h2> </div>
+                    <div class="col-xs-4 col-sm-4">
                         <button data-dismiss="modal" class="btn btn-danger form-group btn" style="float:right;">
                             <span> &times; </span>
                         </button>
+                    </div>
+
+                    <div class="col-xs-12">
+                        <div class="col-xs-4 orange-bouvet-bottom-line">
+
+                        </div>
                     </div>
                 </div>
 
@@ -334,13 +348,14 @@
                     <form class="form">
                         <div class="col-lg-12 col-sx-12">
                             <div class="form-group">
-                                <label for="post_id"> Postkode </label> <input type="text" class="form-control" name="post_id"
+                                <h5 class="text-white"> Postkode </h5>
+                                <input type="text" class="form-control text-field-bouvet" name="post_id"
                                                                                placeholder="postkode" id="post_id_modal"/>
                             </div>
                         </div>
 
                         <div class="col-lg-12 col-sx-12 col-sm-12 col-md-12">
-                            <h5> <b> Våpen </b> </h5>
+                            <h5 class="text-white"> Våpen </h5>
                             <div class="btn-group btn-group-lg btn-no-padding" role="group" aria-label="..." data-toggle="buttons">
                                 <label class="btn btn-default active btn-img-no-weapon" id="no_weapon_btn_modal">
                                     <input type="radio" autocomplete="off" id="no_weapon_radio_modal">
@@ -357,13 +372,19 @@
                                     <span id="trap_label_modal"></span>
                                 </label>
                             </div>
+
+                           
                         </div>
                     </form>
+
+                    <div class="col-xs-12">
+                        <hr />
+                    </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button id="register_post_btn_modal" data-dismiss="modal" class="btn btn-success form-group btn-lg" style="float:right">
-                        <span class="glyphicon glyphicon-check"></span> Registrer
+                    <button id="register_post_btn_modal" data-dismiss="modal" class="btn btn-success form-group btn-lg btn-navbar-bottom" style="float:right">
+                        REGISTRER
                     </button>
                 </div>
             </div>
@@ -375,25 +396,34 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="col-xs-6 col-sm-6"> <h2> Send melding </h2> </div>
-                    <div class="col-xs-6 col-sm-6">
+                    <div class="col-xs-8 col-sm-8"> <h2 class="text-white"> SEND MELDING </h2> </div>
+                    <div class="col-xs-4 col-sm-4">
                         <button data-dismiss="modal" class="btn btn-danger form-group btn" style="float:right;">
                             <span> &times; </span>
                         </button>
                     </div>
+
+                    <div class="col-xs-12">
+                        <div class="col-xs-4 orange-bouvet-bottom-line">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="modal-body">
-                    <form class="form">
-                        <div class="form-group">
-                            <label for="melding"> Melding </label> <textarea id="send_messages_textbox_modal" name="melding" class="form-control"> </textarea>
-                        </div>
-                    </form>
+                    <div class="col-xs-12">
+                        <form class="form">
+                            <div class="form-group">
+                                <label for="melding" class="text-white"> Melding </label> 
+                                <textarea id="send_messages_textbox_modal" name="melding" class="form-control text-field-bouvet"> </textarea>
+                            </div>
+                        </form>
+                        <hr />
+                    </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button id="send_melding_modal" class="btn btn-success btn-lg form-group" style="float:right" data-dismiss="modal">
-                        <span class="glyphicon-envelope"></span> Send Melding
+                    <button id="send_melding_modal" class="btn btn-success btn-lg form-group btn-navbar-bottom" style="float:right" data-dismiss="modal">
+                        SEND MELDING
                     </button>
                 </div>
             </div>

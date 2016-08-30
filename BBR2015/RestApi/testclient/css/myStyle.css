@@ -4,6 +4,7 @@
     background-repeat: no-repeat;
     color: #d45a1f;
     margin-top:100px;
+    font-family: 'Lato';
 }
 
 #navbar_top_container{
@@ -24,6 +25,7 @@
     border:1px solid #212121;
     border-radius:0;
 }
+
 
 #map{
     border: 2px solid #ffffff;
@@ -65,6 +67,24 @@
     border: 1px solid #ffffff;
 }
 
+.modal-content{
+    background-color:#343434;
+    border: 0px solid #343434;
+}
+
+.modal-header{
+    border: 0px solid #343434;
+    padding:5px 0px 0px 5px;
+}
+
+.modal-body{
+    padding:10px 5px 0px 5px;
+}
+
+.modal-footer{
+    border: 0px solid #343434;
+}
+
 .panel-success{
     border-color:transparent;
 }
@@ -99,9 +119,19 @@
     padding:15px 0px 25px 0px;
 }
 
-#post_id_main{
+.text-field-bouvet{
     border-radius:0;
     border: 1px solid #d45a1f;
+    background-color:transparent;
+    color:#fff;
+}
+
+.btn-default:active{
+    background-color:#d45a1f !important;
+}
+
+.orange-bouvet-bottom-line{
+    border-bottom: 3px solid #d45a1f;
 }
 
 #rank_and_score_Carousel_main{
@@ -149,8 +179,12 @@ textarea {
     font-size:30px;
 }
 
+.text-white{
+    color:#ffffff;
+}
+
 .text-green{
-    color:green;
+    color:rgb(39, 225, 2);
 }
 
 .text-red{
