@@ -37,6 +37,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:RestApi.Controllers.AdminController.KodeKombinasjoner">
+            <summary>
+            Henter ut alle hemmelige koder for alle spillere og lag. For testing.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:RestApi.Controllers.AdminController.DateTimeNow">
             <summary>
             Hjelpemetode for å dobbeltsjekke at serveren har samme tidssone som du forventer.

@@ -83,6 +83,17 @@ namespace Repository
             return koder;
         }
 
+        public string HentAlleKodeKombinasjoner()
+        {
+            var koder = from l in KodeKombinasjoner
+                        select new
+                        {
+                            key = l.Key                           
+                        };
+
+            return string.Join(Environment.NewLine, koder);
+        }
+
         public KontrollResultat SjekkTilgang(string lagKode, string deltakerKode)
         {
             var kodeKombinasjon = LagKodeKombinasjon(lagKode, deltakerKode);

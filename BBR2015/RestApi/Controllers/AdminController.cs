@@ -81,6 +81,14 @@ namespace RestApi.Controllers
             return Ok();
         }
 
+        [Route("api/Admin/ClearCachingTilgang")]
+        [HttpPost]
+        public IHttpActionResult ClearCachingTilgang()
+        {
+            _tilgangsKontroll.Nullstill();
+            return Ok();
+        }
+
         /// <summary>
         /// Sletter alle data
         /// </summary>
@@ -119,6 +127,24 @@ namespace RestApi.Controllers
         public IHttpActionResult HemmeligeKoder()
         {
             return Ok(_tilgangsKontroll.HentAlleHemmeligeKoder());
+        }
+
+        /// <summary>
+        /// Henter ut alle hemmelige koder for alle spillere og lag. For testing.
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/Admin/kodekombinasjoner")]
+        [HttpGet]
+        public IHttpActionResult KodeKombinasjoner()
+        {
+            return Ok(_tilgangsKontroll.HentAlleKodeKombinasjoner());
+        }
+
+        [Route("api/Admin/tilgangskontrollhash")]
+        [HttpGet]
+        public IHttpActionResult TilgangskontrollHashCode()
+        {
+            return Ok(_tilgangsKontroll.GetHashCode());
         }
 
         /// <summary>
