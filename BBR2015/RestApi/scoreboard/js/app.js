@@ -48,6 +48,7 @@ angular.module('scoreboard').controller('scoreboardController', function ($scope
         var newPost = true;
         var oldKartpost;
         newValue.forEach(function (post) {
+            newPost = true;
             for (var i = 0; i < $scope.kartposter.length; i++) {
                 var kartpost = $scope.kartposter[i];
                 if (kartpost.post.latitude === post.latitude && kartpost.post.longitude === post.longitude) {

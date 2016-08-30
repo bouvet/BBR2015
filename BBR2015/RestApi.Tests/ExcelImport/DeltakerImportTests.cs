@@ -24,7 +24,7 @@ namespace RestApi.Tests.ExcelImport
 
                 Assert.AreEqual(2, deltakere.Count, "Riktig antall");
 
-                var d = deltakere.First();
+                var d = deltakere.OrderBy(x => x.Navn).First();
 
                 Assert.AreEqual("LAG_1-1Navn", d.Navn, "Navn");
                 Assert.AreEqual("Kode1_1", d.Kode, "Kode");
