@@ -110,7 +110,7 @@
             <response code="403">Forbidden - Husk LagKode og DeltakerKode</response>
             <response code="500">Internal Server Error</response>
         </member>
-        <member name="M:RestApi.Controllers.KmlController.Export(System.String)">
+        <member name="M:RestApi.Controllers.KmlController.Export">
             <summary>
             Eksporterer replay av matchen som KML-format. Kan vises i Google Earth.
             </summary>

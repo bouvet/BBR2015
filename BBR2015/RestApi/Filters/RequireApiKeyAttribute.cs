@@ -30,7 +30,7 @@ namespace RestApi.Filters
 
             if (resultat == null)
             {
-                var message = string.Format("Ugyldige verdier i HTTP Headere: '{0}', '{1}'. Sjekk lagoppstillingen. {2}", Constants.Headers.HTTPHEADER_LAGKODE, Constants.Headers.HTTPHEADER_DELTAKERKODE, tilgangsKontroll.GetHashCode());
+                var message = string.Format("Ugyldige verdier i HTTP Headere: '{0}', '{1}'. Sjekk lagoppstillingen.", Constants.Headers.HTTPHEADER_LAGKODE, Constants.Headers.HTTPHEADER_DELTAKERKODE);
                 context.Response = context.Request.CreateErrorResponse(HttpStatusCode.Forbidden, message);
                 return;
             }

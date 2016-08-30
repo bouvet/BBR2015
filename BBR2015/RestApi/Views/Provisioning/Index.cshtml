@@ -19,16 +19,24 @@
     }
 }
 
-@if (Model.TillatNyttLag)
-{
-    <div>
-        @Html.ActionLink("Registrer nytt lag", "NyttLag", "Provisioning", new {id = Model.MatchId}, null)
-    </div>
-}
+<ul>
+    @if (Model.TillatNyttLag)
+    {
+        <li>
+            @Html.ActionLink("Registrer nytt lag", "NyttLag", "Provisioning", new { id = Model.MatchId }, null)
+        </li>
+    }
 
-@if (Model.TillatNySpiller)
-{
-    <div>
-        @Html.ActionLink("Registrer ny deltaker", "NySpiller", "Provisioning")
-    </div>
-}
+    @if (Model.TillatNySpiller)
+    {
+        <li>
+            @Html.ActionLink("Registrer ny deltaker", "NySpiller", "Provisioning")
+        </li>
+    }
+    @if (!string.IsNullOrEmpty(Model.KlientUrl))
+    {
+        <li>
+            <a href="@Model.KlientUrl">Start spillet</a>
+        </li>
+    }
+</ul>

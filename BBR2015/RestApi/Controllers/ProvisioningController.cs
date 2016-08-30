@@ -42,7 +42,8 @@ namespace RestApi.Controllers
             {
                 TillatNyttLag = _settings.TillatOpprettNyttLag,
                 TillatNySpiller = _settings.TillatOpprettNySpiller,
-                MatchId = id
+                MatchId = id,
+                KlientUrl = _settings.TestklientUrl
             };
 
             return View(indexModel);
@@ -61,7 +62,8 @@ namespace RestApi.Controllers
                 TillatNyttLag = _settings.TillatOpprettNyttLag,
                 TillatNySpiller = _settings.TillatOpprettNySpiller,
                 Melding = melding,
-                ErFeilmelding = erFeilmelding
+                ErFeilmelding = erFeilmelding,
+                KlientUrl = _settings.TestklientUrl
             };
 
             return View("Index", indexModel);
@@ -133,6 +135,7 @@ namespace RestApi.Controllers
 
             public bool HarMelding => !string.IsNullOrEmpty(Melding);
             public string MatchId { get; set; }
+            public string KlientUrl { get; set; }
         }
 
         public class NyttLagModel
