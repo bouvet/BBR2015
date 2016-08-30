@@ -83,11 +83,11 @@ function switchMapAndMessages() {
 }
 
 function displayNumberOfWeapons(bombs, traps) {
-    $("#bomb_label_modal")[0].innerHTML = "&times;" + bombs;
-    $("#trap_label_modal")[0].innerHTML = "&times;" + traps;
+    $("#bomb_label_modal")[0].innerHTML = bombs + "&times;";
+    $("#trap_label_modal")[0].innerHTML = traps + "&times;";
 
-    $("#bomb_label_main")[0].innerHTML = "&times;" + bombs;
-    $("#trap_label_main")[0].innerHTML = "&times;" + traps;
+    $("#bomb_label_main")[0].innerHTML = bombs + "&times;";
+    $("#trap_label_main")[0].innerHTML = traps + "&times;";
  
     if (bombs === 0) {
         $("#bomb_btn_main")[0].classList.add("disabled");

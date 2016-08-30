@@ -45,7 +45,7 @@
 }
 
 .navbar_slightly_transparent_background{
-    background-color:rgba(21,21,21,0.65);
+    background-color:rgba(21,21,21,0.75);
     border: 0px solid #000000;
 }
 
@@ -124,6 +124,12 @@
     border: 1px solid #d45a1f;
     background-color:transparent;
     color:#fff;
+}
+
+.btn-transparent{
+    background-color:transparent;
+    border:0px solid #ffffff;
+    border-radius:0;
 }
 
 .btn-default:active{
@@ -218,8 +224,13 @@ body{
     font-size: 16px;
 }
 
+.weapon-img{
+    height:50px;
+    width:50px;
+}
+
 .btn-img{
-    padding: 5px 10px 5px 7px !important;
+    padding: 5px 5px 5px 10px !important;
 }
 
 .btn-img-no-weapon{
