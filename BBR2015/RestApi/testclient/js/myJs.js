@@ -67,8 +67,8 @@ function updateScoreDiffToNextAndPrevTeam(ranking) {
     }
     prev_rank = new_rank;
 
-    var prev_team_msg = score_prev_team_diff + " " + arrow_up + " ";
-    var next_team_msg = " " + arrow_down + " " + score_next_team_diff;
+    var prev_team_msg = "<b>" + score_prev_team_diff + " " + arrow_up + " </b>";
+    var next_team_msg = "<b> " + arrow_down + " " + score_next_team_diff +"</b>";
 
     $(".team_status_prev_team_score_diff")[0].innerHTML = prev_team_msg;
     $(".team_status_next_team_score_diff")[0].innerHTML = next_team_msg;
@@ -76,8 +76,8 @@ function updateScoreDiffToNextAndPrevTeam(ranking) {
     $(".team_status_prev_team_score_diff")[1].innerHTML = prev_team_msg;
     $(".team_status_next_team_score_diff")[1].innerHTML = next_team_msg;
 
-    $(".team_status_rank")[0].innerHTML = "Rank #" + new_rank;
-    $(".team_status_rank")[1].innerHTML = "Rank #" + new_rank;
+    $(".team_status_rank")[0].innerHTML = "<b>Rank #" + new_rank + "</b>";
+    $(".team_status_rank")[1].innerHTML = "<b>Rank #" + new_rank + "</b>";
 }
 
 function switchMapAndMessages() {
@@ -322,15 +322,15 @@ function processGameState(gameState) {
         console.log("New score: " + newTeam_score);
         var diff = newTeam_score - team_score;
         if (diff > 0) {
-            showToast("+" + diff + " poeng");
+            showToast("<b>+" + diff + "</b> poeng");
         } else {
-            showToast("Felle! " + diff + " poeng");
+            showToast("Felle! <b>" + diff + "</b> poeng ");
         }
     }
     team_score = newTeam_score;
 
-    $(".team_status_score")[0].innerHTML = "Score #" + team_score;
-    $(".team_status_score")[1].innerHTML = "Score #" + team_score;
+    $(".team_status_score")[0].innerHTML = "<b> Score #" + team_score +"</b>";
+    $(".team_status_score")[1].innerHTML = "<b> Score #" + team_score + "</b>";
 
     if(hasProcessedGameState===false){
         hasProcessedGameState = true;
