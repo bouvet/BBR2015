@@ -620,14 +620,17 @@ function updateMapAndMessagesSize() {
     if (bootstrap_size === 'xs') {
         map_margin_right = 10;
         map_margin_left = 10;
-        map_margin_top = 60;
-        messages_margin_top = 35;
+        map_margin_top = 10;
+
+        messages_margin_right = map_margin_right;
+        messages_margin_left = map_margin_left;
+        messages_margin_top = map_margin_top;
 
         map_margin_bottom = 30;
         messages_margin_bottom = 30;
 
-        map_height = height_screen - map_margin_bottom - map_margin_top - 25;
-        messages_height = map_height-40;
+        map_height = height_screen - map_margin_bottom - map_margin_top - 100;
+        messages_height = map_height-30;
         messages_inner_panel_height = messages_height;
         
         $("#messages_panel_heading")[0].style.display = 'none';

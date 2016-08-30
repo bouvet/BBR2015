@@ -358,7 +358,15 @@
     <Content Include="testclient\img\flag_orange.png" />
     <Content Include="testclient\img\flag_red.png" />
     <Content Include="testclient\img\flag_yellow.png" />
+    <Content Include="testclient\img\info.svg" />
+    <Content Include="testclient\img\logo.svg" />
+    <Content Include="testclient\img\options.svg" />
+    <Content Include="testclient\img\splatter2.svg" />
+    <Content Include="testclient\img\splatter1.svg" />
     <Content Include="testclient\img\trap.png" />
+    <Content Include="testclient\img\Våpen-bombe.svg" />
+    <Content Include="testclient\img\Våpen-felle.svg" />
+    <Content Include="testclient\img\Våpen-ingen.svg" />
     <Content Include="testclient\js\leaflet.awesome-markers.min.js" />
     <Content Include="testclient\js\myJs.js" />
     <Content Include="testclient_old\css\css.css" />

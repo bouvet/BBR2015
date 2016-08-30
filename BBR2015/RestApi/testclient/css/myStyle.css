@@ -1,6 +1,13 @@
-﻿body{
-    background-color:#212121;
+﻿body {
+    background-color: #212121;
+    background-image: url('../img/splatter2.svg');
+    background-repeat: no-repeat;
     color: #d45a1f;
+    margin-top:100px;
+}
+
+#navbar_top_container{
+    padding:0px 5px 0px 5px;
 }
 
 .debug_style{
@@ -14,7 +21,7 @@
 .btn-navbar-bottom{
     background-color:#d45a1f;
     color:#ffffff;
-    border:0px solid #000000;
+    border:1px solid #212121;
     border-radius:0;
 }
 
@@ -24,10 +31,6 @@
 
 .btn-navbar-top{
     padding:10px 5px 10px 5px;
-}
-
-#navbar_top_container{
-    padding:0px 5px 0px 5px;
 }
 
 .no_padding{
@@ -40,7 +43,7 @@
 }
 
 .navbar_slightly_transparent_background{
-    background-color:rgba(0,0,0,0.65);
+    background-color:rgba(21,21,21,0.65);
     border: 0px solid #000000;
 }
 
