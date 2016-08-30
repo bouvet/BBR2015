@@ -5,6 +5,8 @@ var map_isVisible = true;
 var map = null;
 var post_marker_icon_general = null;
 var prev_rank = -1;
+var rank_changed = false;
+var rank_msg = "";
 var uleste_meldinger = 0;
 var hasProcessedGameState = false;
 
@@ -57,10 +59,10 @@ function updateScoreDiffToNextAndPrevTeam(ranking) {
             msg.melding  = 'Rykket frem til ' + new_rank + '. plass!';
         } else {
             msg.deltaker = arrow_down + ' Ny ranking ' + arrow_down;
-            msg.melding = 'Falt tilabke til ' + new_rank + '. plass.';
+            msg.melding = 'Falt til ' + new_rank + '. plass.';
         }
-
-        addNewMessage(msg);
+        rank_msg = msg;
+        rank_changed = true;
     }
     prev_rank = new_rank;
 
@@ -293,6 +295,11 @@ function displayMessagesFromServer(data) {
 
         addNewMessage(msg);
     });
+
+    if (rank_changed === true) {
+        addNewMessage(rank_msg);
+        rank_changed = false;
+    }
 };
 
 function getGameState() {
