@@ -5,14 +5,16 @@ var map_isVisible = true;
 var map = null;
 var post_marker_icon_general = null;
 var prev_rank = -1;
+var rank_changed = false;
+var rank_msg = "";
 var uleste_meldinger = 0;
 var hasProcessedGameState = false;
 
 var score_next_team_diff = 0;
 var score_prev_team_diff = 0;
 
-var post_color_map = [["red", 95], ["orange", 75], ["green", 55],
-                    ["darkgreen", 35], ["gray", 0]];
+var post_color_map = [["red", 95], ["orange", 85], ["green", 75],
+                    ["darkgreen", 65], ["gray", 0]];
 
 function updateAndDisplayMapOrMessage(show_map) {
     var bootstrap_size = findBootstrapEnvironment();
@@ -57,10 +59,10 @@ function updateScoreDiffToNextAndPrevTeam(ranking) {
             msg.melding  = 'Rykket frem til ' + new_rank + '. plass!';
         } else {
             msg.deltaker = arrow_down + ' Ny ranking ' + arrow_down;
-            msg.melding = 'Falt tilabke til ' + new_rank + '. plass.';
+            msg.melding = 'Falt til ' + new_rank + '. plass.';
         }
-
-        addNewMessage(msg);
+        rank_msg = msg;
+        rank_changed = true;
     }
     prev_rank = new_rank;
 
@@ -206,11 +208,11 @@ var player_count = 0;
 function updateTeamOnMap(players) {
     if (map !== null) {
         players.forEach(function (player) {
-            if (player.navn !== null) return;
-
+            if (player.navn === null) return;
             var player_and_marker = players_and_markers.get(player.navn);
 
             if (player_and_marker === undefined) { //new player
+                console.log("Plasser ny spiller på brettet..." + player.navn);
                 var marker = putPlayerOnMap(player, player_count,99999);
                 player_and_marker = { 'player': player, 'marker': marker };
                 players_and_markers.set(player.navn, player_and_marker);
@@ -293,6 +295,11 @@ function displayMessagesFromServer(data) {
 
         addNewMessage(msg);
     });
+
+    if (rank_changed === true) {
+        addNewMessage(rank_msg);
+        rank_changed = false;
+    }
 };
 
 function getGameState() {
