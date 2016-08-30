@@ -83,26 +83,41 @@ function switchMapAndMessages() {
 }
 
 function displayNumberOfWeapons(bombs, traps) {
-    $("#bomb_label_modal")[0].innerHTML = bombs + "&times;";
-    $("#trap_label_modal")[0].innerHTML = traps + "&times;";
+    var bombs_msg = bombs + "&times;";
+    //if (bombs < 1) { bombs_msg = "&nbsp;&nbsp;"; };
 
-    $("#bomb_label_main")[0].innerHTML = bombs + "&times;";
-    $("#trap_label_main")[0].innerHTML = traps + "&times;";
+    var traps_msg = traps + "&times;";
+    //if (traps < 1) { traps_msg = "&nbsp;&nbsp;"; }
+
+    $("#bomb_label_modal")[0].innerHTML = bombs_msg;
+    $("#trap_label_modal")[0].innerHTML = traps_msg;
+
+    $("#bomb_label_main")[0].innerHTML = bombs_msg;
+    $("#trap_label_main")[0].innerHTML = traps_msg;
  
     if (bombs === 0) {
         $("#bomb_btn_main")[0].classList.add("disabled");
         $("#bomb_btn_modal")[0].classList.add("disabled");
+
+        $("#bomb_btn_modal")[0].classList.add("no-pointer-events");
+        //$("#img_weapon_bomb_modal").attr("src", "img/Våpen-ingen.svg");
     } else {
         $("#bomb_btn_main")[0].classList.remove("disabled");
         $("#bomb_btn_modal")[0].classList.remove("disabled");
+
+        $("#bomb_btn_modal")[0].classList.remove("no-pointer-events");
     }
 
     if (traps === 0) {
         $("#trap_btn_main")[0].classList.add("disabled");
         $("#trap_btn_modal")[0].classList.add("disabled");
+
+        $("#trap_btn_modal")[0].classList.add("no-pointer-events");
     } else {
         $("#trap_btn_main")[0].classList.remove("disabled");
         $("#trap_btn_modal")[0].classList.remove("disabled");
+
+        $("#trap_btn_modal")[0].classList.remove("no-pointer-events");
     }
 }
 
@@ -304,9 +319,11 @@ function processGameState(gameState) {
     }
 }
 
+var n_bombs = 0;
+var n_traps = 0;
 function weaponsAviable(weapons) {
-    var n_bombs = 0;
-    var n_traps = 0;
+    n_bombs = 0;
+    n_traps = 0;
     weapons.forEach(function (weapon) { 
         switch(weapon.vaapenId){
             case "BOMBE":
@@ -361,8 +378,8 @@ function registerPost(input) {
     var postId = $("#post_id_" + input)[0].value;
     $("#post_id_" + input)[0].value = "";
     var weapon = "";
-    if ($("#bomb_radio_" + input)[0].checked) weapon = "BOMBE";
-    if ($("#trap_radio_" + input)[0].checked) weapon = "FELLE";
+    if ($("#bomb_radio_" + input)[0].checked && n_bombs>0) weapon = "BOMBE";
+    if ($("#trap_radio_" + input)[0].checked && n_traps>0) weapon = "FELLE";
 
 
     if (weapon === "" || $("#no_weapon_radio_" + input)[0].checked) {
@@ -503,7 +520,7 @@ function mainLoop() {
         getGameState();
         updateMessages();
     } else {
-        console.log("Er ikke logger på");
+        console.log("Er ikke logget på");
     }
 }
 
@@ -574,12 +591,14 @@ window.onload = function () {
         else { autoSelectWeapon("FELLE") }
     }
     $("#bomb_btn_modal")[0].onclick = function () {
-        if ($("#bomb_btn_modal")[0].classList.contains("disabled")) { setTimeout(autoSelectNoWeapon, 2); }
-        else { autoSelectWeapon("BOMBE") }
+        //if ($("#bomb_btn_modal")[0].classList.contains("disabled")) { setTimeout(autoSelectNoWeapon, 2); }
+        //else { autoSelectWeapon("BOMBE") }
+        autoSelectWeapon("BOMBE");
     }
     $("#trap_btn_modal")[0].onclick = function () {
-        if ($("#trap_btn_modal")[0].classList.contains("disabled")){ setTimeout(autoSelectNoWeapon, 2); }
-        else { autoSelectWeapon("FELLE") }
+        //if ($("#trap_btn_modal")[0].classList.contains("disabled")){ setTimeout(autoSelectNoWeapon, 2); }
+        //else { autoSelectWeapon("FELLE") }
+        autoSelectWeapon("FELLE");
     }
 }
 
@@ -667,9 +686,7 @@ function updateMapAndMessagesSize() {
     $("#messages")[0].style.marginRight = messages_margin_right + 'px';
 
     $("#messages_panel_body")[0].style.height = messages_inner_panel_height + 'px';
-    $("#information_modal_body")[0].style.height = (height_screen - 250) + 'px';
-
-
+    $("#information_modal_body")[0].style.height = (height_screen - 175) + 'px';
 }
 
 function findBootstrapEnvironment() {
