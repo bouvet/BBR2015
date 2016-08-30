@@ -219,8 +219,8 @@ function updateTeamOnMap(players) {
                 player_count++;
 
             } else { // old player
-                var lat = (player_and_marker.player.latitude);
-                var lon = (player_and_marker.player.longitude);
+                var lat = (player.latitude);
+                var lon = (player.longitude);
                 var newLatLng = new L.LatLng(lat, lon);
                 player_and_marker.marker.setLatLng(newLatLng);
             }
