@@ -7,6 +7,7 @@ var post_marker_icon_general = null;
 var prev_rank = -1;
 var rank_changed = false;
 var rank_msg = "";
+var team_score = -1;
 var uleste_meldinger = 0;
 var hasProcessedGameState = false;
 
@@ -316,8 +317,20 @@ function processGameState(gameState) {
     updateScoreDiffToNextAndPrevTeam(gameState.ranking);
     mapNames(gameState.deltakere);
 
-    $(".team_status_score")[0].innerHTML = "Score #" + gameState.score;
-    $(".team_status_score")[1].innerHTML = "Score #" + gameState.score;
+    var newTeam_score = gameState.score;
+    if (team_score !== newTeam_score && team_score!==-1) {
+        console.log("New score: " + newTeam_score);
+        var diff = newTeam_score - team_score;
+        if (diff > 0) {
+            showToast("+" + diff + " poeng");
+        } else {
+            showToast("Felle! " + diff + " poeng");
+        }
+    }
+    team_score = newTeam_score;
+
+    $(".team_status_score")[0].innerHTML = "Score #" + team_score;
+    $(".team_status_score")[1].innerHTML = "Score #" + team_score;
 
     if(hasProcessedGameState===false){
         hasProcessedGameState = true;
@@ -369,7 +382,6 @@ function getTeamPosition() {
 };
 
 function sendMessage(msg, successHandler, errHandler) {
-    showToast("Melding sendt");
     $.ajax({
         type: "POST",
         url: baseUrl + 'Meldinger',
@@ -568,13 +580,19 @@ window.onload = function () {
     $("#send_messages_main")[0].onclick = function () {
         var msg = $("#send_messages_textbox_main")[0].value;
         $("#send_messages_textbox_main")[0].value = "";
-        sendMessage(msg);
+
+        var successHandler = function () { showToast("Melding ble sendt"); };
+        var errHandler = function () { showToast("Error"); };
+        sendMessage(msg, successHandler, errHandler);
     }
 
     $("#send_melding_modal")[0].onclick = function () {
         var msg = $("#send_messages_textbox_modal")[0].value;
         $("#send_messages_textbox_modal")[0].value = "";
-        sendMessage(msg);
+        
+        var successHandler = function () { showToast("Melding ble sendt"); };
+        var errHandler = function () { showToast("Error"); };
+        sendMessage(msg, successHandler, errHandler);
     }
 
     $("#register_post_btn_main")[0].onclick = function () {
@@ -619,11 +637,35 @@ $(window).resize(function () {
 // ---   Helpers   ---
 // -------------------
 
-function showToast(msg) {
-    var x = document.getElementById("snackbar")
-    x.innerHTML = msg;
-    x.className = "show";
-    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+var toastIsBeeingShown = false;
+function showToast(msg, important) {
+    var x = document.getElementById("snackbar");
+    
+    if (toastIsBeeingShown === true && important === true) {
+
+        // THIS IS NOT WORKING :(
+        console.log("toast is important: " + msg);
+        hideToast();
+        setTimeout(showToast(msg,important), 100);
+    }else if (toastIsBeeingShown === false) {
+        toastIsBeeingShown = true
+        console.log("toast: " + msg);
+
+        x.innerHTML = msg;
+        x.classList.toggle("show", true);
+        setTimeout(hideToast, 3000);
+    } else {
+        console.log("queued messages in toast: " + msg);
+        setTimeout(function () {
+            showToast(msg);
+        }, 500);
+    }
+}
+
+function hideToast() {
+    var x = document.getElementById("snackbar");
+    x.classList.toggle("show", false);
+    toastIsBeeingShown = false;
 }
 
 function updateMapAndMessagesSize() {
