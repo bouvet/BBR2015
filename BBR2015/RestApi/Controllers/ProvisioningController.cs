@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using Database;
+using Database.Infrastructure;
 using Repository;
 
 namespace RestApi.Controllers
@@ -13,10 +14,10 @@ namespace RestApi.Controllers
         private readonly LagOppstillingService _lagOppstillingService;
         private readonly CurrentMatchProvider _currentMatchProvider;
 
-        public ProvisioningController(OverridableSettings settings, TilgangsKontroll tilgangsKontroll, LagOppstillingService lagOppstillingService, CurrentMatchProvider currentMatchProvider)
+        public ProvisioningController(OverridableSettings settings, LagOppstillingService lagOppstillingService, CurrentMatchProvider currentMatchProvider)
         {
             _settings = settings;
-            _tilgangsKontroll = tilgangsKontroll;
+            _tilgangsKontroll = ServiceLocator.Current.Resolve<TilgangsKontroll>();
             _lagOppstillingService = lagOppstillingService;
             _currentMatchProvider = currentMatchProvider;
         }

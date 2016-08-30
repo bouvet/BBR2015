@@ -20,9 +20,7 @@ namespace RestApi.Infrastructure
             container.Register(Component.For<CurrentMatchProvider>().LifestyleSingleton());
             container.Register(Component.For<GameStateService>().LifestyleSingleton());
             container.Register(Component.For<PosisjonsService>().LifestyleSingleton());
-            container.Register(Component.For<TilgangsKontroll>().LifestyleSingleton());
-
-            var singleton = container.Resolve<TilgangsKontroll>();
+            container.Register(Component.For<TilgangsKontroll>().LifestyleSingleton());           
 
             container.Register(Types.FromAssemblyContaining<GameService>().Where(x => x != typeof(TilgangsKontroll)).WithServiceSelf().LifestyleTransient());
             container.Register(Types.FromAssemblyContaining<BaseController>().BasedOn<ApiController>().WithServiceSelf().LifestylePerWebRequest());

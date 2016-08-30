@@ -5,6 +5,7 @@ using System.Linq;
 using System.Transactions;
 using Database.Entities;
 using Database;
+using Database.Infrastructure;
 
 namespace Repository
 {
@@ -21,11 +22,11 @@ namespace Repository
         private readonly object _lockGjeldende = new object();
         private readonly object _lockLagret = new object();
 
-        public PosisjonsService(DataContextFactory dataContextFactory, OverridableSettings appSettings, TilgangsKontroll tilgangsKontroll)
+        public PosisjonsService(DataContextFactory dataContextFactory, OverridableSettings appSettings)
         {
             _dataContextFactory = dataContextFactory;
             _appSettings = appSettings;
-            _tilgangsKontroll = tilgangsKontroll;
+            _tilgangsKontroll = ServiceLocator.Current.Resolve<TilgangsKontroll>();
         }
 
         private ConcurrentDictionary<string, EksternDeltakerPosisjon> GjeldendePosisjon

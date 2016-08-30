@@ -4,6 +4,7 @@ using System.Linq;
 
 using Database.Entities;
 using Database;
+using Database.Infrastructure;
 
 namespace Repository
 {
@@ -12,10 +13,10 @@ namespace Repository
         private DataContextFactory _dataContextFactory;
         private readonly TilgangsKontroll _tilgangsKontroll;
 
-        public MeldingService(DataContextFactory dataContextFactory, TilgangsKontroll tilgangsKontroll)
+        public MeldingService(DataContextFactory dataContextFactory)
         {
             _dataContextFactory = dataContextFactory;
-            _tilgangsKontroll = tilgangsKontroll;
+            _tilgangsKontroll = ServiceLocator.Current.Resolve<TilgangsKontroll>();
         }
 
         public void PostMelding(string deltakerId, string lagId, string meldingstekst)

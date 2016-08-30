@@ -10,6 +10,7 @@ using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Results;
 using Database;
+using Database.Infrastructure;
 using Repository;
 using Repository.Import;
 using Repository.Kml;
@@ -30,11 +31,11 @@ namespace RestApi.Controllers
         private readonly ExcelExport _excelExport;
         private readonly DataContextFactory _dataContextFactory;
 
-        public AdminController(GameStateService gameStateService, OverridableSettings appSettings, TilgangsKontroll tilgangsKontroll, PosisjonsService posisjonsService, ExcelImport excelImport, KmlToExcelPoster kmlToExcelPoster, ExcelWriter excelWriter, ExcelExport excelExport, DataContextFactory dataContextFactory)
+        public AdminController(GameStateService gameStateService, OverridableSettings appSettings, PosisjonsService posisjonsService, ExcelImport excelImport, KmlToExcelPoster kmlToExcelPoster, ExcelWriter excelWriter, ExcelExport excelExport, DataContextFactory dataContextFactory)
         {
             _gameStateService = gameStateService;
             _appSettings = appSettings;
-            _tilgangsKontroll = tilgangsKontroll;
+            _tilgangsKontroll = ServiceLocator.Current.Resolve<TilgangsKontroll>();
             _posisjonsService = posisjonsService;
             _excelImport = excelImport;
             _kmlToExcelPoster = kmlToExcelPoster;
@@ -145,6 +146,13 @@ namespace RestApi.Controllers
         public IHttpActionResult TilgangskontrollHashCode()
         {
             return Ok(_tilgangsKontroll.GetHashCode());
+        }
+
+        [Route("api/Admin/tilgangskontrollhashcontainer")]
+        [HttpGet]
+        public IHttpActionResult TilgangskontrollHashCodeContainer()
+        {
+            return Ok(ServiceLocator.Current.Resolve<TilgangsKontroll>().GetHashCode());
         }
 
         /// <summary>
