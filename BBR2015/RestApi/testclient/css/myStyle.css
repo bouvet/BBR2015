@@ -1,6 +1,14 @@
-﻿body{
-    background-color:#212121;
+﻿body {
+    background-color: #212121;
+    background-image: url('../img/splatter2.svg');
+    background-repeat: no-repeat;
     color: #d45a1f;
+    margin-top:100px;
+    font-family: 'Lato';
+}
+
+#navbar_top_container{
+    padding:0px 5px 0px 5px;
 }
 
 .debug_style{
@@ -8,15 +16,21 @@
 }
 
 #navbar_bottom_container{
-    padding:0px 10px 0px 10px;
+    padding:0px 10px 10px 10px;
 }
 
 .btn-navbar-bottom{
-    background-color:#d45a1f;
+    background-color:#d45a1f !important;
     color:#ffffff;
-    border:0px solid #000000;
+    border:1px solid #212121;
     border-radius:0;
 }
+
+.btn-navbar-bottom:focus {
+    color:#ffffff;
+    border:1px solid #212121;
+}
+
 
 #map{
     border: 2px solid #ffffff;
@@ -24,10 +38,6 @@
 
 .btn-navbar-top{
     padding:10px 5px 10px 5px;
-}
-
-#navbar_top_container{
-    padding:0px 5px 0px 5px;
 }
 
 .no_padding{
@@ -40,7 +50,7 @@
 }
 
 .navbar_slightly_transparent_background{
-    background-color:rgba(0,0,0,0.65);
+    background-color:rgba(21,21,21,0.75);
     border: 0px solid #000000;
 }
 
@@ -58,8 +68,27 @@
 #btn_switch_map_messages{
     color: #d45a1f;
     border-radius: 0;
-    background-color: #000000;
-    border: 1px solid #ffffff;
+    background-color: #000000 !important;
+    border: 1px solid #ffffff !important;
+}
+
+
+.modal-content{
+    background-color:#343434;
+    border: 0px solid #343434;
+}
+
+.modal-header{
+    border: 0px solid #343434;
+    padding:5px 0px 0px 5px;
+}
+
+.modal-body{
+    padding:10px 5px 0px 5px;
+}
+
+.modal-footer{
+    border: 0px solid #343434;
 }
 
 .panel-success{
@@ -73,7 +102,7 @@
 .btn-orange-bouvet{
     border: 1px solid #d45a1f;
     border-radius: 0;
-    background-color: transparent;
+    background-color: transparent !important;
     color:#ffffff;
     font-size: 19px;
     padding: 10px 5px 10px 5px;
@@ -96,9 +125,24 @@
     padding:15px 0px 25px 0px;
 }
 
-#post_id_main{
+.no-pointer-events{
+    pointer-events: none;
+}
+
+.text-field-bouvet{
     border-radius:0;
     border: 1px solid #d45a1f;
+    background-color:transparent;
+    color:#fff;
+}
+
+.btn-transparent{
+    background-color:transparent;
+    border:0px solid #ffffff;
+}
+
+.orange-bouvet-bottom-line{
+    border-bottom: 3px solid #d45a1f;
 }
 
 #rank_and_score_Carousel_main{
@@ -146,8 +190,12 @@ textarea {
     font-size:30px;
 }
 
+.text-white{
+    color:#ffffff;
+}
+
 .text-green{
-    color:green;
+    color:rgb(39, 225, 2);
 }
 
 .text-red{
@@ -181,8 +229,13 @@ body{
     font-size: 16px;
 }
 
+.weapon-img{
+    height:50px;
+    width:50px;
+}
+
 .btn-img{
-    padding: 5px 10px 5px 7px !important;
+    padding: 5px 5px 5px 10px !important;
 }
 
 .btn-img-no-weapon{
