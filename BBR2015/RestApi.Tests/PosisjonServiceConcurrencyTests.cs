@@ -97,7 +97,7 @@ namespace RestApi.Tests
 
     class NoDbPosisjonsService : PosisjonsService
     {
-        public NoDbPosisjonsService(DataContextFactory dataContextFactory, OverridableSettings appSettings) : base(dataContextFactory, appSettings, null)
+        public NoDbPosisjonsService(DataContextFactory dataContextFactory, OverridableSettings appSettings) : base(dataContextFactory, appSettings)
         {
         }
 

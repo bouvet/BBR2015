@@ -83,6 +83,17 @@ namespace Repository
             return koder;
         }
 
+        public string HentAlleKodeKombinasjoner()
+        {
+            var koder = from l in KodeKombinasjoner
+                        select new
+                        {
+                            key = l.Key                           
+                        };
+
+            return string.Join(Environment.NewLine, koder);
+        }
+
         public KontrollResultat SjekkTilgang(string lagKode, string deltakerKode)
         {
             var kodeKombinasjon = LagKodeKombinasjon(lagKode, deltakerKode);
@@ -95,7 +106,7 @@ namespace Repository
 
         private string LagKodeKombinasjon(string lagKode, string deltakerKode)
         {
-            return string.Format("{0}¤¤¤{1}", lagKode, deltakerKode);
+            return string.Format("{0}¤¤¤{1}", lagKode, deltakerKode).ToLower();
         }
 
         public List<string> HentAlleLagIder()
@@ -141,14 +152,14 @@ namespace Repository
 
         public bool ErLagKodeIBruk(string hemmeligKodeForLag)
         {
-            return Lagene.Any(x => x.HemmeligKode.Equals(hemmeligKodeForLag));
+            return Lagene.Any(x => x.HemmeligKode.Equals(hemmeligKodeForLag, StringComparison.InvariantCultureIgnoreCase));
         }
 
         public bool ErDeltakerKodeIBruk(string kodeForSpiller)
         {
             return (from l in Lagene
                     from d in l.Deltakere
-                    select d).Any(x => x.Kode.Equals(kodeForSpiller));
+                    select d).Any(x => x.Kode.Equals(kodeForSpiller, StringComparison.InvariantCultureIgnoreCase));
         }
     }
 

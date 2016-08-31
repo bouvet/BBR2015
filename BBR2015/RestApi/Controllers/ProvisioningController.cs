@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using Database;
+using Database.Infrastructure;
 using Repository;
 
 namespace RestApi.Controllers
@@ -13,10 +14,10 @@ namespace RestApi.Controllers
         private readonly LagOppstillingService _lagOppstillingService;
         private readonly CurrentMatchProvider _currentMatchProvider;
 
-        public ProvisioningController(OverridableSettings settings, TilgangsKontroll tilgangsKontroll, LagOppstillingService lagOppstillingService, CurrentMatchProvider currentMatchProvider)
+        public ProvisioningController(OverridableSettings settings, LagOppstillingService lagOppstillingService, CurrentMatchProvider currentMatchProvider)
         {
             _settings = settings;
-            _tilgangsKontroll = tilgangsKontroll;
+            _tilgangsKontroll = ServiceLocator.Current.Resolve<TilgangsKontroll>();
             _lagOppstillingService = lagOppstillingService;
             _currentMatchProvider = currentMatchProvider;
         }
@@ -41,7 +42,8 @@ namespace RestApi.Controllers
             {
                 TillatNyttLag = _settings.TillatOpprettNyttLag,
                 TillatNySpiller = _settings.TillatOpprettNySpiller,
-                MatchId = id
+                MatchId = id,
+                KlientUrl = _settings.TestklientUrl
             };
 
             return View(indexModel);
@@ -60,7 +62,8 @@ namespace RestApi.Controllers
                 TillatNyttLag = _settings.TillatOpprettNyttLag,
                 TillatNySpiller = _settings.TillatOpprettNySpiller,
                 Melding = melding,
-                ErFeilmelding = erFeilmelding
+                ErFeilmelding = erFeilmelding,
+                KlientUrl = _settings.TestklientUrl
             };
 
             return View("Index", indexModel);
@@ -132,6 +135,7 @@ namespace RestApi.Controllers
 
             public bool HarMelding => !string.IsNullOrEmpty(Melding);
             public string MatchId { get; set; }
+            public string KlientUrl { get; set; }
         }
 
         public class NyttLagModel

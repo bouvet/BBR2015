@@ -1,4 +1,10 @@
-﻿using System.Web.Http;
+﻿using System;
+using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Web.Http;
 using System.Web.Http.Description;
 using System.Web.Http.Results;
 using Repository;
@@ -23,12 +29,21 @@ namespace RestApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [ResponseType(typeof(string))]
-        [Route("api/Kml/Export/{matchName}")]
-        public IHttpActionResult Export(string matchName)
+        public HttpResponseMessage Export()
         {
             var response = _kmlExport.GetKml();
 
-            return Ok(response);
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(new MemoryStream(Encoding.UTF8.GetBytes(response)))
+            };
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/xml");
+
+            var filename = string.Format("replay_{0:yyyyMMdd}.kml", DateTime.Now);
+
+            result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment") { FileName = filename };
+
+            return result;
         }
     }
 }

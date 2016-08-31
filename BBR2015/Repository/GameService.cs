@@ -3,6 +3,7 @@ using Database.Entities;
 using Database;
 using System.Linq;
 using System.Data.Entity;
+using Database.Infrastructure;
 
 namespace Repository
 {
@@ -210,10 +211,10 @@ namespace Repository
 
         private string AdminLagId = "SUPPORT_1";
 
-        public GameEventPublisher(MeldingService meldingService, TilgangsKontroll tilgangsKontroll)
+        public GameEventPublisher(MeldingService meldingService)
         {
             _meldingService = meldingService;
-            _tilgangsKontroll = tilgangsKontroll;
+            _tilgangsKontroll = ServiceLocator.Current.Resolve<TilgangsKontroll>();
         }
 
         public void PoengScoret(string lagId, string deltakerId, int poeng)

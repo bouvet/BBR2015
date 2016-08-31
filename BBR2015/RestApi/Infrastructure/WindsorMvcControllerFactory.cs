@@ -17,7 +17,8 @@ namespace RestApi.Infrastructure
         protected override IController GetControllerInstance(System.Web.Routing.RequestContext requestContext, Type controllerType)
         {
             if (controllerType == null) return null;
-            return (IController)_container.Resolve(controllerType);
+            var resolved = _container.Resolve(controllerType);
+            return (IController)resolved;
         }
 
         public override void ReleaseController(IController controller)

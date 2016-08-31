@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Database;
 using Database.Entities;
+using Database.Infrastructure;
 
 namespace Repository
 {
@@ -16,10 +17,10 @@ namespace Repository
         private readonly GameStateService _gameStateService;
         private ConcurrentDictionary<string, Lag> _alleLag;
 
-        public LagOppstillingService(DataContextFactory dataContextFactory, TilgangsKontroll tilgangsKontroll, GameStateService gameStateService)
+        public LagOppstillingService(DataContextFactory dataContextFactory, GameStateService gameStateService)
         {
             _dataContextFactory = dataContextFactory;
-            _tilgangsKontroll = tilgangsKontroll;
+            _tilgangsKontroll = ServiceLocator.Current.Resolve<TilgangsKontroll>();
             _gameStateService = gameStateService;
         }
 
