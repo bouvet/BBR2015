@@ -14,8 +14,8 @@ var hasProcessedGameState = false;
 var score_next_team_diff = 0;
 var score_prev_team_diff = 0;
 
-var post_color_map = [["red", 95], ["orange", 85], ["green", 75],
-                    ["darkgreen", 65], ["gray", 0]];
+var post_color_map = [["red", 195], ["orange", 145], ["green", 95],
+                    ["darkgreen", 75], ["gray", 0]];
 
 function updateAndDisplayMapOrMessage(show_map) {
     var bootstrap_size = findBootstrapEnvironment();
