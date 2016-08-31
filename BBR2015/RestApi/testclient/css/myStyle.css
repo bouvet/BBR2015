@@ -61,8 +61,6 @@
 #register_Post_Heading{
     font-size:20px;
     color:#ffffff;
-    border-bottom: 3px solid #d45a1f;
-
 }
 
 #btn_switch_map_messages{
@@ -94,6 +92,7 @@
 .panel-success{
     border-color:transparent;
 }
+
 
 .panel-success>.panel-heading{
     color:#d45a1f;
