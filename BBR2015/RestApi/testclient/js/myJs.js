@@ -141,25 +141,39 @@ function addNewMessage(msg) {
 
 var postMarkersMap = new Map();
 function updatePostsOnMap(postsFromServer) {
-    if (map !== null && postsFromServer!==undefined) {
+    if (map !== null && postsFromServer !== undefined) {
+        //Oppdater eller skjul poster
         postsFromServer.forEach(function (postFromServer) {
             var lat = postFromServer.latitude;
             var lon = postFromServer.longitude;
             var idString = "lat:"+lat+";lon:"+lon;
             var postFromMap = postMarkersMap.get(idString);
 
-            if (postFromMap === undefined) {
+            if (postFromMap === undefined) { //new post
                 var post_marker = putPostOnMap(postFromServer);
-                postFromMap = { 'post': postFromServer, 'marker': post_marker };
+                postFromMap = { 'post': postFromServer, 'marker': post_marker, 'inLastServerPostList':true};
                 postMarkersMap.set(idString, postFromMap);
                 console.log("ny post id: " + idString + ", value: " + postFromServer.poengVerdi)
 
-            } else if (postFromMap.post.poengVerdi !== postFromServer.poengVerdi ||
-                       postFromMap.post.harRegistrert !== postFromServer.harRegistrert) {
+            }
+            postFromMap.inLastServerPostList = true;
+
+            if (postFromMap.post.poengVerdi !== postFromServer.poengVerdi ||
+                    postFromMap.post.harRegistrert !== postFromServer.harRegistrert) {
+
                 if (postFromMap.marker !== null) { map.removeLayer(postFromMap.marker); }
                 console.log("post changed value or was taken. post id: " + idString + ", value: " + postFromServer.poengVerdi + ", oldValue: " + postFromMap.post.poengVerdi);
                 postFromMap.marker = putPostOnMap(postFromServer);
                 postFromMap.post = postFromServer;
+            }
+        });
+        //Fjern poster fra kart om de ikke blir sendt fra serveren lengere
+        postMarkersMap.forEach(function (postFromMap, key, mapObj) {
+            if (postFromMap.inLastServerPostList === false) {
+                if (postFromMap.marker !== null) { map.removeLayer(postFromMap.marker); }
+                postMarkersMap.delete(key);
+            } else {
+                postFromMap.inLastServerPostList = false;
             }
         });
     }
