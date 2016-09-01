@@ -396,23 +396,28 @@ function sendMessage(msg, successHandler, errHandler) {
     });
 };
 
-function registerPost(input) {
+function registerPostFromInput(input) {
     var postId = $("#post_id_" + input)[0].value;
     $("#post_id_" + input)[0].value = "";
     var weapon = "";
-    if ($("#bomb_radio_" + input)[0].checked && n_bombs>0) weapon = "BOMBE";
-    if ($("#trap_radio_" + input)[0].checked && n_traps>0) weapon = "FELLE";
+    if ($("#bomb_radio_" + input)[0].checked && n_bombs > 0) weapon = "BOMBE";
+    if ($("#trap_radio_" + input)[0].checked && n_traps > 0) weapon = "FELLE";
 
 
     if (weapon === "" || $("#no_weapon_radio_" + input)[0].checked) {
         weapon = null;
     }
 
-    console.log("Registrer post: "+postId+", "+weapon);
+    console.log("Registrer post: " + postId + ", " + weapon);
 
     var successHandler = function () { showToast("Prøver å registrere post..."); getGameState(); };
     var errHandler = function () { showToast("Post ble ikke registrert. Sjekk at du er innlogget og har internett."); };
 
+    registerPost(postId, weapon, successHandler, errHandler);
+    autoSelectNoWeapon();
+}
+
+function registerPost(postId, weapon, successHandler, errHandler) {
     $.ajax({
         type: "POST",
         url: baseUrl + 'GameService',
@@ -425,11 +430,10 @@ function registerPost(input) {
         success: successHandler,
         error: errHandler
     });
-    autoSelectNoWeapon();
 };
 
 var player_position = {"lat":0, "lon":0};
-function sendPosition() {
+function sendPosition_GPS() {
     navigator.geolocation.getCurrentPosition(success, null, { maximumAge: 0, timeout: 5000, enableHighAccuracy: true });
     function success(position) {
         player_position.lat = position.coords.latitude;
@@ -438,15 +442,20 @@ function sendPosition() {
             "latitude": player_position.lat,
             "longitude": player_position.lon
         });
-
-        $.ajax({
-            type: "POST",
-            url: baseUrl + 'PosisjonsService',
-            headers: createHeader(),
-            data: data
-        }).success(console.log("Posisjon sendt"));
+        sendPosition(data);
     }
 };
+
+function sendPosition(data, successHandler, errHandler) {
+    $.ajax({
+        type: "POST",
+        url: baseUrl + 'PosisjonsService',
+        headers: createHeader(),
+        data: data,
+        success: successHandler,
+        error: errHandler
+    });
+}
 
 // -----------------------------------
 // ---   Save/load user options    ---
@@ -513,8 +522,12 @@ function logIn(lag_kode, deltaker_kode) {
         logOut();
     };
 
-    var msg = "Jeg har logget inn!";
-    sendMessage(msg, successHandler, errHandler);
+    var data = JSON.stringify({
+        // thees are coordinates located in the middle of the pacific ocean.
+        'latitude': 40.1111,
+        'longitude': 170.1111
+    });
+    sendPosition(data, successHandler, errHandler);
 }
 
 function logOut() {
@@ -538,7 +551,7 @@ function logOut() {
 function mainLoop() {
     if (loggedIn === true) {
         getTeamPosition();
-        sendPosition();
+        sendPosition_GPS();
         getGameState();
         updateMessages();
     } else {
@@ -599,10 +612,10 @@ window.onload = function () {
     }
 
     $("#register_post_btn_main")[0].onclick = function () {
-        registerPost("main");
+        registerPostFromInput("main");
     }
     $("#register_post_btn_modal")[0].onclick = function () {
-        registerPost("modal");
+        registerPostFromInput("modal");
     }
 
     
@@ -619,13 +632,9 @@ window.onload = function () {
         else { autoSelectWeapon("FELLE") }
     }
     $("#bomb_btn_modal")[0].onclick = function () {
-        //if ($("#bomb_btn_modal")[0].classList.contains("disabled")) { setTimeout(autoSelectNoWeapon, 2); }
-        //else { autoSelectWeapon("BOMBE") }
         autoSelectWeapon("BOMBE");
     }
     $("#trap_btn_modal")[0].onclick = function () {
-        //if ($("#trap_btn_modal")[0].classList.contains("disabled")){ setTimeout(autoSelectNoWeapon, 2); }
-        //else { autoSelectWeapon("FELLE") }
         autoSelectWeapon("FELLE");
     }
 }
