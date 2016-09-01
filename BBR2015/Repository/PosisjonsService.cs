@@ -186,7 +186,7 @@ namespace Repository
 
         public void Nullstill()
         {
-            _gjeldendePosisjon = HentFraDatabasen();
+            _gjeldendePosisjon = null;
         }
     }
 
