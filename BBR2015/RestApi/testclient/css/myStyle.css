@@ -5,6 +5,7 @@
     color: #d45a1f;
     margin-top:100px;
     font-family: 'Lato';
+    padding-top: 10px;
 }
 
 #navbar_top_container{
@@ -222,8 +223,8 @@ textarea {
     color:red;
 }
 
-body{
-    padding-top: 10px;
+.leaflet-container {
+    background: transparent;
 }
 
 
