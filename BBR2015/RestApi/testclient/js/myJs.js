@@ -642,7 +642,9 @@ $(window).resize(function () {
 
 var toastIsBeeingShown = false;
 function showToast(msg, important) {
-    var x = document.getElementById("snackbar");
+    var toast = document.getElementById("snackbar");
+    var toast_msg = document.getElementById("toast_msg");
+
     
     if (toastIsBeeingShown === true && important === true) {
 
@@ -654,8 +656,8 @@ function showToast(msg, important) {
         toastIsBeeingShown = true
         console.log("toast: " + msg);
 
-        x.innerHTML = msg;
-        x.classList.toggle("show", true);
+        toast_msg.innerHTML = msg;
+        toast.classList.toggle("show", true);
         setTimeout(hideToast, 3000);
     } else {
         console.log("queued messages in toast: " + msg);
