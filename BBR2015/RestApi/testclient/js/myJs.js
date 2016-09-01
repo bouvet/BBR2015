@@ -87,40 +87,29 @@ function switchMapAndMessages() {
 
 function displayNumberOfWeapons(bombs, traps) {
     var bombs_msg = bombs + "&times;";
-    //if (bombs < 1) { bombs_msg = "&nbsp;&nbsp;"; };
-
     var traps_msg = traps + "&times;";
-    //if (traps < 1) { traps_msg = "&nbsp;&nbsp;"; }
 
     $("#bomb_label_modal")[0].innerHTML = bombs_msg;
     $("#trap_label_modal")[0].innerHTML = traps_msg;
 
     $("#bomb_label_main")[0].innerHTML = bombs_msg;
     $("#trap_label_main")[0].innerHTML = traps_msg;
- 
-    if (bombs === 0) {
-        $("#bomb_btn_main")[0].classList.add("disabled");
-        $("#bomb_btn_modal")[0].classList.add("disabled");
+    
+    showOrHideWeaponBtn('bomb', bombs > 0 ? true : false , bombs > 0 ? true : false);
+    showOrHideWeaponBtn('trap', traps > 0 ? true : false, traps > 0 ? true : false);
+}
 
-        $("#bomb_btn_modal")[0].classList.add("no-pointer-events");
-        //$("#img_weapon_bomb_modal").attr("src", "img/Våpen-ingen.svg");
+function showOrHideWeaponBtn(weapon, active, show) {
+    show = active ? show : false;
+    var btn = $("#" + weapon + "_btn_modal")[0];
+    btn.classList.toggle("disabled", !active);
+    btn.classList.toggle("no-pointer-events", !active);
+    if(active===false){ autoSelectNoWeapon();}
+
+    if (show) {
+        btn.style.display = 'block';
     } else {
-        $("#bomb_btn_main")[0].classList.remove("disabled");
-        $("#bomb_btn_modal")[0].classList.remove("disabled");
-
-        $("#bomb_btn_modal")[0].classList.remove("no-pointer-events");
-    }
-
-    if (traps === 0) {
-        $("#trap_btn_main")[0].classList.add("disabled");
-        $("#trap_btn_modal")[0].classList.add("disabled");
-
-        $("#trap_btn_modal")[0].classList.add("no-pointer-events");
-    } else {
-        $("#trap_btn_main")[0].classList.remove("disabled");
-        $("#trap_btn_modal")[0].classList.remove("disabled");
-
-        $("#trap_btn_modal")[0].classList.remove("no-pointer-events");
+        btn.style.display = 'none'; 
     }
 }
 

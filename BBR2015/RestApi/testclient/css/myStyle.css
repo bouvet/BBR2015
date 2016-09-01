@@ -135,15 +135,31 @@
     color:#fff;
 }
 
+#bomb_label_modal{
+    margin-right:-10px;
+}
+
+#trap_label_modal{
+    margin-right:-5px;
+}
+
 .btn-transparent{
     background-color:transparent;
-    border:0px solid #ffffff;
+    border:1px solid transparent;
+    border-radius:0 !important;
 }
 
 .btn-transparent:hover{
     background-color:transparent;
-    border:0px solid #ffffff;
+    border:1px solid transparent;
 }
+
+.btn-group-transparent>.btn.active{
+    border:1px solid #d45a1f;
+    background-color:#474747;
+}
+
+
 
 .orange-bouvet-bottom-line{
     border-bottom: 3px solid #d45a1f;
