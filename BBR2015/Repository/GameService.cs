@@ -211,10 +211,10 @@ namespace Repository
 
         private string AdminLagId = "SUPPORT_1";
 
-        public GameEventPublisher(MeldingService meldingService)
+        public GameEventPublisher(MeldingService meldingService, TilgangsKontroll tilgangsKontroll)
         {
             _meldingService = meldingService;
-            _tilgangsKontroll = ServiceLocator.Current.Resolve<TilgangsKontroll>();
+            _tilgangsKontroll = tilgangsKontroll;
         }
 
         public void PoengScoret(string lagId, string deltakerId, int poeng)

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using Castle.MicroKernel.Registration;
 using System.Web.Http;
 using System.Web.Mvc;
+using Castle.MicroKernel.ModelBuilder.Descriptors;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using Repository;
@@ -16,25 +18,23 @@ namespace RestApi.Infrastructure
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
             container.Register(Types.FromAssemblyContaining<DataContextFactory>().Pick().WithServiceSelf().LifestyleTransient());
+            container.Register(Types.FromAssemblyContaining<GameService>().Pick().WithServiceSelf().LifestyleTransient());
+           
+            // Rekkefølgen under er viktig!
+            RegisterInstance(container, container.Resolve<CurrentMatchProvider>());
+            RegisterInstance(container, container.Resolve<GameStateService>());
+            RegisterInstance(container, container.Resolve<TilgangsKontroll>());
+            RegisterInstance(container, container.Resolve<PosisjonsService>());
 
-            container.Register(Component.For<CurrentMatchProvider>().LifestyleSingleton());
-            container.Register(Component.For<GameStateService>().LifestyleSingleton());
-            container.Register(Component.For<PosisjonsService>().LifestyleSingleton());
-            container.Register(Component.For<TilgangsKontroll>().LifestyleSingleton());           
-
-            container.Register(Types.FromAssemblyContaining<GameService>().Where(x => x != typeof(TilgangsKontroll)).WithServiceSelf().LifestyleTransient());
-            container.Register(Types.FromAssemblyContaining<BaseController>().BasedOn<ApiController>().WithServiceSelf().LifestylePerWebRequest());
-            container.Register(Types.FromAssemblyContaining<BaseController>().BasedOn<Controller>().WithServiceSelf().LifestylePerWebRequest());
-            
-
-            //var tilgangskontroll = container.Resolve<TilgangsKontroll>();
-            //container.Register(
-            //    Component.For<TilgangsKontroll>()
-            //        .Instance(tilgangskontroll)
-            //        .Named(Guid.NewGuid().ToString())
-            //        .IsDefault());
+            container.Register(Types.FromAssemblyContaining<BaseController>().BasedOn<ApiController>().WithServiceSelf().LifestyleTransient());
+            container.Register(Types.FromAssemblyContaining<BaseController>().BasedOn<Controller>().WithServiceSelf().LifestyleTransient());
 
             ServiceLocator.Current = container; 
+        }
+
+        private static void RegisterInstance<T>(IWindsorContainer container, T instance) where T : class 
+        {
+            container.Register(Component.For<T>().Instance(instance).Named(Guid.NewGuid().ToString()).IsDefault());
         }
     }
 }

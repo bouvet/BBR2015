@@ -22,11 +22,11 @@ namespace Repository
         private readonly object _lockGjeldende = new object();
         private readonly object _lockLagret = new object();
 
-        public PosisjonsService(DataContextFactory dataContextFactory, OverridableSettings appSettings)
+        public PosisjonsService(DataContextFactory dataContextFactory, OverridableSettings appSettings, TilgangsKontroll tilgangsKontroll)
         {
             _dataContextFactory = dataContextFactory;
             _appSettings = appSettings;
-            _tilgangsKontroll = ServiceLocator.Current.Resolve<TilgangsKontroll>();
+            _tilgangsKontroll = tilgangsKontroll;
         }
 
         private ConcurrentDictionary<string, EksternDeltakerPosisjon> GjeldendePosisjon

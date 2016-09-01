@@ -13,10 +13,10 @@ namespace Repository
         private DataContextFactory _dataContextFactory;
         private readonly TilgangsKontroll _tilgangsKontroll;
 
-        public MeldingService(DataContextFactory dataContextFactory)
+        public MeldingService(DataContextFactory dataContextFactory, TilgangsKontroll tilgangsKontroll)
         {
             _dataContextFactory = dataContextFactory;
-            _tilgangsKontroll = ServiceLocator.Current.Resolve<TilgangsKontroll>();
+            _tilgangsKontroll = tilgangsKontroll;
         }
 
         public void PostMelding(string deltakerId, string lagId, string meldingstekst)

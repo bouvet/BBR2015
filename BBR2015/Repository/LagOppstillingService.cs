@@ -17,11 +17,11 @@ namespace Repository
         private readonly GameStateService _gameStateService;
         private ConcurrentDictionary<string, Lag> _alleLag;
 
-        public LagOppstillingService(DataContextFactory dataContextFactory, GameStateService gameStateService)
+        public LagOppstillingService(DataContextFactory dataContextFactory, GameStateService gameStateService, TilgangsKontroll tilgangsKontroll)
         {
             _dataContextFactory = dataContextFactory;
-            _tilgangsKontroll = ServiceLocator.Current.Resolve<TilgangsKontroll>();
             _gameStateService = gameStateService;
+            _tilgangsKontroll = tilgangsKontroll;
         }
 
         public Lag Get(string lagId)

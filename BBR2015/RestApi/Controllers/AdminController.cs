@@ -31,11 +31,11 @@ namespace RestApi.Controllers
         private readonly ExcelExport _excelExport;
         private readonly DataContextFactory _dataContextFactory;
 
-        public AdminController(GameStateService gameStateService, OverridableSettings appSettings, PosisjonsService posisjonsService, ExcelImport excelImport, KmlToExcelPoster kmlToExcelPoster, ExcelWriter excelWriter, ExcelExport excelExport, DataContextFactory dataContextFactory)
+        public AdminController(GameStateService gameStateService, OverridableSettings appSettings, TilgangsKontroll tilgangsKontroll, PosisjonsService posisjonsService, ExcelImport excelImport, KmlToExcelPoster kmlToExcelPoster, ExcelWriter excelWriter, ExcelExport excelExport, DataContextFactory dataContextFactory)
         {
             _gameStateService = gameStateService;
             _appSettings = appSettings;
-            _tilgangsKontroll = ServiceLocator.Current.Resolve<TilgangsKontroll>();
+            _tilgangsKontroll = tilgangsKontroll;
             _posisjonsService = posisjonsService;
             _excelImport = excelImport;
             _kmlToExcelPoster = kmlToExcelPoster;

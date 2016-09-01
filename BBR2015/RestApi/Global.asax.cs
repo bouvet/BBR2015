@@ -13,29 +13,25 @@ namespace RestApi
 {
     public class RestApiApplication : System.Web.HttpApplication
     {
-        private readonly IWindsorContainer _container;
+        private IWindsorContainer _container;
 
-        public RestApiApplication()
+        protected void Application_Start()
         {
+            // Container må lages her i Application_Start - ikke i constructor
             _container = CreateContainer();
+
+            ControllerBuilder.Current.SetControllerFactory(new WindsorMvcControllerFactory(_container));
+            GlobalConfiguration.Configuration.Services.Replace(typeof(IHttpControllerActivator), new WindsorControllerActivator(_container));
+            GlobalConfiguration.Configure(WebApiConfig.Register);
+
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+            BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
 
         public static IWindsorContainer CreateContainer()
         {
             return new WindsorContainer().Install(new DependencyConventions());
-        }
-        protected void Application_Start()
-        {
-            ControllerBuilder.Current.SetControllerFactory(new WindsorMvcControllerFactory(_container));
-
-            GlobalConfiguration.Configuration.Services.Replace(typeof(IHttpControllerActivator), new WindsorControllerActivator(_container));
-            GlobalConfiguration.Configure(WebApiConfig.Register);
-
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
-
-            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-            
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
 
         public override void Dispose()

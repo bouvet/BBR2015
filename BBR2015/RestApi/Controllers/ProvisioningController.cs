@@ -14,12 +14,12 @@ namespace RestApi.Controllers
         private readonly LagOppstillingService _lagOppstillingService;
         private readonly CurrentMatchProvider _currentMatchProvider;
 
-        public ProvisioningController(OverridableSettings settings, LagOppstillingService lagOppstillingService, CurrentMatchProvider currentMatchProvider)
+        public ProvisioningController(OverridableSettings settings, LagOppstillingService lagOppstillingService, CurrentMatchProvider currentMatchProvider, TilgangsKontroll tilgangsKontroll)
         {
             _settings = settings;
-            _tilgangsKontroll = ServiceLocator.Current.Resolve<TilgangsKontroll>();
             _lagOppstillingService = lagOppstillingService;
             _currentMatchProvider = currentMatchProvider;
+            _tilgangsKontroll = tilgangsKontroll;
         }
 
         public ActionResult Index(string id)
