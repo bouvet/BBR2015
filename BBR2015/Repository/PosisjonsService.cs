@@ -17,16 +17,14 @@ namespace Repository
 
         private readonly DataContextFactory _dataContextFactory;
         private readonly OverridableSettings _appSettings;
-        private readonly TilgangsKontroll _tilgangsKontroll;
 
         private readonly object _lockGjeldende = new object();
         private readonly object _lockLagret = new object();
 
-        public PosisjonsService(DataContextFactory dataContextFactory, OverridableSettings appSettings, TilgangsKontroll tilgangsKontroll)
+        public PosisjonsService(DataContextFactory dataContextFactory, OverridableSettings appSettings)
         {
             _dataContextFactory = dataContextFactory;
             _appSettings = appSettings;
-            _tilgangsKontroll = tilgangsKontroll;
         }
 
         private ConcurrentDictionary<string, EksternDeltakerPosisjon> GjeldendePosisjon
@@ -84,8 +82,6 @@ namespace Repository
                     Tidspunkt = siste.Tidspunkt
                 }).Select(TilEksternDeltakerPosisjon);
 
-
-
                 var dictionary = alle.ToDictionary(x => x.DeltakerId, x => x);
 
                 return new ConcurrentDictionary<string, EksternDeltakerPosisjon>(dictionary);
@@ -117,7 +113,7 @@ namespace Repository
                 ErForKortEllerHyppig(LagretPosisjon[posisjon.DeltakerId], posisjon))
                 return;
 
-            // Oppdater før skriving til databasen - eventual consistent, men strammer inn mulighenten for å smette forbi under lagring
+            // Oppdater før skriving til databasen - eventual consistent, men strammer inn muligheten for å smette forbi under lagring
             LagretPosisjon[posisjon.DeltakerId] = TilEksternDeltakerPosisjon(posisjon);
 
             Lagre(posisjon);
@@ -171,11 +167,8 @@ namespace Repository
 
         private EksternDeltakerPosisjon TilEksternDeltakerPosisjon(DeltakerPosisjon posisjon)
         {
-            var deltakerNavn = _tilgangsKontroll.HentDeltakerNavn(posisjon.DeltakerId);
-
             return new EksternDeltakerPosisjon
             {
-                Navn = deltakerNavn,
                 DeltakerId = posisjon.DeltakerId,
                 LagId = posisjon.LagId,
                 Latitude = posisjon.Latitude,
@@ -198,7 +191,6 @@ namespace Repository
 
     public class EksternDeltakerPosisjon
     {
-        public string Navn { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public DateTime Tidspunkt { get; set; }

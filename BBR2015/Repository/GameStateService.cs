@@ -120,12 +120,13 @@ namespace Repository
                                   from reg in j.DefaultIfEmpty()
                                   select new GameStatePost
                                   {
+                                      PostId = p.PostId.ToString(),
+                                      Navn = p.Navn,
                                       Latitude = p.Latitude,
                                       Longitude = p.Longitude,
                                       PoengVerdi = reg != null ? reg.Poeng : PostIMatch.BeregnPoengForNesteRegistrering(p.PoengArray, p.CurrentPoengIndex),
                                       HarRegistrert = reg != null,
-                                      Rekkefølge = random.Next(0, short.MaxValue) // order by random                                 
-                                  }).OrderBy(x => x.Rekkefølge).ToList(),
+                                  }).OrderBy(x => x.Navn).ToList(),
                         Vaapen = lag.LagIMatch.VåpenBeholdning.Where(x => x.BruktIPostRegistrering == null).Select(x => new GameStateVaapen { VaapenId = x.VaapenId }).ToList(),
                         Deltakere = lag.Lag.Deltakere.Select(x => new GameStateDeltaker { DeltakerId = x.DeltakerId, Navn = x.Navn }).ToList(),
                         Achievements = new List<GameStateAchievement>()//achievementsPoeng.Where(x => x.LagId == lag.Lag.LagId).Select(x => x.Achievements)
@@ -138,6 +139,7 @@ namespace Repository
                 scoreboard.Poster = (from p in poster
                                      select new ScoreboardPost
                                      {
+                                         PostId = p.PostId.ToString(),
                                          Latitude = p.Latitude,
                                          Longitude = p.Longitude,
                                          ErSynlig = p.ErSynlig,
@@ -331,6 +333,7 @@ namespace Repository
         public bool ErSynlig { get; set; }
         public DateTime SynligFra { get; set; }
         public string RiggetMedVåpen { get; set; }
+        public string PostId { get; set; }
     }
 
     public class ScoreboardDeltaker
@@ -411,14 +414,12 @@ namespace Repository
 
     public class GameStatePost
     {
-        // NB: IKKE gi ut postnr. Lagene må finne en egen måte å referere postene på. Gjerne miks rekkefølgen på dem i retur.
+        public string PostId { get; set; }
+        public string Navn { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public bool HarRegistrert { get; set; }
-        public int PoengVerdi { get; set; }
-
-        [JsonIgnore]
-        public int Rekkefølge { get; set; }
+        public int PoengVerdi { get; set; }        
     }
 
     public class GameStateDeltaker

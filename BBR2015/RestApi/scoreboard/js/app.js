@@ -133,11 +133,10 @@ angular.module('scoreboard').controller('scoreboardController', function ($scope
                         html = '<div style=\'background-color: ' + lagFarge + ';height: 10px; width: 10px; border: 1px solid #101010\'></div>';
                     }
                     var myIcon = L.divIcon({ className: 'java-marker', html: html });
-                    console.log(player.navn + ": " + lagFarge);
                     var marker = L.marker([player.latitude, player.longitude],
                                 {
                                     icon: myIcon,
-                                    title: 'Spiller: ' + player.deltakerId + '\n Lag: ' + player.navn
+                                    title: 'Spiller: ' + player.deltakerId + '\n Lag: ' + player.lagId
                                 }).addTo(map);
                     $scope.kartdeltakere.push({ deltaker: player, marker: marker });
                 } else {
