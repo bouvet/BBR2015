@@ -22,14 +22,16 @@
 
 .btn-navbar-bottom{
     background-color:#d45a1f !important;
-    color:#ffffff;
+    color:#ffffff !important;
     border:1px solid #212121;
     border-radius:0;
 }
 
+
 .btn-navbar-bottom:focus {
     color:#ffffff;
     border:1px solid #212121;
+    outline:none;
 }
 
 
@@ -43,6 +45,10 @@
 
 .no_padding{
     padding:0px 0px 0px 0px;
+}
+
+*:focus {
+    outline: none;
 }
 
 .navbar_transparent_background{
@@ -69,6 +75,7 @@
     border-radius: 0;
     background-color: #000000 !important;
     border: 1px solid #ffffff !important;
+    outline:none;
 }
 
 
@@ -106,11 +113,19 @@
     color:#ffffff;
     font-size: 19px;
     padding: 10px 5px 10px 5px;
+    outline:none !important;
 }
 
 .btn-orange-bouvet:hover{
+    border: 1px solid #d45a1f;
     background-color: #d45a1f;
 }
+
+.btn-orange-bouvet:focus{
+    border: 1px solid #d45a1f;
+    outline:none;
+}
+
 
 .panel-success>.panel-heading{
     background-color:#343434;
