@@ -50,9 +50,9 @@ namespace Repository
                 return resultat;
 
             }
-        }
+        }   
 
-        public void PostMeldingTilAlle(string deltakerId, string lagId, string tekst)
+        public void PostMeldingTilAlle(string deltakerId, string tekst)
         {
             var alleLag = _tilgangsKontroll.HentAlleLagIder();
 

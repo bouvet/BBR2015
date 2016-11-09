@@ -23,6 +23,7 @@ namespace RestApi.Tests
             _container = RestApiApplication.CreateContainer();
             _gitt = new Gitt(_container);
             _dataContextFactory = _container.Resolve<DataContextFactory>();
+            _dataContextFactory.DeleteAllData();
             TimeService.ResetToRealTime();
         }
 

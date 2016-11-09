@@ -82,6 +82,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameEventPublisher.cs" />
     <Compile Include="Import\DeltakerImport.cs" />
     <Compile Include="Import\ExcelExport.cs" />
     <Compile Include="Import\GoogleDriveDownloader.cs" />

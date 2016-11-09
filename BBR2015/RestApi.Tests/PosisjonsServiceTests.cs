@@ -217,7 +217,7 @@ namespace RestApi.Tests
                     posisjonsSevice.RegistrerPosisjon(deltaker.Lag.LagId, deltaker.DeltakerId, latitude + 5, longitude + 5);
                 }
             }
-            _appSettings.ScoreboardSecret = "HemmeligAdminKode";
+            _appSettings.ScoreboardSecret = "en_liten_hemmelighet";
             var lagPosisjoner = posisjonsSevice.HentforAlleLag(_appSettings.ScoreboardSecret);
 
             Assert.AreEqual(2, lagPosisjoner.Count, "Skulle hatt to lag");

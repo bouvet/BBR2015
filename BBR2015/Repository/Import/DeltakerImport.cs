@@ -24,10 +24,6 @@ namespace Repository.Import
 
             using (var context = _dataContextFactory.Create())
             {
-                //var match = (from m in context.Matcher.Include(x => x.DeltakendeLag.Select(y => y.Lag).Select(z => z.Deltakere))
-                //             where m.MatchId == matchId
-                //             select m).FirstOrDefault();
-
                 AddOrUpdate(deltakere,  context);
 
                 context.SaveChanges();
@@ -59,33 +55,7 @@ namespace Repository.Import
                     deltaker.Navn = excelDeltaker.Navn;
                     deltaker.Lag = lag;
                 }
-            }
-
-            //foreach (var lagIMatch in match.DeltakendeLag)
-            //{
-            //    var lag = lagIMatch.Lag;
-
-            //    var deltakereForLag = deltakere.Where(x => x.LagId == lag.LagId);
-
-            //    foreach (var excelDeltaker in deltakereForLag)
-            //    {
-            //        var eksisterende = lag.Deltakere.FirstOrDefault(x => x.Kode == excelDeltaker.Kode);
-
-            //        if (eksisterende != null)
-            //        {
-            //            eksisterende.Navn = excelDeltaker.Navn;
-            //        }
-            //        else
-            //        {
-            //            lag.LeggTilDeltaker(new Deltaker
-            //            {
-            //                DeltakerId = lag.LagId + "-" + (lag.Deltakere.Count + 1),
-            //                Navn = excelDeltaker.Navn,
-            //                Kode = excelDeltaker.Kode // i praksis umulig å endre siden vi slår opp på denne...
-            //            });
-            //        }
-            //    }
-            //}
+            }            
         }
 
         private List<ExcelDeltaker> LesFra(ExcelWorksheet excelWorksheet)

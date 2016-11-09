@@ -117,7 +117,7 @@ namespace Repository.Import
             if (lagListe == null)
                 return;
 
-            var sheet = _excel.Workbook.Worksheets["Lag"];
+            var sheet = _excel.Workbook.Worksheets[ExcelSheet.Lag.SheetName];
 
             // Headers
             for (var i = 0; i < ExcelSheet.Lag.Kolonner.Length; i++)
@@ -140,7 +140,7 @@ namespace Repository.Import
 
         private void SkrivMatch(MatchImport.ExcelMatch match)
         {
-            var sheet = _excel.Workbook.Worksheets["Match"];
+            var sheet = _excel.Workbook.Worksheets[ExcelSheet.Match.SheetName];
            
             // Headers
             for (var i = 0; i < ExcelSheet.Match.Kolonner.Length; i++)

@@ -58,12 +58,12 @@ namespace RestApi
                         //    .Description("Basic HTTP Authentication");
                         //
                         c.ApiKey("LagKode")
-                            .Description("Hemmlig kode til laget")
+                            .Description("Hemmelig kode til laget")
                             .Name("LagKode")
                             .In("header");
 
                         c.ApiKey("DeltakerKode")
-                            .Description("Hemmlig kode til deltaker")
+                            .Description("Hemmelig kode til deltaker")
                             .Name("DeltakerKode")
                             .In("header");
                         //

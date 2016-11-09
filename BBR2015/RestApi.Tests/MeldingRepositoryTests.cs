@@ -92,7 +92,7 @@ namespace RestApi.Tests
 
             var meldingsService = _container.Resolve<MeldingService>();
 
-            meldingsService.PostMeldingTilAlle(deltaker1.DeltakerId, lag1.LagId, "Testmelding til alle");
+            meldingsService.PostMeldingTilAlle(deltaker1.DeltakerId, "Testmelding til alle");
 
             var melding = meldingsService.HentMeldinger(lag2.LagId).Single();
 

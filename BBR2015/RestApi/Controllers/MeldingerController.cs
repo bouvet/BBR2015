@@ -171,7 +171,7 @@ namespace RestApi.Controllers
                     return BadRequest(ModelState);
                 }
 
-                _meldingService.PostMeldingTilAlle(DeltakerId, LagId, nyMelding.Tekst);
+                _meldingService.PostMeldingTilAlle(DeltakerId, nyMelding.Tekst);
                
                 return Ok();
             }

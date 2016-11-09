@@ -76,7 +76,6 @@
     <Compile Include="Migrations\201608051858440_MatchGeobox.Designer.cs">
       <DependentUpon>201608051858440_MatchGeobox.cs</DependentUpon>
     </Compile>
-    <Compile Include="With.cs" />
     <Compile Include="OverridableSettings.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DataContext.cs" />

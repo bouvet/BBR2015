@@ -1,26 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="Database.Entities.Deltaker">
-    <Position X="1.25" Y="0.75" Width="1.5" />
+    <Position X="0.75" Y="8.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AQAAAAAAACAAAAAEAAAAAgAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAACAAAAAEAAAAIgAAAAAAAAgAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Deltaker.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Lag" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="Database.Entities.DeltakerPosisjon" Collapsed="true">
-    <Position X="10.75" Y="1" Width="1.5" />
+  <Class Name="Database.Entities.DeltakerPosisjon">
+    <Position X="11" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACAAAAAEAAAAAAAAAIAAAAAAAAAQgAAAAAAAEAAAA=</HashCode>
+      <HashCode>AAACAAAAAEAAAAAAAAAIAAAAAIAAAAgAAAAAAAEAAAA=</HashCode>
       <FileName>Entities\DeltakerPosisjon.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Database.Entities.Lag">
-    <Position X="4.75" Y="0.5" Width="1.5" />
+    <Position X="3.5" Y="8.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAQgAAAAAgAAABgACAAAEEAgA=</HashCode>
+      <HashCode>AAAAABAAAAAAAAAAAAAAQgAAAAAgAAABgACAAAEEAgA=</HashCode>
       <FileName>Entities\Lag.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -28,9 +28,9 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Database.Entities.LagIMatch">
-    <Position X="4.75" Y="2.75" Width="1.5" />
+    <Position X="6.5" Y="8.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AEACAgAAACAAQAAAAAAAAAAAAAAAAAAAAAAEAAAAAAA=</HashCode>
+      <HashCode>AEACAgAAACAAQAAAAAAAAAAAAAAAAAAAAAAEAAAIAAA=</HashCode>
       <FileName>Entities\LagIMatch.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -39,13 +39,12 @@
     </ShowAsAssociation>
     <ShowAsCollectionAssociation>
       <Property Name="PostRegistreringer" />
-      <Property Name="VåpenBeholdning" />
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Database.Entities.Match">
-    <Position X="7.75" Y="2.5" Width="1.5" />
+    <Position X="8.5" Y="4.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAgAAAAAAAAQAAAAAAAAAAAAAAAEAAAAgAAAAAAEAA=</HashCode>
+      <HashCode>AAAgAADAAAAAAAAIQAAAAgABAABAEAAAAgAAAEAAAAA=</HashCode>
       <FileName>Entities\Match.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -53,24 +52,24 @@
       <Property Name="Poster" />
     </ShowAsCollectionAssociation>
   </Class>
-  <Class Name="Database.Entities.Melding" Collapsed="true">
-    <Position X="10.75" Y="1.75" Width="1.5" />
+  <Class Name="Database.Entities.Melding">
+    <Position X="12.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACAAAAAAAAAAAAAIAAAAAAAAQAAQgAAAAAAAEAAAA=</HashCode>
+      <HashCode>AAACAAAAAAAAAAAAAIAAAAAAAIQAAAgAAAAAAAEAAAA=</HashCode>
       <FileName>Entities\Melding.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Database.Entities.Post">
-    <Position X="10.25" Y="4.75" Width="2" />
+    <Position X="5.25" Y="0.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>CAAAABAAAkAAAAEAAAAIAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>CAAAABAAAkAAAAEAAAAIigAAAAAAABAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Post.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Database.Entities.PostIMatch">
-    <Position X="7.75" Y="4.75" Width="1.5" />
+    <Position X="5.5" Y="4.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACAgAAAAQAAAAACAAAAAAACACAACAAAAEABAAABAA=</HashCode>
+      <HashCode>AAACAgAACAQAAAAgIkAAAAAACAAAACAAAAAQBAgAAAA=</HashCode>
       <FileName>Entities\PostIMatch.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -79,9 +78,9 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="Database.Entities.PostRegistrering">
-    <Position X="0.75" Y="3.5" Width="2.25" />
+    <Position X="2.25" Y="5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAACCAAAAAAAAAAAAEAAAAAAAAAQAAAAUAAAAAAAAAE=</HashCode>
+      <HashCode>AAACCAAAAAAAAAAAAEAAAACAAAAQAAAAUAAAAAAAAAE=</HashCode>
       <FileName>Entities\PostRegistrering.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -89,8 +88,8 @@
       <Property Name="RegistertPost" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="Database.Entities.Vaapen">
-    <Position X="4.75" Y="4.75" Width="1.5" />
+  <Class Name="Database.Entities.Vaapen" Collapsed="true">
+    <Position X="9.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Vaapen.cs</FileName>

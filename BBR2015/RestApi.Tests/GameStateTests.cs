@@ -27,13 +27,7 @@ namespace RestApi.Tests
             _dataContextFactory = _container.Resolve<DataContextFactory>();
             TimeService.ResetToRealTime();
 
-            // Slett alle meldinger (blir rullet tilbake i transaksjon uansett)
-            using (var context = _dataContextFactory.Create())
-            {
-                context.Achievements.Clear();
-                context.Meldinger.Clear();
-                context.SaveChanges();
-            }
+            _dataContextFactory.DeleteAllData();
         }
 
         [Test]
@@ -388,7 +382,7 @@ namespace RestApi.Tests
 
             var meldingService = _container.Resolve<MeldingService>();
             Assert.AreEqual(3, meldingService.HentMeldinger(lag1.Lag.LagId).Count(), "Laget som rigget fellen skulle fått melding");
-            Assert.AreEqual(2, meldingService.HentMeldinger(lag2.Lag.LagId).Count(), "Laget gikk i fellen skulle fått melding");
+            Assert.AreEqual(1, meldingService.HentMeldinger(lag2.Lag.LagId).Count(), "Laget gikk i fellen skulle fått melding");
         }
 
         [Test]
