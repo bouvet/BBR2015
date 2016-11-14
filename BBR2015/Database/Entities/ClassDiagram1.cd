@@ -1,7 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="Database.Entities.Deltaker">
-    <Position X="0.75" Y="8.25" Width="1.5" />
+    <Position X="5.25" Y="8.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAEAAAAIgAAAAAAAAgAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Deltaker.cs</FileName>
@@ -11,14 +14,17 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="Database.Entities.DeltakerPosisjon">
-    <Position X="11" Y="0.5" Width="1.5" />
+    <Position X="3.25" Y="8.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAEAAAAAAAAAIAAAAAIAAAAgAAAAAAAEAAAA=</HashCode>
       <FileName>Entities\DeltakerPosisjon.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Database.Entities.Lag">
-    <Position X="3.5" Y="8.75" Width="1.5" />
+    <Position X="8.5" Y="8.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AAAAABAAAAAAAAAAAAAAQgAAAAAgAAABgACAAAEEAgA=</HashCode>
       <FileName>Entities\Lag.cs</FileName>
@@ -28,7 +34,10 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Database.Entities.LagIMatch">
-    <Position X="6.5" Y="8.75" Width="1.5" />
+    <Position X="12.25" Y="7.5" Width="2" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AEACAgAAACAAQAAAAAAAAAAAAAAAAAAAAAAEAAAIAAA=</HashCode>
       <FileName>Entities\LagIMatch.cs</FileName>
@@ -42,7 +51,10 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Database.Entities.Match">
-    <Position X="8.5" Y="4.25" Width="1.5" />
+    <Position X="12.25" Y="4.25" Width="2" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AAAgAADAAAAAAAAIQAAAAgABAABAEAAAAgAAAEAAAAA=</HashCode>
       <FileName>Entities\Match.cs</FileName>
@@ -53,21 +65,27 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Database.Entities.Melding">
-    <Position X="12.75" Y="0.5" Width="1.5" />
+    <Position X="3.25" Y="5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAAAAAAAIAAAAAAAIQAAAgAAAAAAAEAAAA=</HashCode>
       <FileName>Entities\Melding.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Database.Entities.Post">
-    <Position X="5.25" Y="0.5" Width="2" />
+    <Position X="9" Y="1" Width="2" />
     <TypeIdentifier>
       <HashCode>CAAAABAAAkAAAAEAAAAIigAAAAAAABAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Post.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Database.Entities.PostIMatch">
-    <Position X="5.5" Y="4.25" Width="1.5" />
+    <Position X="9.25" Y="4.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
     <TypeIdentifier>
       <HashCode>AAACAgAACAQAAAAgIkAAAAAACAAAACAAAAAQBAgAAAA=</HashCode>
       <FileName>Entities\PostIMatch.cs</FileName>
@@ -78,7 +96,7 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="Database.Entities.PostRegistrering">
-    <Position X="2.25" Y="5" Width="2.25" />
+    <Position X="5.25" Y="5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAACCAAAAAAAAAAAAEAAAACAAAAQAAAAUAAAAAAAAAE=</HashCode>
       <FileName>Entities\PostRegistrering.cs</FileName>
@@ -89,7 +107,7 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="Database.Entities.Vaapen" Collapsed="true">
-    <Position X="9.25" Y="0.5" Width="1.5" />
+    <Position X="15" Y="8" Width="1.5" />
     <TypeIdentifier>
       <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Entities\Vaapen.cs</FileName>

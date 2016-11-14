@@ -1,39 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
+﻿using System.Transactions;
 using NUnit.Framework;
 
 namespace RestApi.Tests.Infrastructure
-{
-    
+{ 
     public abstract class TestWithTransactionScope
     {
-        protected TransactionScope TransactionScope;
+        private TransactionScope _transactionScope;
 
         [SetUp]
         public void SetupFixture()
         {
-            try
-            {
-                TransactionScope = new TransactionScope();
-            }
-            catch (Exception)
-            {
-                TearDownFixture();
-                throw;
-            }
+            _transactionScope = new TransactionScope();           
         }
 
         [TearDown]
         public void TearDownFixture()
         {
-            if (TransactionScope != null)
-            {
-                TransactionScope.Dispose();
-            }
+            _transactionScope?.Dispose();
         }
     }
 }

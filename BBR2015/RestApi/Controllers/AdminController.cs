@@ -139,21 +139,7 @@ namespace RestApi.Controllers
         public IHttpActionResult KodeKombinasjoner()
         {
             return Ok(_tilgangsKontroll.HentAlleKodeKombinasjoner());
-        }
-
-        [Route("api/Admin/tilgangskontrollhash")]
-        [HttpGet]
-        public IHttpActionResult TilgangskontrollHashCode()
-        {
-            return Ok(_tilgangsKontroll.GetHashCode());
-        }
-
-        [Route("api/Admin/tilgangskontrollhashcontainer")]
-        [HttpGet]
-        public IHttpActionResult TilgangskontrollHashCodeContainer()
-        {
-            return Ok(ServiceLocator.Current.Resolve<TilgangsKontroll>().GetHashCode());
-        }
+        }       
 
         /// <summary>
         /// Hjelpemetode for å dobbeltsjekke at serveren har samme tidssone som du forventer.

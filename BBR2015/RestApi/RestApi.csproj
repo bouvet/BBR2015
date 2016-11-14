@@ -607,9 +607,9 @@
       <Project>{25354916-3f7a-4903-a70f-dfffdd71f4c0}</Project>
       <Name>Database</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Repository\Repository.csproj">
+    <ProjectReference Include="..\Repository\Services.csproj">
       <Project>{5e451fab-9360-4aa2-b1e2-35952a27e6ce}</Project>
-      <Name>Repository</Name>
+      <Name>Services</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

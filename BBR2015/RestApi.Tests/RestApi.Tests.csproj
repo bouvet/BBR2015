@@ -166,9 +166,9 @@
       <Project>{25354916-3f7a-4903-a70f-dfffdd71f4c0}</Project>
       <Name>Database</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Repository\Repository.csproj">
+    <ProjectReference Include="..\Repository\Services.csproj">
       <Project>{5E451FAB-9360-4AA2-B1E2-35952A27E6CE}</Project>
-      <Name>Repository</Name>
+      <Name>Services</Name>
     </ProjectReference>
     <ProjectReference Include="..\RestApi\RestApi.csproj">
       <Project>{07E7C0B9-D40A-4F2F-A09A-9FE08387F9EC}</Project>

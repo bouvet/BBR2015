@@ -46,8 +46,8 @@ namespace Repository.Kml
 
             document.AddStyle(postStyle);
 
-            var lagFolder = new Folder {Name = "Lag"};
-            var postFolder = new Folder {Name = "Poster"};
+            var lagFolder = new Folder { Name = "Lag" };
+            var postFolder = new Folder { Name = "Poster" };
 
             document.AddFeature(lagFolder);
             document.AddFeature(postFolder);
@@ -102,24 +102,30 @@ namespace Repository.Kml
                     };
 
                     document.AddStyle(style);
-                    var folder = new Folder {Name = lag1.Navn};
+                    var folder = new Folder { Name = lag1.Navn };
                     lagDictionary.Add(lag1.LagId, folder);
                     lagFolder.AddFeature(folder);
                 }
 
+                var førsteRegistering = (from r in context.PostRegisteringer
+                                         select r.RegistertTidspunkt).Min().AddMinutes(-5);
+
+                var avsluttet = (from r in poster
+                                    select r.SynligTilTid).Min().AddMinutes(5);
+
                 var deltakerPosisjoner = (from p in context.DeltakerPosisjoner
-                                 join d in context.Deltakere on p.DeltakerId equals d.DeltakerId
-                                 where match.StartTid < p.Tidspunkt && p.Tidspunkt < match.SluttTid
-                                 select new
-                                 {
-                                     p.Latitude,
-                                     p.Longitude,
-                                     p.DeltakerId,
-                                     d.Navn,
-                                     d.Lag.Farge,
-                                     d.Lag.LagId,
-                                     p.Tidspunkt
-                                 }).GroupBy(x => x.DeltakerId).ToDictionary(x => x.Key, y => y);
+                                          join d in context.Deltakere on p.DeltakerId equals d.DeltakerId
+                                          where førsteRegistering < p.Tidspunkt && p.Tidspunkt < avsluttet
+                                          select new
+                                          {
+                                              p.Latitude,
+                                              p.Longitude,
+                                              p.DeltakerId,
+                                              d.Navn,
+                                              d.Lag.Farge,
+                                              d.Lag.LagId,
+                                              p.Tidspunkt
+                                          }).GroupBy(x => x.DeltakerId).ToDictionary(x => x.Key, y => y);
 
                 foreach (var deltaker in deltakerPosisjoner)
                 {
@@ -132,7 +138,7 @@ namespace Repository.Kml
                     placemark.Name = førstePosisjon.Navn;
 
                     var posisjoner = deltaker.Value.OrderBy(x => x.Tidspunkt).ToList();
-                           
+
                     var track = new Track();
 
                     var forrigePosisjon = førstePosisjon;
@@ -149,7 +155,7 @@ namespace Repository.Kml
 
                         if (sekunder > 0)
                         {
-                            var fart = meter/sekunder;
+                            var fart = meter / sekunder;
                             if (fart > 8.333) // raskere enn 12 blank på 100m
                             {
                                 continue;
