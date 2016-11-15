@@ -31,6 +31,8 @@ namespace Database
             public const string HTTPHEADER_DELTAKERKODE = "DeltakerKode";
             public const string REQUESTPROPERTY_DELTAKERID = "DeltakerId";
         }
+
+        public const string AdminLagId = "SUPPORT_1";
     }
 
 }

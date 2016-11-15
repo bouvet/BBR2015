@@ -1,3 +1,5 @@
+using Database;
+
 namespace Repository
 {
     public class GameEventPublisher
@@ -5,7 +7,7 @@ namespace Repository
         private readonly MeldingService _meldingService;
         private readonly TilgangsKontroll _tilgangsKontroll;
 
-        private string AdminLagId = "SUPPORT_1";
+        private const string AdminLagId = Constants.AdminLagId;
 
         public GameEventPublisher(MeldingService meldingService, TilgangsKontroll tilgangsKontroll)
         {

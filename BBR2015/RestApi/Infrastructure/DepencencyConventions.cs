@@ -19,22 +19,21 @@ namespace RestApi.Infrastructure
         {
             container.Register(Types.FromAssemblyContaining<DataContextFactory>().Pick().WithServiceSelf().LifestyleTransient());
             container.Register(Types.FromAssemblyContaining<GameService>().Pick().WithServiceSelf().LifestyleTransient());
-           
-            // Rekkefølgen under er viktig!
-            RegisterInstance(container, container.Resolve<CurrentMatchProvider>());
-            RegisterInstance(container, container.Resolve<GameStateService>());
-            RegisterInstance(container, container.Resolve<TilgangsKontroll>());
-            RegisterInstance(container, container.Resolve<PosisjonsService>());
 
+            RegisterSingleton<CurrentMatchProvider>(container);
+            RegisterSingleton<GameStateService>(container);
+            RegisterSingleton<TilgangsKontroll>(container);
+            RegisterSingleton<PosisjonsService>(container);
+        
             container.Register(Types.FromAssemblyContaining<BaseController>().BasedOn<ApiController>().WithServiceSelf().LifestyleTransient());
             container.Register(Types.FromAssemblyContaining<BaseController>().BasedOn<Controller>().WithServiceSelf().LifestyleTransient());
 
             ServiceLocator.Current = container; 
         }
 
-        private static void RegisterInstance<T>(IWindsorContainer container, T instance) where T : class 
+        private void RegisterSingleton<T>(IWindsorContainer container) where T : class
         {
-            container.Register(Component.For<T>().Instance(instance).Named(Guid.NewGuid().ToString()).IsDefault());
+            container.Register(Component.For<T>().LifestyleSingleton().Named(Guid.NewGuid().ToString()).IsDefault());
         }
     }
 }

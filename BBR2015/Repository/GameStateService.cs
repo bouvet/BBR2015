@@ -23,7 +23,7 @@ namespace Repository
         {
             _dataContextFactory = dataContextFactory;
             _currentMatchProvider = currentMatchProvider;
-        }
+        }      
 
         public void Calculate()
         {

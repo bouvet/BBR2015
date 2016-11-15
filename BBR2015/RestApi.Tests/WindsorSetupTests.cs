@@ -22,7 +22,7 @@ namespace RestApi.Tests
             container.Install(new DependencyConventions());
 
             var controllerFactory = new WindsorMvcControllerFactory(container);
-            var apiControllerFactory = new WindsorControllerActivator(container);
+            var apiControllerFactory = new WindsorApiControllerActivator(container);
 
             //var t1 = ServiceLocator.Current.Resolve<TilgangsKontroll>();
             //var t2 = controllerFactory.CreateController()

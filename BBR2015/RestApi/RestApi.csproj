@@ -412,9 +412,6 @@
     <Content Include="testclient\img\Våpen-ingen.svg" />
     <Content Include="testclient\js\leaflet.awesome-markers.min.js" />
     <Content Include="testclient\js\myJs.js" />
-    <Content Include="testclient_old\css\css.css" />
-    <Content Include="testclient_old\Gruntfile.js" />
-    <Content Include="testclient_old\index.html" />
     <Content Include="testclient\index.html" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -442,7 +439,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Infrastructure\WindsorControllerActivator.cs" />
+    <Compile Include="Infrastructure\WindsorApiControllerActivator.cs" />
     <Compile Include="Infrastructure\DepencencyConventions.cs" />
     <Compile Include="Infrastructure\WindsorMvcControllerFactory.cs" />
     <Compile Include="Models\Koordinat.cs" />
@@ -467,7 +464,6 @@
     <None Include="Properties\PublishProfiles\bbr2015test - Web Deploy %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\bbr2015test - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\bbr2015test.pubxml" />
-    <Content Include="testclient_old\package.json" />
     <Content Include="scoreboard\bower.json" />
     <Content Include="scoreboard\bower_components\angular\.bower.json" />
     <Content Include="scoreboard\bower_components\angular\angular.min.js.gzip" />

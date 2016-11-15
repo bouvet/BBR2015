@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace RestApi.Tests.Infrastructure
 { 
-    public abstract class TestWithTransactionScope
+    public abstract class TestsWithTransactionScope
     {
         private TransactionScope _transactionScope;
 

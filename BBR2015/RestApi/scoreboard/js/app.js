@@ -147,7 +147,7 @@ angular.module('scoreboard').controller('scoreboardController', function ($scope
         });
     });
 
-    $scope.sekvensid = "635824873779444105";
+    $scope.sekvensid = "636147583334509735";
 
     $interval(function () {
         $scope.hostname = localStorage.serviceUrl;
@@ -215,6 +215,18 @@ angular.module('scoreboard').controller('scoreboardController', function ($scope
                 {
                     headers: { "ScoreboardSecret": localStorage.scoreboardSecret }
                 }).then(function() {alert('Google Drive sync completed')});
+        }
+    };
+
+    $scope.downloadGoogleMap = function () {
+        var docId = localStorage.googleDriveMapId;
+
+        if (docId && docId.length > 5) {
+            $http.post($scope.hostname + "Admin/ConfigureFromGoogleMap/" + docId,
+            {},
+                {
+                    headers: { "ScoreboardSecret": localStorage.scoreboardSecret }
+                }).then(function () { alert('Google Map sync completed') });
         }
     };
 });

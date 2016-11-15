@@ -30,8 +30,9 @@ namespace RestApi.Controllers
         private readonly ExcelWriter _excelWriter;
         private readonly ExcelExport _excelExport;
         private readonly DataContextFactory _dataContextFactory;
+        private readonly CurrentMatchProvider _matchProvider;
 
-        public AdminController(GameStateService gameStateService, OverridableSettings appSettings, TilgangsKontroll tilgangsKontroll, PosisjonsService posisjonsService, ExcelImport excelImport, KmlToExcelPoster kmlToExcelPoster, ExcelWriter excelWriter, ExcelExport excelExport, DataContextFactory dataContextFactory)
+        public AdminController(GameStateService gameStateService, OverridableSettings appSettings, TilgangsKontroll tilgangsKontroll, PosisjonsService posisjonsService, ExcelImport excelImport, KmlToExcelPoster kmlToExcelPoster, ExcelWriter excelWriter, ExcelExport excelExport, DataContextFactory dataContextFactory, CurrentMatchProvider matchProvider)
         {
             _gameStateService = gameStateService;
             _appSettings = appSettings;
@@ -42,6 +43,7 @@ namespace RestApi.Controllers
             _excelWriter = excelWriter;
             _excelExport = excelExport;
             _dataContextFactory = dataContextFactory;
+            _matchProvider = matchProvider;
         }
 
         /// <summary>
@@ -199,6 +201,43 @@ namespace RestApi.Controllers
             result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment") {FileName = "kml_poster.xlsx"};
 
             return result;
+        }
+
+        /// <summary>
+        /// Konverterer et kart på Google Drive til poster og importerer dem til nåværende aktive match. 
+        /// Triks: Poengfordeling settes i beskrivelse i klammeparenteser: [100,80,60].
+        /// Hemmelig kode settes i beskrivelse i krøllparenteser: {xdUFF43}
+        /// Ev. bilde som er koblet opp, blir lagt på posten.
+        /// Kartet må være satt opp med linkdeling og lesetilgang for alle med linken.
+        /// </summary>
+        /// <param name="documentId">Id til kart på Google Drive. Se argument 'mid' i url.</param>
+        [Route("api/Admin/ConfigureFromGoogleMap/{documentId}")]
+        [HttpPost]
+        public async Task<IHttpActionResult> ConfigureFromGoogleMap(string documentId)
+        {
+            var downloader = new GoogleDriveDownloader();
+
+            var content = await downloader.LastNedMapFraGoogleDrive(documentId);
+
+            var poster = _kmlToExcelPoster.LesInn(content);
+
+            var matchId = _matchProvider.GetMatchId();
+
+            MatchImport.ExcelMatch excelMatch;
+            using (var context = _dataContextFactory.Create())
+            {
+                var match = context.Matcher.SingleOrDefault(x => x.MatchId == matchId);
+                excelMatch = MatchImport.ExcelMatch.FromMatch(match);
+                excelMatch.DefaultPoengFordeling = "100,90,80,70,60"; // TODO: Lagre default fra import
+            }
+            
+            _excelWriter.SkrivTilExcel(excelMatch, null, poster);
+            var bytes = _excelWriter.GetAsByteArray();
+            _excelImport.LesInn(bytes);
+
+            ClearCaching();
+
+            return Ok();
         }
 
         /// <summary>

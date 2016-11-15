@@ -53,6 +53,9 @@ namespace Database.Entities
 
         public static int BeregnPoengForNesteRegistrering(string poengArray, int currentIndex)
         {
+            if (string.IsNullOrEmpty(poengArray))
+                return 0;
+
             var poengListe = SplitOgParse(poengArray);
             var index = currentIndex;
             if (currentIndex > poengListe.Length - 1)

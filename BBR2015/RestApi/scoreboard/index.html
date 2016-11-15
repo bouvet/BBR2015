@@ -117,11 +117,14 @@
                 <tr><td>DeltakerKode</td><td><input type="text" id="deltakerKode" /></td></tr>
                 <tr><td>Java vs Microsoft</td><td><input type="checkbox" id="showJavaVsMs" /></td></tr>
                 <tr><td>Google DocId</td><td><input type="text" id="googleDriveDocId" /></td></tr>
+                <tr><td>Google MapId</td><td><input type="text" id="googleDriveMapId" /></td></tr>
             </table>
-            <button id="btnSaveSettings">Save</button><button ng-click="downloadGoogleDrive()">Google Sync</button>
+            <button id="btnSaveSettings">Save</button><br />
+            <button ng-click="downloadGoogleDrive()">Google Sync</button>
+            <button ng-click="downloadGoogleMap()">Map Sync</button>
         </div>
     </div>
- 
+   
     <script language="javascript">
 
         var toogleJavaMs = function () {
@@ -137,6 +140,7 @@
             localStorage.lagKode = $('#lagKode').val();
             localStorage.deltakerKode = $('#deltakerKode').val();
             localStorage.googleDriveDocId = $('#googleDriveDocId').val();
+            localStorage.googleDriveMapId = $('#googleDriveMapId').val();
             localStorage.showJavaVsMs = $('#showJavaVsMs').is(':checked');
 
             toogleJavaMs();
@@ -154,6 +158,7 @@
             $('#lagKode').val(localStorage.lagKode);
             $('#deltakerKode').val(localStorage.deltakerKode);
             $('#googleDriveDocId').val(localStorage.googleDriveDocId);
+            $('#googleDriveMapId').val(localStorage.googleDriveMapId);
             $('#showJavaVsMs').attr('checked', localStorage.showJavaVsMs);
 
             toogleJavaMs();
